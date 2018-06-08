@@ -4491,58 +4491,6 @@
 
   var jssGlobal = unwrapExports(lib$1);
 
-  /**
-   * Copyright 2014-2015, Facebook, Inc.
-   * All rights reserved.
-   *
-   * This source code is licensed under the BSD-style license found in the
-   * LICENSE file in the root directory of this source tree. An additional grant
-   * of patent rights can be found in the PATENTS file in the same directory.
-   */
-
-  var warning$2 = function() {};
-
-  {
-    warning$2 = function(condition, format, args) {
-      var len = arguments.length;
-      args = new Array(len > 2 ? len - 2 : 0);
-      for (var key = 2; key < len; key++) {
-        args[key - 2] = arguments[key];
-      }
-      if (format === undefined) {
-        throw new Error(
-          '`warning(condition, format, ...args)` requires a warning ' +
-          'message argument'
-        );
-      }
-
-      if (format.length < 10 || (/^[s\W]*$/).test(format)) {
-        throw new Error(
-          'The warning format should be able to uniquely identify this ' +
-          'warning. Please, use a more descriptive format than: ' + format
-        );
-      }
-
-      if (!condition) {
-        var argIndex = 0;
-        var message = 'Warning: ' +
-          format.replace(/%s/g, function() {
-            return args[argIndex++];
-          });
-        if (typeof console !== 'undefined') {
-          console.error(message);
-        }
-        try {
-          // This error was thrown as a convenience so that you can use this stack
-          // to find the callsite that caused this warning to fire.
-          throw new Error(message);
-        } catch(x) {}
-      }
-    };
-  }
-
-  var warning_1$2 = warning$2;
-
   var lib$2 = createCommonjsModule(function (module, exports) {
 
   Object.defineProperty(exports, "__esModule", {
@@ -4555,7 +4503,7 @@
 
 
 
-  var _warning2 = _interopRequireDefault(warning_1$2);
+  var _warning2 = _interopRequireDefault(warning_1$1);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5533,7 +5481,7 @@
    * same logic and follow the same code paths.
    */
 
-  var warning$3 = emptyFunction_1;
+  var warning$2 = emptyFunction_1;
 
   {
     var printWarning$1 = function printWarning(format) {
@@ -5556,7 +5504,7 @@
       } catch (x) {}
     };
 
-    warning$3 = function warning(condition, format) {
+    warning$2 = function warning(condition, format) {
       if (format === undefined) {
         throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
       }
@@ -5575,7 +5523,7 @@
     };
   }
 
-  var warning_1$3 = warning$3;
+  var warning_1$2 = warning$2;
 
   /*
   object-assign
@@ -5679,7 +5627,7 @@
 
   {
     var invariant$1 = invariant_1;
-    var warning$4 = warning_1$3;
+    var warning$3 = warning_1$2;
     var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
     var loggedTypeFailures = {};
   }
@@ -5711,7 +5659,7 @@
           } catch (ex) {
             error = ex;
           }
-          warning$4(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+          warning$3(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
           if (error instanceof Error && !(error.message in loggedTypeFailures)) {
             // Only monitor this failure once because there tends to be a lot of the
             // same error.
@@ -5719,7 +5667,7 @@
 
             var stack = getStack ? getStack() : '';
 
-            warning$4(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+            warning$3(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
           }
         }
       }
@@ -5884,7 +5832,7 @@
               // Avoid spamming the console because they are often not actionable except for lib authors
               manualPropTypeWarningCount < 3
             ) {
-              warning_1$3(
+              warning_1$2(
                 false,
                 'You are manually calling a React.PropTypes validation ' +
                 'function for the `%s` prop on `%s`. This is deprecated ' +
@@ -5986,7 +5934,7 @@
 
     function createEnumTypeChecker(expectedValues) {
       if (!Array.isArray(expectedValues)) {
-        warning_1$3(false, 'Invalid argument supplied to oneOf, expected an instance of array.');
+        warning_1$2(false, 'Invalid argument supplied to oneOf, expected an instance of array.');
         return emptyFunction_1.thatReturnsNull;
       }
 
@@ -6029,14 +5977,14 @@
 
     function createUnionTypeChecker(arrayOfTypeCheckers) {
       if (!Array.isArray(arrayOfTypeCheckers)) {
-        warning_1$3(false, 'Invalid argument supplied to oneOfType, expected an instance of array.');
+        warning_1$2(false, 'Invalid argument supplied to oneOfType, expected an instance of array.');
         return emptyFunction_1.thatReturnsNull;
       }
 
       for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
         var checker = arrayOfTypeCheckers[i];
         if (typeof checker !== 'function') {
-          warning_1$3(
+          warning_1$2(
             false,
             'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
             'received %s at index %s.',
@@ -13612,10 +13560,10 @@
    * of patent rights can be found in the PATENTS file in the same directory.
    */
 
-  var warning$5 = function() {};
+  var warning$4 = function() {};
 
   {
-    warning$5 = function(condition, format, args) {
+    warning$4 = function(condition, format, args) {
       var len = arguments.length;
       args = new Array(len > 2 ? len - 2 : 0);
       for (var key = 2; key < len; key++) {
@@ -13653,7 +13601,7 @@
     };
   }
 
-  var warning_1$4 = warning$5;
+  var warning_1$3 = warning$4;
 
   var reactEventListener_cjs = createCommonjsModule(function (module, exports) {
 
@@ -13670,7 +13618,7 @@
   var _objectSpread = _interopDefault(objectSpread);
   var React$$1 = _interopDefault(React__default);
   var PropTypes = _interopDefault(propTypes);
-  var warning = _interopDefault(warning_1$4);
+  var warning = _interopDefault(warning_1$3);
 
   function defineProperty(object, property, attr) {
     return Object.defineProperty(object, property, attr);
@@ -27466,8 +27414,8 @@
             theme = _this$props.theme;
         var conditionalElements = {};
         conditionalElements.scrollbarSizeListener = scrollable ? React__default.createElement(ScrollbarSize, {
-          onLoad: _this.handleScrollbarSizeChange,
-          onChange: _this.handleScrollbarSizeChange
+          onChange: _this.handleScrollbarSizeChange,
+          onLoad: _this.handleScrollbarSizeChange
         }) : null;
         var showScrollButtons = scrollable && (scrollButtons === 'auto' || scrollButtons === 'on');
         conditionalElements.scrollButtonLeft = showScrollButtons ? React__default.createElement(ScrollButtonComponent, {
@@ -27495,13 +27443,20 @@
             1. On mount, getting all tabs dimensions
             2. On mount and value change, getting the active tab dimensions
         */
-        var state = {
-          tabsMeta: _this.state.tabsMeta || _this.getTabsMeta(),
-          tabMeta: !refreshTabMeta && _this.state.tabMeta ? _this.state.tabMeta : _this.getTabMeta()
-        };
+        var state = _this.state;
+        var value = _this.props.value;
 
-        if (state.tabsMeta !== _this.state.tabsMeta || state.tabMeta !== _this.state.tabMeta) {
-          _this.setState(state);
+        var tabsMeta = state.tabsMeta || _this.getTabsMeta();
+
+        var takeTabMeta = refreshTabMeta || !state.tabMeta || state.tabMeta.value !== value;
+        var tabMeta = takeTabMeta ? _this.getTabMeta() : state.tabMeta;
+        var tabMetaUpdated = tabMeta && (tabMeta !== state.tabMeta || value !== tabMeta.value);
+
+        if (tabsMeta !== state.tabsMeta || tabMetaUpdated) {
+          _this.setState({
+            tabMeta: tabMeta,
+            tabsMeta: tabsMeta
+          });
         }
 
         return state;
@@ -27512,18 +27467,22 @@
 
         var value = props.value;
 
-        if (tabs) {
+        if (tabs && value !== false) {
           var children = tabs.children[0].children;
 
           if (children.length > 0) {
             var tab = children[_this.valueToIndex[value]];
             warning_1(tab, "Material-UI: the value provided `".concat(value, "` is invalid"));
-            var rect = tab.getBoundingClientRect();
-            return {
-              width: rect.width,
-              left: rect.left,
-              right: rect.right
-            };
+
+            if (tab) {
+              var rect = tab.getBoundingClientRect();
+              return {
+                left: rect.left,
+                right: rect.right,
+                value: value,
+                width: rect.width
+              };
+            }
           }
         }
 
@@ -27587,9 +27546,7 @@
             tabsMeta = _this$getMeta.tabsMeta,
             tabMeta = _this$getMeta.tabMeta;
 
-        if (!tabMeta || !tabsMeta) {
-          return;
-        }
+        if (!tabMeta || !tabsMeta) return;
 
         if (tabMeta.left < tabsMeta.left) {
           // left side of button is out of view

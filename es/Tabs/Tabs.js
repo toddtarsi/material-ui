@@ -72,8 +72,8 @@ class Tabs extends React.Component {
       } = this.props;
       const conditionalElements = {};
       conditionalElements.scrollbarSizeListener = scrollable ? React.createElement(ScrollbarSize, {
-        onLoad: this.handleScrollbarSizeChange,
-        onChange: this.handleScrollbarSizeChange
+        onChange: this.handleScrollbarSizeChange,
+        onLoad: this.handleScrollbarSizeChange
       }) : null;
       const showScrollButtons = scrollable && (scrollButtons === 'auto' || scrollButtons === 'on');
       conditionalElements.scrollButtonLeft = showScrollButtons ? React.createElement(ScrollButtonComponent, {
@@ -105,13 +105,20 @@ class Tabs extends React.Component {
           1. On mount, getting all tabs dimensions
           2. On mount and value change, getting the active tab dimensions
       */
-      const state = {
-        tabsMeta: this.state.tabsMeta || this.getTabsMeta(),
-        tabMeta: !refreshTabMeta && this.state.tabMeta ? this.state.tabMeta : this.getTabMeta()
-      };
+      const state = this.state;
+      const {
+        value
+      } = this.props;
+      const tabsMeta = state.tabsMeta || this.getTabsMeta();
+      const takeTabMeta = refreshTabMeta || !state.tabMeta || state.tabMeta.value !== value;
+      const tabMeta = takeTabMeta ? this.getTabMeta() : state.tabMeta;
+      const tabMetaUpdated = tabMeta && (tabMeta !== state.tabMeta || value !== tabMeta.value);
 
-      if (state.tabsMeta !== this.state.tabsMeta || state.tabMeta !== this.state.tabMeta) {
-        this.setState(state);
+      if (tabsMeta !== state.tabsMeta || tabMetaUpdated) {
+        this.setState({
+          tabMeta,
+          tabsMeta
+        });
       }
 
       return state;
@@ -124,18 +131,22 @@ class Tabs extends React.Component {
         value
       } = props;
 
-      if (tabs) {
+      if (tabs && value !== false) {
         const children = tabs.children[0].children;
 
         if (children.length > 0) {
           const tab = children[this.valueToIndex[value]];
           process.env.NODE_ENV !== "production" ? warning(tab, `Material-UI: the value provided \`${value}\` is invalid`) : void 0;
-          const rect = tab.getBoundingClientRect();
-          return {
-            width: rect.width,
-            left: rect.left,
-            right: rect.right
-          };
+
+          if (tab) {
+            const rect = tab.getBoundingClientRect();
+            return {
+              left: rect.left,
+              right: rect.right,
+              value,
+              width: rect.width
+            };
+          }
         }
       }
 
@@ -201,10 +212,7 @@ class Tabs extends React.Component {
         tabsMeta,
         tabMeta
       } = this.getMeta(true);
-
-      if (!tabMeta || !tabsMeta) {
-        return;
-      }
+      if (!tabMeta || !tabsMeta) return;
 
       if (tabMeta.left < tabsMeta.left) {
         // left side of button is out of view
