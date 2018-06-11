@@ -25,6 +25,7 @@ class SelectInput extends React.Component {
     if (this.props.autoFocus) {
       this.displayNode.focus();
     }
+    if (this.props.staticWidth) this.updateDisplayWidth();
   }
 
   shouldComponentUpdate() {
@@ -138,7 +139,7 @@ class SelectInput extends React.Component {
 
   handleDisplayRef = node => {
     this.displayNode = node;
-    this.updateDisplayWidth();
+    if (!this.props.staticWidth) this.updateDisplayWidth();
   };
 
   handleSelectRef = node => {
