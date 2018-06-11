@@ -22,6 +22,7 @@ export interface SelectInputProps {
   readOnly?: boolean;
   renderValue?: (value: SelectInputProps['value']) => React.ReactNode;
   SelectDisplayProps?: React.HTMLAttributes<HTMLDivElement>;
+  staticWidth?: boolean;
   tabIndex?: number;
   value?: string | number | Array<string | number>;
 }

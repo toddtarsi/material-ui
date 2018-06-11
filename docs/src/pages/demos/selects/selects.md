@@ -39,3 +39,13 @@ The `TextField` wrapper component is a complete form control including a label, 
 ## Controlled open Select
 
 {{"demo": "pages/demos/selects/ControlledOpenSelect.js"}}
+
+## Static Width Select
+
+If you're looking to game performance on mobile, avoiding width recalculations after mount can help.
+If you know your select won't be changing dimensions, setting `staticWidth=true` can give some decent
+performance savings. However, your UX will no longer be responsive to resizing, so some caution is
+advised.
+
+{{"demo": "pages/demos/selects/StaticWidthSelect.js"}}
+

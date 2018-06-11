@@ -28,8 +28,7 @@ class SelectInput extends React.Component {
   }
 
   shouldComponentUpdate() {
-    this.updateDisplayWidth();
-
+    if (!this.props.staticWidth) this.updateDisplayWidth();
     return true;
   }
 
@@ -407,6 +406,10 @@ SelectInput.propTypes = {
    * Properties applied to the clickable div element.
    */
   SelectDisplayProps: PropTypes.object,
+  /**
+   * Avoid recalculating width after initial mount.
+   */
+  staticWidth: PropTypes.bool,
   /**
    * @ignore
    */

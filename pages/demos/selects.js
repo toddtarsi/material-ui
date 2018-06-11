@@ -43,6 +43,13 @@ module.exports = require('fs')
   .readFileSync(require.resolve('docs/src/pages/demos/selects/ControlledOpenSelect'), 'utf8')
 `,
         },
+        'pages/demos/selects/StaticWidthSelect.js': {
+          js: require('docs/src/pages/demos/selects/StaticWidthSelect').default,
+          raw: preval`
+module.exports = require('fs')
+  .readFileSync(require.resolve('docs/src/pages/demos/selects/StaticWidthSelect'), 'utf8')
+`,
+        },
       }}
     />
   );
