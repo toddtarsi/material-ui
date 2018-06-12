@@ -23235,8 +23235,7 @@
         }
       }, _this.handleDisplayRef = function (node) {
         _this.displayNode = node;
-
-        _this.updateDisplayWidth();
+        if (!_this.props.staticWidth) _this.updateDisplayWidth();
       }, _this.handleSelectRef = function (node) {
         if (!_this.props.inputRef) {
           return;
@@ -23264,6 +23263,8 @@
         if (this.props.autoFocus) {
           this.displayNode.focus();
         }
+
+        if (this.props.staticWidth) this.updateDisplayWidth();
       }
     }, {
       key: "shouldComponentUpdate",
