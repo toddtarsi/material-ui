@@ -51,11 +51,13 @@ export default [
       uglify(),
     ],
   },
-
   {
     input,
-    output: { file: `build/dist/${name}.esm.js`, format: 'es' },
-    external: id => !id.startsWith('.') && !id.startsWith('/'),
-    plugins: [nodeResolve(), babel(getBabelOptions()), sizeSnapshot()],
+    output: { file: `build/es/${name}.esm.js`, format: 'es' },
+    external: id => {
+      if (id.startsWith('.') || id.startsWith('/')) return false;
+      return true;
+    },
+    plugins: [nodeResolve(), babel(getBabelOptions())],
   },
 ];
