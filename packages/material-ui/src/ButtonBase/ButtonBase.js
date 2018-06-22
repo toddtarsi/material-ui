@@ -44,6 +44,11 @@ export const styles = {
   focusVisible: {},
 };
 
+/* istanbul ignore if */
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
+
 /**
  * `ButtonBase` contains as few styles as possible.
  * It aims to be a simple building block for creating a button.
@@ -233,6 +238,7 @@ class ButtonBase extends React.Component {
       component,
       disabled,
       disableRipple,
+      disableTouchRipple,
       focusRipple,
       focusVisibleClassName,
       onBlur,
@@ -340,7 +346,7 @@ ButtonBase.propTypes = {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
   /**
    * If `true`, the base button will be disabled.
    */
@@ -349,6 +355,10 @@ ButtonBase.propTypes = {
    * If `true`, the ripple effect will be disabled.
    */
   disableRipple: PropTypes.bool,
+  /**
+   * If `true`, the touch ripple effect will be disabled.
+   */
+  disableTouchRipple: PropTypes.bool,
   /**
    * If `true`, the base button will have a keyboard focus ripple.
    * `disableRipple` must also be `false`.
@@ -434,6 +444,7 @@ ButtonBase.defaultProps = {
   centerRipple: false,
   component: 'button',
   disableRipple: false,
+  disableTouchRipple: false,
   focusRipple: false,
   tabIndex: '0',
   type: 'button',
