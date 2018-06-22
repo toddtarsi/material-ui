@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import warning from 'warning';
@@ -157,7 +159,7 @@ class Tabs extends React.Component {
     if (tabs && value !== false) {
       const children = tabs.children[0].children;
       if (children.length > 0) {
-        const tab = children[this.valueToIndex[value]];
+        const tab = children[this.valueToIndex.get(value)];
         warning(tab, `Material-UI: the value provided \`${value}\` is invalid`);
         if (tab) {
           const rect = tab.getBoundingClientRect();
@@ -192,7 +194,7 @@ class Tabs extends React.Component {
   };
 
   tabs = undefined;
-  valueToIndex = {};
+  valueToIndex = new Map();
 
   handleResize = debounce(() => {
     this.updateIndicatorState(this.props);
@@ -257,8 +259,8 @@ class Tabs extends React.Component {
     if (
       (indicatorStyle.left !== this.state.indicatorStyle.left ||
         indicatorStyle.width !== this.state.indicatorStyle.width) &&
-      !Number.isNaN(indicatorStyle.left) &&
-      !Number.isNaN(indicatorStyle.width)
+      !isNaN(indicatorStyle.left) &&
+      !isNaN(indicatorStyle.width)
     ) {
       this.setState({ indicatorStyle });
     }
@@ -308,6 +310,7 @@ class Tabs extends React.Component {
       children: childrenProp,
       classes,
       className: classNameProp,
+      component: Component,
       fullWidth,
       indicatorColor,
       onChange,
@@ -349,7 +352,7 @@ class Tabs extends React.Component {
       />
     );
 
-    this.valueToIndex = {};
+    this.valueToIndex = new Map();
     let childIndex = 0;
     const children = React.Children.map(childrenProp, child => {
       if (!React.isValidElement(child)) {
@@ -357,7 +360,7 @@ class Tabs extends React.Component {
       }
 
       const childValue = child.props.value === undefined ? childIndex : child.props.value;
-      this.valueToIndex[childValue] = childIndex;
+      this.valueToIndex.set(childValue, childIndex);
       const selected = childValue === value;
 
       childIndex += 1;
@@ -375,7 +378,7 @@ class Tabs extends React.Component {
     const conditionalElements = this.getConditionalElements();
 
     return (
-      <div className={className} {...other}>
+      <Component className={className} {...other}>
         <EventListener target="window" onResize={this.handleResize} />
         {conditionalElements.scrollbarSizeListener}
         <div className={classes.flexContainer}>
@@ -394,7 +397,7 @@ class Tabs extends React.Component {
           </div>
           {conditionalElements.scrollButtonRight}
         </div>
-      </div>
+      </Component>
     );
   }
 }
@@ -428,6 +431,11 @@ Tabs.propTypes = {
    */
   className: PropTypes.string,
   /**
+   * The component used for the root node.
+   * Either a string to use a DOM element or a component.
+   */
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+  /**
    * If `true`, the tabs will grow to use all the available space.
    * This property is intended for small views, like on mobile.
    */
@@ -451,7 +459,7 @@ Tabs.propTypes = {
   /**
    * The component used to render the scroll buttons.
    */
-  ScrollButtonComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  ScrollButtonComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
   /**
    * Determine behavior of scroll buttons when tabs are set to scroll
    * `auto` will only present them on medium and larger viewports
@@ -486,6 +494,7 @@ Tabs.propTypes = {
 
 Tabs.defaultProps = {
   centered: false,
+  component: 'div',
   fullWidth: false,
   indicatorColor: 'secondary',
   scrollable: false,

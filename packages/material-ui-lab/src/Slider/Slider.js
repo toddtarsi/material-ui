@@ -199,6 +199,11 @@ function preventPageScrolling(event) {
   event.preventDefault();
 }
 
+/* istanbul ignore if */
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
+
 class Slider extends React.Component {
   state = { currentState: 'initial' };
 
@@ -225,8 +230,12 @@ class Slider extends React.Component {
   }
 
   emitChange(event, rawValue, callback) {
-    const { step, value: previousValue, onChange } = this.props;
+    const { step, value: previousValue, onChange, disabled } = this.props;
     let value = rawValue;
+
+    if (disabled) {
+      return;
+    }
 
     if (step) {
       value = roundToStep(rawValue, step);
@@ -472,7 +481,7 @@ Slider.propTypes = {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
   /**
    * If `true`, the slider will be disabled.
    */
