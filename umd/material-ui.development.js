@@ -1,4 +1,4 @@
-/** @license Material-UI v1.2.0
+/** @license Material-UI v1.2.3
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -365,14 +365,22 @@
     blueGrey: blueGrey
   });
 
-  /**
-   * Copyright (c) 2014-present, Facebook, Inc.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE file in the root directory of this source tree.
-   *
-   * @providesModule warning
-   */
+  var global$1 = (typeof global !== "undefined" ? global :
+              typeof self !== "undefined" ? self :
+              typeof window !== "undefined" ? window : {});
+
+  if (typeof global$1.setTimeout === 'function') ;
+  if (typeof global$1.clearTimeout === 'function') ;
+
+  // from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
+  var performance = global$1.performance || {};
+  var performanceNow =
+    performance.now        ||
+    performance.mozNow     ||
+    performance.msNow      ||
+    performance.oNow       ||
+    performance.webkitNow  ||
+    function(){ return (new Date()).getTime() };
 
   var warning = function() {};
 
@@ -419,22 +427,29 @@
 
   var warning_1 = warning;
 
-  /* eslint-disable no-underscore-dangle */
   // We need to use a global.
 
-  global.__MUI_GENERATOR_COUNTER__ = 0; // Returns a function which generates unique class names based on counters.
+  global$1.__MUI_GENERATOR_COUNTER__ = 0;
+  var escapeRegex = /([[\].#*$><+~=|^:(),"'`\s])/g;
+
+  function safePrefix(classNamePrefix) {
+    var prefix = String(classNamePrefix);
+    warning_1(prefix.length < 100, "Material-UI: the class name prefix is too long: ".concat(prefix, ".")); // Sanitize the string as will be used to prefix the generated class name.
+
+    return prefix.replace(escapeRegex, '-');
+  } // Returns a function which generates unique class names based on counters.
   // When new generator function is created, rule counter is reset.
   // We need to reset the rule counter for SSR for each request.
   //
   // It's inspired by
   // https://github.com/cssinjs/jss/blob/4e6a05dd3f7b6572fdd3ab216861d9e446c20331/src/utils/createGenerateClassName.js
 
+
   function createGenerateClassName() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var _options$dangerouslyU = options.dangerouslyUseGlobalCSS,
         dangerouslyUseGlobalCSS = _options$dangerouslyU === void 0 ? false : _options$dangerouslyU,
         _options$productionPr = options.productionPrefix;
-    var escapeRegex = /([[\].#*$><+~=|^:(),"'`\s])/g;
     var ruleCounter = 0; // - HMR can lead to many class name generators being instantiated,
 
     return function (rule, styleSheet) {
@@ -443,9 +458,7 @@
 
       if (dangerouslyUseGlobalCSS) {
         if (styleSheet && styleSheet.options.classNamePrefix) {
-          var prefix = styleSheet.options.classNamePrefix; // Sanitize the string as will be used to prefix the generated class name.
-
-          prefix = prefix.replace(escapeRegex, '-');
+          var prefix = safePrefix(styleSheet.options.classNamePrefix);
 
           if (prefix.match(/^Mui/)) {
             return "".concat(prefix, "-").concat(rule.key);
@@ -460,9 +473,8 @@
       }
 
       if (styleSheet && styleSheet.options.classNamePrefix) {
-        var _prefix = styleSheet.options.classNamePrefix; // Sanitize the string as will be used to prefix the generated class name.
+        var _prefix = safePrefix(styleSheet.options.classNamePrefix);
 
-        _prefix = _prefix.replace(escapeRegex, '-');
         return "".concat(_prefix, "-").concat(rule.key, "-").concat(ruleCounter);
       }
 
@@ -642,7 +654,8 @@
         fontWeightMedium = _ref$fontWeightMedium === void 0 ? 500 : _ref$fontWeightMedium,
         _ref$htmlFontSize = _ref.htmlFontSize,
         htmlFontSize = _ref$htmlFontSize === void 0 ? 16 : _ref$htmlFontSize,
-        other = objectWithoutProperties(_ref, ["fontFamily", "fontSize", "fontWeightLight", "fontWeightRegular", "fontWeightMedium", "htmlFontSize"]);
+        allVariants = _ref.allVariants,
+        other = objectWithoutProperties(_ref, ["fontFamily", "fontSize", "fontWeightLight", "fontWeightRegular", "fontWeightMedium", "htmlFontSize", "allVariants"]);
 
     var coef = fontSize / 14;
 
@@ -658,7 +671,7 @@
       fontWeightLight: fontWeightLight,
       fontWeightRegular: fontWeightRegular,
       fontWeightMedium: fontWeightMedium,
-      display4: {
+      display4: objectSpread({
         fontSize: pxToRem(112),
         fontWeight: fontWeightLight,
         fontFamily: fontFamily,
@@ -666,8 +679,8 @@
         lineHeight: "".concat(round(128 / 112), "em"),
         marginLeft: '-.04em',
         color: palette.text.secondary
-      },
-      display3: {
+      }, allVariants),
+      display3: objectSpread({
         fontSize: pxToRem(56),
         fontWeight: fontWeightRegular,
         fontFamily: fontFamily,
@@ -675,71 +688,71 @@
         lineHeight: "".concat(round(73 / 56), "em"),
         marginLeft: '-.02em',
         color: palette.text.secondary
-      },
-      display2: {
+      }, allVariants),
+      display2: objectSpread({
         fontSize: pxToRem(45),
         fontWeight: fontWeightRegular,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(48 / 45), "em"),
         marginLeft: '-.02em',
         color: palette.text.secondary
-      },
-      display1: {
+      }, allVariants),
+      display1: objectSpread({
         fontSize: pxToRem(34),
         fontWeight: fontWeightRegular,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(41 / 34), "em"),
         color: palette.text.secondary
-      },
-      headline: {
+      }, allVariants),
+      headline: objectSpread({
         fontSize: pxToRem(24),
         fontWeight: fontWeightRegular,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(32.5 / 24), "em"),
         color: palette.text.primary
-      },
-      title: {
+      }, allVariants),
+      title: objectSpread({
         fontSize: pxToRem(21),
         fontWeight: fontWeightMedium,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(24.5 / 21), "em"),
         color: palette.text.primary
-      },
-      subheading: {
+      }, allVariants),
+      subheading: objectSpread({
         fontSize: pxToRem(16),
         fontWeight: fontWeightRegular,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(24 / 16), "em"),
         color: palette.text.primary
-      },
-      body2: {
+      }, allVariants),
+      body2: objectSpread({
         fontSize: pxToRem(14),
         fontWeight: fontWeightMedium,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(24 / 14), "em"),
         color: palette.text.primary
-      },
-      body1: {
+      }, allVariants),
+      body1: objectSpread({
         fontSize: pxToRem(14),
         fontWeight: fontWeightRegular,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(20.5 / 14), "em"),
         color: palette.text.primary
-      },
-      caption: {
+      }, allVariants),
+      caption: objectSpread({
         fontSize: pxToRem(12),
         fontWeight: fontWeightRegular,
         fontFamily: fontFamily,
         lineHeight: "".concat(round(16.5 / 12), "em"),
         color: palette.text.secondary
-      },
-      button: {
+      }, allVariants),
+      button: objectSpread({
         fontSize: pxToRem(14),
         textTransform: 'uppercase',
         fontWeight: fontWeightMedium,
         fontFamily: fontFamily,
         color: palette.text.primary
-      }
+      }, allVariants)
     }, other, {
       clone: false // No need to clone deep
 
@@ -812,7 +825,6 @@
     }, other);
   }
 
-  //  weak
   /**
    * Returns a number whose value is limited to the given range.
    *
@@ -1378,8 +1390,6 @@
     return muiTheme;
   }
 
-  var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
   function unwrapExports (x) {
   	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
   }
@@ -1578,15 +1588,6 @@
   });
 
   unwrapExports(SheetsRegistry_1);
-
-  /**
-   * Copyright 2014-2015, Facebook, Inc.
-   * All rights reserved.
-   *
-   * This source code is licensed under the BSD-style license found in the
-   * LICENSE file in the root directory of this source tree. An additional grant
-   * of patent rights can be found in the PATENTS file in the same directory.
-   */
 
   var warning$1 = function() {};
 
@@ -1996,16 +1997,14 @@
   	return result;
   }
 
-  /* global window */
-
   var root;
 
   if (typeof self !== 'undefined') {
     root = self;
   } else if (typeof window !== 'undefined') {
     root = window;
-  } else if (typeof global !== 'undefined') {
-    root = global;
+  } else if (typeof global$1 !== 'undefined') {
+    root = global$1;
   } else if (typeof module !== 'undefined') {
     root = module;
   } else {
@@ -2158,7 +2157,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  var CSS = commonjsGlobal.CSS;
+  var CSS = global$1.CSS;
 
   var escapeRegex = /([[\].#*$><+~=|^:(),"'`])/g;
 
@@ -2698,13 +2697,13 @@
     value: true
   });
   var ns = '2f1acc6c3a606b082e5eef5e54414ffb';
-  if (commonjsGlobal[ns] == null) commonjsGlobal[ns] = 0;
+  if (global$1[ns] == null) global$1[ns] = 0;
 
   // Bundle may contain multiple JSS versions at the same time. In order to identify
   // the current version with just one short number and use it for classes generation
   // we use a counter. Also it is more accurate, because user can manually reevaluate
   // the module.
-  exports['default'] = commonjsGlobal[ns]++;
+  exports['default'] = global$1[ns]++;
   });
 
   unwrapExports(moduleId);
@@ -3752,7 +3751,6 @@
           element = _ref.element;
 
       this.element = element || document.createElement('style');
-      this.element.type = 'text/css';
       this.element.setAttribute('data-jss', '');
       if (media) this.element.setAttribute('media', media);
       if (meta) this.element.setAttribute('data-meta', meta);
@@ -4055,7 +4053,7 @@
       _classCallCheck(this, Jss);
 
       this.id = instanceCounter++;
-      this.version = "9.8.2";
+      this.version = "9.8.6";
       this.plugins = new _PluginsRegistry2['default']();
       this.options = {
         createGenerateClassName: _createGenerateClassName2['default'],
@@ -5387,144 +5385,6 @@
 
   var inherits = _inherits;
 
-  /**
-   * Copyright (c) 2013-present, Facebook, Inc.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE file in the root directory of this source tree.
-   *
-   * 
-   */
-
-  function makeEmptyFunction(arg) {
-    return function () {
-      return arg;
-    };
-  }
-
-  /**
-   * This function accepts and discards inputs; it has no side effects. This is
-   * primarily useful idiomatically for overridable function endpoints which
-   * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
-   */
-  var emptyFunction = function emptyFunction() {};
-
-  emptyFunction.thatReturns = makeEmptyFunction;
-  emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-  emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-  emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-  emptyFunction.thatReturnsThis = function () {
-    return this;
-  };
-  emptyFunction.thatReturnsArgument = function (arg) {
-    return arg;
-  };
-
-  var emptyFunction_1 = emptyFunction;
-
-  /**
-   * Copyright (c) 2013-present, Facebook, Inc.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE file in the root directory of this source tree.
-   *
-   */
-
-  /**
-   * Use invariant() to assert state which your program assumes to be true.
-   *
-   * Provide sprintf-style format (only %s is supported) and arguments
-   * to provide information about what broke and what you were
-   * expecting.
-   *
-   * The invariant message will be stripped in production, but the invariant
-   * will remain to ensure logic does not differ in production.
-   */
-
-  var validateFormat = function validateFormat(format) {};
-
-  {
-    validateFormat = function validateFormat(format) {
-      if (format === undefined) {
-        throw new Error('invariant requires an error message argument');
-      }
-    };
-  }
-
-  function invariant(condition, format, a, b, c, d, e, f) {
-    validateFormat(format);
-
-    if (!condition) {
-      var error;
-      if (format === undefined) {
-        error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-      } else {
-        var args = [a, b, c, d, e, f];
-        var argIndex = 0;
-        error = new Error(format.replace(/%s/g, function () {
-          return args[argIndex++];
-        }));
-        error.name = 'Invariant Violation';
-      }
-
-      error.framesToPop = 1; // we don't care about invariant's own frame
-      throw error;
-    }
-  }
-
-  var invariant_1 = invariant;
-
-  /**
-   * Similar to invariant but only logs a warning if the condition is not met.
-   * This can be used to log issues in development environments in critical
-   * paths. Removing the logging code for production environments will keep the
-   * same logic and follow the same code paths.
-   */
-
-  var warning$2 = emptyFunction_1;
-
-  {
-    var printWarning$1 = function printWarning(format) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    warning$2 = function warning(condition, format) {
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-
-      if (format.indexOf('Failed Composite propType: ') === 0) {
-        return; // Ignore CompositeComponent proptype check.
-      }
-
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments[_key2];
-        }
-
-        printWarning$1.apply(undefined, [format].concat(args));
-      }
-    };
-  }
-
-  var warning_1$2 = warning$2;
-
   /*
   object-assign
   (c) Sindre Sorhus
@@ -5625,11 +5485,24 @@
 
   var ReactPropTypesSecret_1 = ReactPropTypesSecret;
 
+  var printWarning$1 = function() {};
+
   {
-    var invariant$1 = invariant_1;
-    var warning$3 = warning_1$2;
     var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
     var loggedTypeFailures = {};
+
+    printWarning$1 = function(text) {
+      var message = 'Warning: ' + text;
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    };
   }
 
   /**
@@ -5654,12 +5527,29 @@
           try {
             // This is intentionally an invariant that gets caught. It's the same
             // behavior as without this statement except with a better message.
-            invariant$1(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
+            if (typeof typeSpecs[typeSpecName] !== 'function') {
+              var err = Error(
+                (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
+                'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
+              );
+              err.name = 'Invariant Violation';
+              throw err;
+            }
             error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1);
           } catch (ex) {
             error = ex;
           }
-          warning$3(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+          if (error && !(error instanceof Error)) {
+            printWarning$1(
+              (componentName || 'React class') + ': type specification of ' +
+              location + ' `' + typeSpecName + '` is invalid; the type checker ' +
+              'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
+              'You may have forgotten to pass an argument to the type checker ' +
+              'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
+              'shape all require an argument).'
+            );
+
+          }
           if (error instanceof Error && !(error.message in loggedTypeFailures)) {
             // Only monitor this failure once because there tends to be a lot of the
             // same error.
@@ -5667,7 +5557,9 @@
 
             var stack = getStack ? getStack() : '';
 
-            warning$3(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+            printWarning$1(
+              'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
+            );
           }
         }
       }
@@ -5675,6 +5567,27 @@
   }
 
   var checkPropTypes_1 = checkPropTypes;
+
+  var printWarning$2 = function() {};
+
+  {
+    printWarning$2 = function(text) {
+      var message = 'Warning: ' + text;
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    };
+  }
+
+  function emptyFunctionThatReturnsNull() {
+    return null;
+  }
 
   var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
     /* global Symbol */
@@ -5818,12 +5731,13 @@
         if (secret !== ReactPropTypesSecret_1) {
           if (throwOnDirectAccess) {
             // New behavior only for users of `prop-types` package
-            invariant_1(
-              false,
+            var err = new Error(
               'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
               'Use `PropTypes.checkPropTypes()` to call them. ' +
               'Read more at http://fb.me/use-check-prop-types'
             );
+            err.name = 'Invariant Violation';
+            throw err;
           } else if (typeof console !== 'undefined') {
             // Old behavior for people using React.PropTypes
             var cacheKey = componentName + ':' + propName;
@@ -5832,15 +5746,12 @@
               // Avoid spamming the console because they are often not actionable except for lib authors
               manualPropTypeWarningCount < 3
             ) {
-              warning_1$2(
-                false,
+              printWarning$2(
                 'You are manually calling a React.PropTypes validation ' +
-                'function for the `%s` prop on `%s`. This is deprecated ' +
+                'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
                 'and will throw in the standalone `prop-types` package. ' +
                 'You may be seeing this warning due to a third-party PropTypes ' +
-                'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
-                propFullName,
-                componentName
+                'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
               );
               manualPropTypeCallCache[cacheKey] = true;
               manualPropTypeWarningCount++;
@@ -5884,7 +5795,7 @@
     }
 
     function createAnyTypeChecker() {
-      return createChainableTypeChecker(emptyFunction_1.thatReturnsNull);
+      return createChainableTypeChecker(emptyFunctionThatReturnsNull);
     }
 
     function createArrayOfTypeChecker(typeChecker) {
@@ -5934,8 +5845,8 @@
 
     function createEnumTypeChecker(expectedValues) {
       if (!Array.isArray(expectedValues)) {
-        warning_1$2(false, 'Invalid argument supplied to oneOf, expected an instance of array.');
-        return emptyFunction_1.thatReturnsNull;
+        printWarning$2('Invalid argument supplied to oneOf, expected an instance of array.');
+        return emptyFunctionThatReturnsNull;
       }
 
       function validate(props, propName, componentName, location, propFullName) {
@@ -5977,21 +5888,18 @@
 
     function createUnionTypeChecker(arrayOfTypeCheckers) {
       if (!Array.isArray(arrayOfTypeCheckers)) {
-        warning_1$2(false, 'Invalid argument supplied to oneOfType, expected an instance of array.');
-        return emptyFunction_1.thatReturnsNull;
+        printWarning$2('Invalid argument supplied to oneOfType, expected an instance of array.');
+        return emptyFunctionThatReturnsNull;
       }
 
       for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
         var checker = arrayOfTypeCheckers[i];
         if (typeof checker !== 'function') {
-          warning_1$2(
-            false,
+          printWarning$2(
             'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-            'received %s at index %s.',
-            getPostfixForTypeWarning(checker),
-            i
+            'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
           );
-          return emptyFunction_1.thatReturnsNull;
+          return emptyFunctionThatReturnsNull;
         }
       }
 
@@ -6295,15 +6203,20 @@
   // This module is based on https://github.com/airbnb/prop-types-exact repository.
   // However, in order to reduce the number of dependencies and to remove some extra safe checks
   // the module was forked.
+  // Only exported for test purposes.
   var specialProperty = "exact-prop: \u200B";
-  function exactProp(propTypes, componentNameInError) {
+
+  function exactProp(propTypes) {
+
     return objectSpread({}, propTypes, defineProperty({}, specialProperty, function (props) {
-      var unknownProps = Object.keys(props).filter(function (prop) {
+      var unsupportedProps = Object.keys(props).filter(function (prop) {
         return !propTypes.hasOwnProperty(prop);
       });
 
-      if (unknownProps.length > 0) {
-        return new TypeError("".concat(componentNameInError, ": unknown props found: ").concat(unknownProps.join(', '), ". Please remove the unknown properties."));
+      if (unsupportedProps.length > 0) {
+        return new Error("The following properties are not supported: ".concat(unsupportedProps.map(function (prop) {
+          return "`".concat(prop, "`");
+        }).join(', '), ". Please remove them."));
       }
 
       return null;
@@ -6448,7 +6361,7 @@
      */
     theme: propTypes.oneOfType([propTypes.object, propTypes.func]).isRequired
   };
-  MuiThemeProvider.propTypes = exactProp(MuiThemeProvider.propTypes, 'MuiThemeProvider');
+  MuiThemeProvider.propTypes = exactProp(MuiThemeProvider.propTypes);
   MuiThemeProvider.childContextTypes = objectSpread({}, themeListener.contextTypes, {
     muiThemeProviderOptions: propTypes.object
   });
@@ -6482,77 +6395,72 @@
   module.exports = _extends;
   });
 
-  var hoistNonReactStatics = createCommonjsModule(function (module, exports) {
   /**
    * Copyright 2015, Yahoo! Inc.
    * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
    */
-  (function (global, factory) {
-      module.exports = factory();
-  }(commonjsGlobal, (function () {
-      
-      var REACT_STATICS = {
-          childContextTypes: true,
-          contextTypes: true,
-          defaultProps: true,
-          displayName: true,
-          getDefaultProps: true,
-          getDerivedStateFromProps: true,
-          mixins: true,
-          propTypes: true,
-          type: true
-      };
-      
-      var KNOWN_STATICS = {
-          name: true,
-          length: true,
-          prototype: true,
-          caller: true,
-          callee: true,
-          arguments: true,
-          arity: true
-      };
-      
-      var defineProperty = Object.defineProperty;
-      var getOwnPropertyNames = Object.getOwnPropertyNames;
-      var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-      var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-      var getPrototypeOf = Object.getPrototypeOf;
-      var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
-      
-      return function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
-          if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
-              
-              if (objectPrototype) {
-                  var inheritedComponent = getPrototypeOf(sourceComponent);
-                  if (inheritedComponent && inheritedComponent !== objectPrototype) {
-                      hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
-                  }
+  var REACT_STATICS = {
+      childContextTypes: true,
+      contextTypes: true,
+      defaultProps: true,
+      displayName: true,
+      getDefaultProps: true,
+      getDerivedStateFromProps: true,
+      mixins: true,
+      propTypes: true,
+      type: true
+  };
+
+  var KNOWN_STATICS = {
+      name: true,
+      length: true,
+      prototype: true,
+      caller: true,
+      callee: true,
+      arguments: true,
+      arity: true
+  };
+
+  var defineProperty$1 = Object.defineProperty;
+  var getOwnPropertyNames = Object.getOwnPropertyNames;
+  var getOwnPropertySymbols$1 = Object.getOwnPropertySymbols;
+  var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+  var getPrototypeOf = Object.getPrototypeOf;
+  var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
+
+  function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
+      if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
+
+          if (objectPrototype) {
+              var inheritedComponent = getPrototypeOf(sourceComponent);
+              if (inheritedComponent && inheritedComponent !== objectPrototype) {
+                  hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
               }
-              
-              var keys = getOwnPropertyNames(sourceComponent);
-              
-              if (getOwnPropertySymbols) {
-                  keys = keys.concat(getOwnPropertySymbols(sourceComponent));
-              }
-              
-              for (var i = 0; i < keys.length; ++i) {
-                  var key = keys[i];
-                  if (!REACT_STATICS[key] && !KNOWN_STATICS[key] && (!blacklist || !blacklist[key])) {
-                      var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
-                      try { // Avoid failures from read-only properties
-                          defineProperty(targetComponent, key, descriptor);
-                      } catch (e) {}
-                  }
-              }
-              
-              return targetComponent;
           }
-          
+
+          var keys = getOwnPropertyNames(sourceComponent);
+
+          if (getOwnPropertySymbols$1) {
+              keys = keys.concat(getOwnPropertySymbols$1(sourceComponent));
+          }
+
+          for (var i = 0; i < keys.length; ++i) {
+              var key = keys[i];
+              if (!REACT_STATICS[key] && !KNOWN_STATICS[key] && (!blacklist || !blacklist[key])) {
+                  var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
+                  try { // Avoid failures from read-only properties
+                      defineProperty$1(targetComponent, key, descriptor);
+                  } catch (e) {}
+              }
+          }
+
           return targetComponent;
-      };
-  })));
-  });
+      }
+
+      return targetComponent;
+  }
+
+  var hoistNonReactStatics_cjs = hoistNonReactStatics;
 
   var getDisplayName_1 = createCommonjsModule(function (module, exports) {
 
@@ -6670,6 +6578,30 @@
   });
 
   var contextTypes$1 = unwrapExports(contextTypes);
+
+  function mergeClasses() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var baseClasses = options.baseClasses,
+        newClasses = options.newClasses,
+        Component = options.Component,
+        _options$noBase = options.noBase,
+        noBase = _options$noBase === void 0 ? false : _options$noBase;
+
+    if (!newClasses) {
+      return baseClasses;
+    }
+
+    return objectSpread({}, baseClasses, Object.keys(newClasses).reduce(function (accumulator, key) {
+      warning_1(baseClasses[key] || noBase, ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not implemented in ".concat(getDisplayName(Component), "."), "You can only override one of the following: ".concat(Object.keys(baseClasses).join(','))].join('\n'));
+      warning_1(!newClasses[key] || typeof newClasses[key] === 'string', ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not valid for ".concat(getDisplayName(Component), "."), "You need to provide a non empty string instead of: ".concat(newClasses[key], ".")].join('\n'));
+
+      if (newClasses[key]) {
+        accumulator[key] = "".concat(baseClasses[key], " ").concat(newClasses[key]);
+      }
+
+      return accumulator;
+    }, {}));
+  }
 
   // Support for the jss-expand plugin.
 
@@ -6865,8 +6797,6 @@
         }, {
           key: "getClasses",
           value: function getClasses() {
-            var _this3 = this;
-
             // Tracks if either the rendered classes or classes prop has changed,
             // requiring the generation of a new finalized classes object.
             var generate = false;
@@ -6887,20 +6817,12 @@
             }
 
             if (generate) {
-              if (this.props.classes) {
-                this.cacheClasses.value = objectSpread({}, this.cacheClasses.lastJSS, Object.keys(this.props.classes).reduce(function (accumulator, key) {
-                  warning_1(_this3.cacheClasses.lastJSS[key] || _this3.disableStylesGeneration, ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not implemented in ".concat(getDisplayName(Component), "."), "You can only override one of the following: ".concat(Object.keys(_this3.cacheClasses.lastJSS).join(','))].join('\n'));
-                  warning_1(!_this3.props.classes[key] || typeof _this3.props.classes[key] === 'string', ["Material-UI: the key `".concat(key, "` ") + "provided to the classes property is not valid for ".concat(getDisplayName(Component), "."), "You need to provide a non empty string instead of: ".concat(_this3.props.classes[key], ".")].join('\n'));
-
-                  if (_this3.props.classes[key]) {
-                    accumulator[key] = "".concat(_this3.cacheClasses.lastJSS[key], " ").concat(_this3.props.classes[key]);
-                  }
-
-                  return accumulator;
-                }, {}));
-              } else {
-                this.cacheClasses.value = this.cacheClasses.lastJSS;
-              }
+              this.cacheClasses.value = mergeClasses({
+                baseClasses: this.cacheClasses.lastJSS,
+                newClasses: this.props.classes,
+                Component: Component,
+                noBase: this.disableStylesGeneration
+              });
             }
 
             return this.cacheClasses.value;
@@ -6936,6 +6858,7 @@
 
               if (!meta) {
                 meta = getDisplayName(Component);
+                warning_1(typeof meta === 'string', ['Material-UI: the component displayName is invalid. It needs to be a string.', "Please fix the following component: ".concat(Component, ".")].join('\n'));
               }
 
               var sheet = this.jss.createStyleSheet(styles, objectSpread({
@@ -7026,7 +6949,7 @@
         WithStyles.displayName = wrapDisplayName(Component, 'WithStyles');
       }
 
-      hoistNonReactStatics(WithStyles, Component);
+      hoistNonReactStatics_cjs(WithStyles, Component);
 
       {
         // Exposed for test purposes.
@@ -7108,7 +7031,7 @@
         WithTheme.displayName = wrapDisplayName(Component, 'WithTheme');
       }
 
-      hoistNonReactStatics(WithTheme, Component);
+      hoistNonReactStatics_cjs(WithTheme, Component);
 
       {
         // Exposed for test purposes.
@@ -7121,7 +7044,7 @@
 
   var classnames = createCommonjsModule(function (module) {
   /*!
-    Copyright (c) 2016 Jed Watson.
+    Copyright (c) 2017 Jed Watson.
     Licensed under the MIT License (MIT), see
     http://jedwatson.github.io/classnames
   */
@@ -7142,8 +7065,11 @@
 
   			if (argType === 'string' || argType === 'number') {
   				classes.push(arg);
-  			} else if (Array.isArray(arg)) {
-  				classes.push(classNames.apply(null, arg));
+  			} else if (Array.isArray(arg) && arg.length) {
+  				var inner = classNames.apply(null, arg);
+  				if (inner) {
+  					classes.push(inner);
+  				}
   			} else if (argType === 'object') {
   				for (var key in arg) {
   					if (hasOwn.call(arg, key) && arg[key]) {
@@ -7157,6 +7083,7 @@
   	}
 
   	if (module.exports) {
+  		classNames.default = classNames;
   		module.exports = classNames;
   	} else if (typeof undefined === 'function' && typeof undefined.amd === 'object' && undefined.amd) {
   		// register as 'classnames', consistent with npm package name
@@ -7219,9 +7146,11 @@
       funcs[_key] = arguments[_key];
     }
 
-    return funcs.filter(function (func) {
-      return func != null;
-    }).reduce(function (acc, func) {
+    return funcs.reduce(function (acc, func) {
+      if (func == null) {
+        return acc;
+      }
+
       warning_1(typeof func === 'function', 'Material-UI: invalid Argument Type, must only provide functions, undefined, or null.');
       return function chainedFunction() {
         for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
@@ -7287,7 +7216,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Shadow depth, corresponds to `dp` in the spec.
@@ -7521,7 +7450,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Attributes applied to the `img` element when the component
@@ -8512,7 +8441,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func])
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object])
   };
   Badge.defaultProps = {
     color: 'default',
@@ -8856,7 +8785,6 @@
 
   var contains$2 = unwrapExports(contains$1);
 
-  //  weak
   var internal = {
     focusKeyPressed: false,
     keyUpEventTimeout: -1
@@ -9564,9 +9492,11 @@
 
 
           _this.startTimer = setTimeout(function () {
-            _this.startTimerCommit();
+            if (_this.startTimerCommit) {
+              _this.startTimerCommit();
 
-            _this.startTimerCommit = null;
+              _this.startTimerCommit = null;
+            }
           }, DELAY_RIPPLE); // We have to make a tradeoff with this value.
         } else {
           _this.startCommit({
@@ -9688,15 +9618,21 @@
         cb.call(instance, event);
       }
 
+      var ignore = false;
+
       if (event.defaultPrevented) {
-        return false;
+        ignore = true;
       }
 
-      if (instance.ripple) {
+      if (instance.props.disableTouchRipple && eventName !== 'Blur') {
+        ignore = true;
+      }
+
+      if (!ignore && instance.ripple) {
         instance.ripple[action](event);
       }
 
-      if (instance.props && typeof instance.props["on".concat(eventName)] === 'function') {
+      if (typeof instance.props["on".concat(eventName)] === 'function') {
         instance.props["on".concat(eventName)](event);
       }
 
@@ -9745,11 +9681,17 @@
     disabled: {},
     focusVisible: {}
   };
+  /* istanbul ignore if */
+
+  if (!React__default.createContext) {
+    throw new Error('Material-UI: react@16.3.0 or greater is required.');
+  }
   /**
    * `ButtonBase` contains as few styles as possible.
    * It aims to be a simple building block for creating a button.
    * It contains a load of style reset and some focus/ripple logic.
    */
+
 
   var ButtonBase =
   /*#__PURE__*/
@@ -9910,6 +9852,7 @@
             component = _props.component,
             disabled = _props.disabled,
             disableRipple = _props.disableRipple,
+            disableTouchRipple = _props.disableTouchRipple,
             focusRipple = _props.focusRipple,
             focusVisibleClassName = _props.focusVisibleClassName,
             onBlur = _props.onBlur,
@@ -9926,7 +9869,7 @@
             tabIndex = _props.tabIndex,
             TouchRippleProps = _props.TouchRippleProps,
             type = _props.type,
-            other = objectWithoutProperties(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
+            other = objectWithoutProperties(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "disableTouchRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
 
         var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.disabled, disabled), defineProperty(_classNames, classes.focusVisible, this.state.focusVisible), defineProperty(_classNames, focusVisibleClassName, this.state.focusVisible), _classNames), classNameProp);
         var buttonProps = {};
@@ -10032,7 +9975,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the base button will be disabled.
@@ -10043,6 +9986,11 @@
      * If `true`, the ripple effect will be disabled.
      */
     disableRipple: propTypes.bool,
+
+    /**
+     * If `true`, the touch ripple effect will be disabled.
+     */
+    disableTouchRipple: propTypes.bool,
 
     /**
      * If `true`, the base button will have a keyboard focus ripple.
@@ -10145,6 +10093,7 @@
     centerRipple: false,
     component: 'button',
     disableRipple: false,
+    disableTouchRipple: false,
     focusRipple: false,
     tabIndex: '0',
     type: 'button'
@@ -10152,6 +10101,17 @@
   var ButtonBase$1 = withStyles(styles$8, {
     name: 'MuiButtonBase'
   })(ButtonBase);
+
+  function unsupportedProp(props, propName, componentName, location, propFullName) {
+
+    var propFullNameSafe = propFullName || propName;
+
+    if (typeof props[propName] !== 'undefined') {
+      return new Error("The property `".concat(propFullNameSafe, "` is not supported. Please remove it."));
+    }
+
+    return null;
+  }
 
   var styles$9 = function styles(theme) {
     return {
@@ -10269,6 +10229,12 @@
 
   BottomNavigationAction.propTypes = {
     /**
+     * This property isn't supported.
+     * Use the `component` property if you need to change the children structure.
+     */
+    children: unsupportedProp,
+
+    /**
      * Override or extend the styles applied to the component.
      * See [CSS API](#css-api) below for more details.
      */
@@ -10324,9 +10290,9 @@
         lineHeight: '1.4em',
         // Improve readability for multiline button.
         boxSizing: 'border-box',
-        minWidth: theme.spacing.unit * 11,
+        minWidth: 88,
         minHeight: 36,
-        padding: "".concat(theme.spacing.unit, "px ").concat(theme.spacing.unit * 2, "px"),
+        padding: '8px 16px',
         borderRadius: 4,
         color: theme.palette.text.primary,
         transition: theme.transitions.create(['background-color', 'box-shadow'], {
@@ -10348,11 +10314,11 @@
         }
       }),
       label: {
-        width: '100%',
         display: 'inherit',
         alignItems: 'inherit',
         justifyContent: 'inherit'
       },
+      text: {},
       textPrimary: {
         color: theme.palette.primary.main,
         '&:hover': {
@@ -10374,13 +10340,13 @@
         }
       },
       flat: {},
+      // legacy
       flatPrimary: {},
+      // legacy
       flatSecondary: {},
+      // legacy
       outlined: {
         border: "1px solid ".concat(theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)')
-      },
-      colorInherit: {
-        color: 'inherit'
       },
       contained: {
         color: theme.palette.getContrastText(theme.palette.grey[300]),
@@ -10431,35 +10397,47 @@
         }
       },
       raised: {},
+      // legacy
       raisedPrimary: {},
+      // legacy
       raisedSecondary: {},
-      focusVisible: {},
-      disabled: {},
+      // legacy
       fab: {
         borderRadius: '50%',
         padding: 0,
         minWidth: 0,
         width: 56,
-        fontSize: 24,
         height: 56,
         boxShadow: theme.shadows[6],
         '&:active': {
           boxShadow: theme.shadows[12]
         }
       },
+      extendedFab: {
+        borderRadius: 24,
+        padding: '0 16px',
+        width: 'initial',
+        minWidth: 48,
+        height: 48
+      },
+      focusVisible: {},
+      disabled: {},
+      colorInherit: {
+        color: 'inherit'
+      },
       mini: {
         width: 40,
         height: 40
       },
       sizeSmall: {
-        padding: "".concat(theme.spacing.unit - 1, "px ").concat(theme.spacing.unit, "px"),
-        minWidth: theme.spacing.unit * 8,
+        padding: '7px 8px',
+        minWidth: 64,
         minHeight: 32,
         fontSize: theme.typography.pxToRem(13)
       },
       sizeLarge: {
-        padding: "".concat(theme.spacing.unit, "px ").concat(theme.spacing.unit * 3, "px"),
-        minWidth: theme.spacing.unit * 14,
+        padding: '8px 24px',
+        minWidth: 112,
         minHeight: 40,
         fontSize: theme.typography.pxToRem(15)
       },
@@ -10485,10 +10463,10 @@
         variant = props.variant,
         other = objectWithoutProperties(props, ["children", "classes", "className", "color", "disabled", "disableFocusRipple", "fullWidth", "focusVisibleClassName", "mini", "size", "variant"]);
 
-    var fab = variant === 'fab';
+    var fab = variant === 'fab' || variant === 'extendedFab';
     var contained = variant === 'contained' || variant === 'raised';
-    var text = !contained && !fab;
-    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.contained, contained || fab), defineProperty(_classNames, classes.fab, fab), defineProperty(_classNames, classes.mini, fab && mini), defineProperty(_classNames, classes.colorInherit, color === 'inherit'), defineProperty(_classNames, classes.textPrimary, text && color === 'primary'), defineProperty(_classNames, classes.textSecondary, text && color === 'secondary'), defineProperty(_classNames, classes.flat, text), defineProperty(_classNames, classes.flatPrimary, text && color === 'primary'), defineProperty(_classNames, classes.flatSecondary, text && color === 'secondary'), defineProperty(_classNames, classes.containedPrimary, !text && color === 'primary'), defineProperty(_classNames, classes.containedSecondary, !text && color === 'secondary'), defineProperty(_classNames, classes.raised, contained || fab), defineProperty(_classNames, classes.raisedPrimary, (contained || fab) && color === 'primary'), defineProperty(_classNames, classes.raisedSecondary, (contained || fab) && color === 'secondary'), defineProperty(_classNames, classes.text, variant === 'text'), defineProperty(_classNames, classes.outlined, variant === 'outlined'), defineProperty(_classNames, classes["size".concat(capitalize(size))], size !== 'medium'), defineProperty(_classNames, classes.disabled, disabled), defineProperty(_classNames, classes.fullWidth, fullWidth), _classNames), classNameProp);
+    var text = variant === 'text' || variant === 'flat' || variant === 'outlined';
+    var className = classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.fab, fab), defineProperty(_classNames, classes.mini, fab && mini), defineProperty(_classNames, classes.extendedFab, variant === 'extendedFab'), defineProperty(_classNames, classes.text, text), defineProperty(_classNames, classes.textPrimary, text && color === 'primary'), defineProperty(_classNames, classes.textSecondary, text && color === 'secondary'), defineProperty(_classNames, classes.flat, variant === 'text' || variant === 'flat'), defineProperty(_classNames, classes.flatPrimary, (variant === 'text' || variant === 'flat') && color === 'primary'), defineProperty(_classNames, classes.flatSecondary, (variant === 'text' || variant === 'flat') && color === 'secondary'), defineProperty(_classNames, classes.contained, contained || fab), defineProperty(_classNames, classes.containedPrimary, (contained || fab) && color === 'primary'), defineProperty(_classNames, classes.containedSecondary, (contained || fab) && color === 'secondary'), defineProperty(_classNames, classes.raised, contained || fab), defineProperty(_classNames, classes.raisedPrimary, (contained || fab) && color === 'primary'), defineProperty(_classNames, classes.raisedSecondary, (contained || fab) && color === 'secondary'), defineProperty(_classNames, classes.outlined, variant === 'outlined'), defineProperty(_classNames, classes["size".concat(capitalize(size))], size !== 'medium'), defineProperty(_classNames, classes.disabled, disabled), defineProperty(_classNames, classes.fullWidth, fullWidth), defineProperty(_classNames, classes.colorInherit, color === 'inherit'), _classNames), classNameProp);
     return React__default.createElement(ButtonBase$1, _extends_1({
       className: className,
       disabled: disabled,
@@ -10525,7 +10503,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the button will be disabled.
@@ -10578,7 +10556,7 @@
     /**
      * The type of button.
      */
-    variant: propTypes.oneOf(['text', 'flat', 'outlined', 'contained', 'raised', 'fab'])
+    variant: propTypes.oneOf(['text', 'flat', 'outlined', 'contained', 'raised', 'fab', 'extendedFab'])
   };
   Button.defaultProps = {
     color: 'default',
@@ -10748,7 +10726,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func])
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object])
   };
   CardContent.defaultProps = {
     component: 'div'
@@ -10869,7 +10847,7 @@
      * Either a string to use a DOM element or a component.
      * By default, it maps the variant to a good default headline component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the text will have a bottom margin.
@@ -10954,7 +10932,7 @@
         classNameProp = props.className,
         Component = props.component,
         subheader = props.subheader,
-        title = props.title,
+        title$$1 = props.title,
         other = objectWithoutProperties(props, ["action", "avatar", "classes", "className", "component", "subheader", "title"]);
 
     return React__default.createElement(Component, _extends_1({
@@ -10967,7 +10945,7 @@
       variant: avatar ? 'body2' : 'headline',
       component: "span",
       className: classes.title
-    }, title), subheader && React__default.createElement(Typography$1, {
+    }, title$$1), subheader && React__default.createElement(Typography$1, {
       variant: avatar ? 'body2' : 'body1',
       component: "span",
       color: "textSecondary",
@@ -11003,7 +10981,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * The content of the component.
@@ -11072,7 +11050,7 @@
      * Component for rendering image.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Image to be displayed as a background image.
@@ -11265,6 +11243,30 @@
       _this.input = null;
       _this.isControlled = null;
 
+      _this.handleFocus = function (event) {
+        if (_this.props.onFocus) {
+          _this.props.onFocus(event);
+        }
+
+        var muiFormControl = _this.context.muiFormControl;
+
+        if (muiFormControl && muiFormControl.onFocus) {
+          muiFormControl.onFocus(event);
+        }
+      };
+
+      _this.handleBlur = function (event) {
+        if (_this.props.onBlur) {
+          _this.props.onBlur(event);
+        }
+
+        var muiFormControl = _this.context.muiFormControl;
+
+        if (muiFormControl && muiFormControl.onBlur) {
+          muiFormControl.onBlur(event);
+        }
+      };
+
       _this.handleInputChange = function (event) {
         var checked = event.target.checked;
 
@@ -11305,11 +11307,13 @@
             inputProps = _props.inputProps,
             inputRef = _props.inputRef,
             name = _props.name,
+            onBlur = _props.onBlur,
             onChange = _props.onChange,
+            onFocus = _props.onFocus,
             tabIndex = _props.tabIndex,
             type = _props.type,
             value = _props.value,
-            other = objectWithoutProperties(_props, ["checked", "checkedIcon", "classes", "className", "disabled", "icon", "id", "inputProps", "inputRef", "name", "onChange", "tabIndex", "type", "value"]);
+            other = objectWithoutProperties(_props, ["checked", "checkedIcon", "classes", "className", "disabled", "icon", "id", "inputProps", "inputRef", "name", "onBlur", "onChange", "onFocus", "tabIndex", "type", "value"]);
 
         var muiFormControl = this.context.muiFormControl;
         var disabled = disabledProp;
@@ -11327,7 +11331,9 @@
           className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes.checked, checked), defineProperty(_classNames, classes.disabled, disabled), _classNames), classNameProp),
           disabled: disabled,
           tabIndex: null,
-          role: undefined
+          role: undefined,
+          onFocus: this.handleFocus,
+          onBlur: this.handleBlur
         }, other), checked ? checkedIcon : icon, React__default.createElement("input", _extends_1({
           id: hasLabelFor && id,
           type: type,
@@ -11413,12 +11419,17 @@
     /**
      * Use that property to pass a ref callback to the native input component.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /*
      * @ignore
      */
     name: propTypes.string,
+
+    /**
+     * @ignore
+     */
+    onBlur: propTypes.func,
 
     /**
      * Callback fired when the state is changed.
@@ -11428,6 +11439,11 @@
      * @param {boolean} checked The `checked` value of the switch
      */
     onChange: propTypes.func,
+
+    /**
+     * @ignore
+     */
+    onFocus: propTypes.func,
 
     /**
      * @ignore
@@ -12090,10 +12106,10 @@
   var _meta_4 = _meta.getWeak;
   var _meta_5 = _meta.onFreeze;
 
-  var defineProperty$1 = _objectDp.f;
+  var defineProperty$2 = _objectDp.f;
   var _wksDefine = function (name) {
     var $Symbol = _core.Symbol || (_core.Symbol = _library ? {} : _global.Symbol || {});
-    if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty$1($Symbol, name, { value: _wksExt.f(name) });
+    if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty$2($Symbol, name, { value: _wksExt.f(name) });
   };
 
   var f$2 = Object.getOwnPropertySymbols;
@@ -13045,7 +13061,7 @@
     /**
      * Use that property to pass a ref callback to the native input component.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * Callback fired when the state is changed.
@@ -13302,6 +13318,12 @@
     avatar: propTypes.element,
 
     /**
+     * This property isn't supported.
+     * Use the `component` property if you need to change the children structure.
+     */
+    children: unsupportedProp,
+
+    /**
      * Override or extend the styles applied to the component.
      * See [CSS API](#css-api) below for more details.
      */
@@ -13323,7 +13345,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Override the default delete icon element. Shown only if `onDelete` is set.
@@ -13364,7 +13386,7 @@
     name: 'MuiChip'
   })(Chip);
 
-  var SIZE = 50;
+  var SIZE = 44;
 
   function getRelativeValue(value, min, max) {
     var clampedValue = Math.min(Math.max(min, value), max);
@@ -13385,7 +13407,9 @@
   var styles$m = function styles(theme) {
     return {
       root: {
-        display: 'inline-block'
+        display: 'inline-block',
+        lineHeight: 1 // Keep the progress centered
+
       },
       static: {
         transition: theme.transitions.create('transform')
@@ -13401,8 +13425,9 @@
       },
       svg: {},
       circle: {
-        stroke: 'currentColor',
-        strokeLinecap: 'round'
+        stroke: 'currentColor' // Use butt to follow the specification, by chance, it's already the default CSS value.
+        // strokeLinecap: 'butt',
+
       },
       circleStatic: {
         transition: theme.transitions.create('stroke-dashoffset')
@@ -13461,7 +13486,7 @@
     var rootProps = {};
 
     if (variant === 'determinate' || variant === 'static') {
-      var circumference = 2 * Math.PI * (SIZE / 2 - 5);
+      var circumference = 2 * Math.PI * ((SIZE - thickness) / 2);
       circleStyle.strokeDasharray = circumference.toFixed(3);
       rootProps['aria-valuenow'] = Math.round(value);
 
@@ -13483,13 +13508,13 @@
       role: "progressbar"
     }, rootProps, other), React__default.createElement("svg", {
       className: classes.svg,
-      viewBox: "0 0 ".concat(SIZE, " ").concat(SIZE)
+      viewBox: "".concat(SIZE / 2, " ").concat(SIZE / 2, " ").concat(SIZE, " ").concat(SIZE)
     }, React__default.createElement("circle", {
       className: classnames(classes.circle, (_classNames2 = {}, defineProperty(_classNames2, classes.circleIndeterminate, variant === 'indeterminate'), defineProperty(_classNames2, classes.circleStatic, variant === 'static'), _classNames2)),
       style: circleStyle,
-      cx: SIZE / 2,
-      cy: SIZE / 2,
-      r: SIZE / 2 - 5,
+      cx: SIZE,
+      cy: SIZE,
+      r: (SIZE - thickness) / 2,
       fill: "none",
       strokeWidth: thickness
     })));
@@ -13551,19 +13576,32 @@
     flip: false
   })(CircularProgress);
 
-  /**
-   * Copyright 2014-2015, Facebook, Inc.
-   * All rights reserved.
-   *
-   * This source code is licensed under the BSD-style license found in the
-   * LICENSE file in the root directory of this source tree. An additional grant
-   * of patent rights can be found in the PATENTS file in the same directory.
-   */
-
-  var warning$4 = function() {};
+  var warning$2 = function() {};
 
   {
-    warning$4 = function(condition, format, args) {
+    var printWarning$3 = function printWarning(format, args) {
+      var len = arguments.length;
+      args = new Array(len > 2 ? len - 2 : 0);
+      for (var key = 2; key < len; key++) {
+        args[key - 2] = arguments[key];
+      }
+      var argIndex = 0;
+      var message = 'Warning: ' +
+        format.replace(/%s/g, function() {
+          return args[argIndex++];
+        });
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    };
+
+    warning$2 = function(condition, format, args) {
       var len = arguments.length;
       args = new Array(len > 2 ? len - 2 : 0);
       for (var key = 2; key < len; key++) {
@@ -13571,37 +13609,17 @@
       }
       if (format === undefined) {
         throw new Error(
-          '`warning(condition, format, ...args)` requires a warning ' +
-          'message argument'
+            '`warning(condition, format, ...args)` requires a warning ' +
+            'message argument'
         );
       }
-
-      if (format.length < 10 || (/^[s\W]*$/).test(format)) {
-        throw new Error(
-          'The warning format should be able to uniquely identify this ' +
-          'warning. Please, use a more descriptive format than: ' + format
-        );
-      }
-
       if (!condition) {
-        var argIndex = 0;
-        var message = 'Warning: ' +
-          format.replace(/%s/g, function() {
-            return args[argIndex++];
-          });
-        if (typeof console !== 'undefined') {
-          console.error(message);
-        }
-        try {
-          // This error was thrown as a convenience so that you can use this stack
-          // to find the callsite that caused this warning to fire.
-          throw new Error(message);
-        } catch(x) {}
+        printWarning$3.apply(null, [format].concat(args));
       }
     };
   }
 
-  var warning_1$3 = warning$4;
+  var warning_1$2 = warning$2;
 
   var reactEventListener_cjs = createCommonjsModule(function (module, exports) {
 
@@ -13618,7 +13636,7 @@
   var _objectSpread = _interopDefault(objectSpread);
   var React$$1 = _interopDefault(React__default);
   var PropTypes = _interopDefault(propTypes);
-  var warning = _interopDefault(warning_1$3);
+  var warning = _interopDefault(warning_1$2);
 
   function defineProperty(object, property, attr) {
     return Object.defineProperty(object, property, attr);
@@ -13664,12 +13682,12 @@
     return args;
   }
 
-  function on(target, eventName, callback, options) {
+  function on$$1(target, eventName, callback, options) {
     // eslint-disable-next-line prefer-spread
     target.addEventListener.apply(target, getEventListenerArgs(eventName, callback, options));
   }
 
-  function off(target, eventName, callback, options) {
+  function off$$1(target, eventName, callback, options) {
     // eslint-disable-next-line prefer-spread
     target.removeEventListener.apply(target, getEventListenerArgs(eventName, callback, options));
   }
@@ -13731,18 +13749,18 @@
     _createClass(EventListener, [{
       key: "componentDidMount",
       value: function componentDidMount() {
-        this.applyListeners(on);
+        this.applyListeners(on$$1);
       }
     }, {
       key: "componentDidUpdate",
       value: function componentDidUpdate(prevProps) {
-        this.applyListeners(off, prevProps);
-        this.applyListeners(on);
+        this.applyListeners(off$$1, prevProps);
+        this.applyListeners(on$$1);
       }
     }, {
       key: "componentWillUnmount",
       value: function componentWillUnmount() {
-        this.applyListeners(off);
+        this.applyListeners(off$$1);
       }
     }, {
       key: "applyListeners",
@@ -13789,15 +13807,16 @@
   var EventListener = unwrapExports(reactEventListener_cjs);
   var reactEventListener_cjs_1 = reactEventListener_cjs.withOptions;
 
-  var isDescendant = function isDescendant(el, target) {
+  function isDescendant(el, target) {
     if (target !== null && target.parentNode) {
       return el === target || isDescendant(el, target.parentNode);
     }
 
     return false;
-  };
+  }
   /**
-   * Listen for click events that are triggered outside of the component children.
+   * Listen for click events that occur somewhere in the document, outside of the element itself.
+   * For instance, if you need to hide a menu when people click anywhere else on your page.
    */
 
 
@@ -14083,7 +14102,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the component will transition in.
@@ -14211,7 +14230,7 @@
      */
     classes: propTypes.object.isRequired
   };
-  CssBaseline.propTypes = exactProp(CssBaseline.propTypes, 'CssBaseline');
+  CssBaseline.propTypes = exactProp(CssBaseline.propTypes);
   CssBaseline.defaultProps = {
     children: null
   };
@@ -14331,7 +14350,7 @@
      */
     rootRef: propTypes.oneOfType([propTypes.func, propTypes.object]).isRequired
   };
-  RootRef.propTypes = exactProp(RootRef.propTypes, 'RootRef');
+  RootRef.propTypes = exactProp(RootRef.propTypes);
 
   function getContainer(container, defaultContainer) {
     container = typeof container === 'function' ? container() : container;
@@ -14428,7 +14447,7 @@
      */
     onRendered: propTypes.func
   };
-  Portal.propTypes = exactProp(Portal.propTypes, 'Portal');
+  Portal.propTypes = exactProp(Portal.propTypes);
 
   var camelize_1$1 = createCommonjsModule(function (module, exports) {
 
@@ -15105,6 +15124,11 @@
       }
     };
   };
+  /* istanbul ignore if */
+
+  if (!React__default.createContext) {
+    throw new Error('Material-UI: react@16.3.0 or greater is required.');
+  }
 
   var Modal =
   /*#__PURE__*/
@@ -15144,7 +15168,7 @@
 
         var doc = ownerDocument(_this.mountNode);
         doc.removeEventListener('keydown', _this.handleDocumentKeyDown);
-        doc.removeEventListener('focus', _this.enforceFocus);
+        doc.removeEventListener('focus', _this.enforceFocus, true);
 
         _this.restoreLastFocus();
       };
@@ -15374,7 +15398,7 @@
     /**
      * A backdrop component. This property enables custom backdrop rendering.
      */
-    BackdropComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    BackdropComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Properties applied to the `Backdrop` element.
@@ -15512,10 +15536,10 @@
       paper: {
         display: 'flex',
         margin: theme.spacing.unit * 4,
+        maxHeight: "calc(100% - ".concat(theme.spacing.unit * 8, "px)"),
         flexDirection: 'column',
         flex: '0 1 auto',
         position: 'relative',
-        maxHeight: '90vh',
         overflowY: 'auto',
         // Fix IE11 issue, to remove at some point.
         // We disable the focus ring for mouse, touch and keyboard users.
@@ -15714,7 +15738,7 @@
     /**
      * Transition component.
      */
-    TransitionComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    TransitionComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * The duration for the transition, in milliseconds.
@@ -16007,7 +16031,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the divider will be indented.
@@ -17175,9 +17199,14 @@
 
       _this.handleRefInput = function (node) {
         _this.input = node;
+        var textareaRef = _this.props.textareaRef;
 
-        if (_this.props.textareaRef) {
-          _this.props.textareaRef(node);
+        if (textareaRef) {
+          if (typeof textareaRef === 'function') {
+            textareaRef(node);
+          } else {
+            textareaRef.current = node;
+          }
         }
       };
 
@@ -17355,7 +17384,7 @@
     /**
      * Use that property to pass a ref callback to the native textarea element.
      */
-    textareaRef: propTypes.func,
+    textareaRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * @ignore
@@ -17606,7 +17635,7 @@
       _this.input = null;
 
       _this.handleFocus = function (event) {
-        // Fix an bug with IE11 where the focus/blur events are triggered
+        // Fix a bug with IE11 where the focus/blur events are triggered
         // while the input is disabled.
         if (formControlState(_this.props, _this.context).disabled) {
           event.stopPropagation();
@@ -17620,6 +17649,12 @@
         if (_this.props.onFocus) {
           _this.props.onFocus(event);
         }
+
+        var muiFormControl = _this.context.muiFormControl;
+
+        if (muiFormControl && muiFormControl.onFocus) {
+          muiFormControl.onFocus(event);
+        }
       };
 
       _this.handleBlur = function (event) {
@@ -17629,6 +17664,12 @@
 
         if (_this.props.onBlur) {
           _this.props.onBlur(event);
+        }
+
+        var muiFormControl = _this.context.muiFormControl;
+
+        if (muiFormControl && muiFormControl.onBlur) {
+          muiFormControl.onBlur(event);
         }
       };
 
@@ -17645,11 +17686,20 @@
 
       _this.handleRefInput = function (node) {
         _this.input = node;
+        var ref;
 
         if (_this.props.inputRef) {
-          _this.props.inputRef(node);
+          ref = _this.props.inputRef;
         } else if (_this.props.inputProps && _this.props.inputProps.ref) {
-          _this.props.inputProps.ref(node);
+          ref = _this.props.inputProps.ref;
+        }
+
+        if (ref) {
+          if (typeof ref === 'function') {
+            ref(node);
+          } else {
+            ref.current = node;
+          }
         }
       };
 
@@ -17918,7 +17968,7 @@
      * The component used for the native input.
      * Either a string to use a DOM element or a component.
      */
-    inputComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    inputComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Attributes applied to the `input` element.
@@ -17928,7 +17978,7 @@
     /**
      * Use that property to pass a ref callback to the native input component.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * If `dense`, will adjust vertical spacing. This is normally obtained via context from
@@ -18064,7 +18114,7 @@
   /**
    * Provides context such as filled/focused/error/required for form inputs.
    * Relying on the context provides high flexibilty and ensures that the state always stays
-   * consitent across the children of the `FormControl`.
+   * consistent across the children of the `FormControl`.
    * This context is used by the following components:
    *  - FormLabel
    *  - FormHelperText
@@ -18091,11 +18141,7 @@
         focused: false
       };
 
-      _this.handleFocus = function (event) {
-        if (_this.props.onFocus) {
-          _this.props.onFocus(event);
-        }
-
+      _this.handleFocus = function () {
         _this.setState(function (state) {
           return !state.focused ? {
             focused: true
@@ -18103,14 +18149,7 @@
         });
       };
 
-      _this.handleBlur = function (event) {
-        // The event might be undefined.
-        // For instance, a child component might call this hook
-        // when an input is disabled but still having the focus.
-        if (_this.props.onBlur && event) {
-          _this.props.onBlur(event);
-        }
-
+      _this.handleBlur = function () {
         _this.setState(function (state) {
           return state.focused ? {
             focused: false
@@ -18203,10 +18242,7 @@
 
         return React__default.createElement(Component, _extends_1({
           className: classnames(classes.root, (_classNames = {}, defineProperty(_classNames, classes["margin".concat(capitalize(margin))], margin !== 'none'), defineProperty(_classNames, classes.fullWidth, fullWidth), _classNames), className)
-        }, other, {
-          onFocus: this.handleFocus,
-          onBlur: this.handleBlur
-        }));
+        }, other));
       }
     }]);
 
@@ -18234,7 +18270,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the label, input and helper text should be displayed in a disabled state.
@@ -18255,16 +18291,6 @@
      * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
      */
     margin: propTypes.oneOf(['none', 'dense', 'normal']),
-
-    /**
-     * @ignore
-     */
-    onBlur: propTypes.func,
-
-    /**
-     * @ignore
-     */
-    onFocus: propTypes.func,
 
     /**
      * If `true`, the label will indicate that the input is required.
@@ -18390,7 +18416,7 @@
     /**
      * Use that property to pass a ref callback to the native input component.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * The text to be used in an enclosing label element.
@@ -18563,7 +18589,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the helper text should be displayed in a disabled state.
@@ -18686,7 +18712,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the label should be displayed in a disabled state.
@@ -18719,7 +18745,8 @@
   })(FormLabel);
 
   //  weak
-  var requirePropFactory = function requirePropFactory(componentNameInError) {
+  function requirePropFactory(componentNameInError) {
+
     var requireProp = function requireProp(requiredProp) {
       return function (props, propName, componentName, location, propFullName) {
         var propFullNameSafe = propFullName || propName;
@@ -18733,35 +18760,42 @@
     };
 
     return requireProp;
-  };
+  }
 
   var GUTTERS = [0, 8, 16, 24, 32, 40];
-  var GRID_SIZES = [true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  var GRID_SIZES = ['auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   function generateGrid(globalStyles, theme, breakpoint) {
-    // For the auto layouting
-    var styles = defineProperty({}, "grid-".concat(breakpoint), {
-      flexBasis: 0,
-      flexGrow: 1,
-      maxWidth: '100%'
-    });
-
+    var styles = {};
     GRID_SIZES.forEach(function (size) {
-      if (typeof size === 'boolean') {
-        // Skip the first one as handle above.
+      var key = "grid-".concat(breakpoint, "-").concat(size);
+
+      if (size === true) {
+        // For the auto layouting
+        styles[key] = {
+          flexBasis: 0,
+          flexGrow: 1,
+          maxWidth: '100%'
+        };
+        return;
+      }
+
+      if (size === 'auto') {
+        styles[key] = {
+          flexBasis: 'auto',
+          flexGrow: 0,
+          maxWidth: 'none'
+        };
         return;
       } // Only keep 6 significant numbers.
 
 
-      var width = "".concat(Math.round(size / 12 * 10e6) / 10e4, "%");
-      /* eslint-disable max-len */
-      // Close to the bootstrap implementation:
+      var width = "".concat(Math.round(size / 12 * 10e6) / 10e4, "%"); // Close to the bootstrap implementation:
       // https://github.com/twbs/bootstrap/blob/8fccaa2439e97ec72a4b7dc42ccc1f649790adb0/scss/mixins/_grid.scss#L41
 
-      /* eslint-enable max-len */
-
-      styles["grid-".concat(breakpoint, "-").concat(size)] = {
+      styles[key] = {
         flexBasis: width,
+        flexGrow: 0,
         maxWidth: width
       };
     }); // No need for a media query for the first size.
@@ -18897,7 +18931,7 @@
         zeroMinWidth = props.zeroMinWidth,
         other = objectWithoutProperties(props, ["alignContent", "alignItems", "classes", "className", "component", "container", "direction", "item", "justify", "lg", "md", "sm", "spacing", "wrap", "xl", "xs", "zeroMinWidth"]);
 
-    var className = classnames((_classNames = {}, defineProperty(_classNames, classes.container, container), defineProperty(_classNames, classes.item, item), defineProperty(_classNames, classes.zeroMinWidth, zeroMinWidth), defineProperty(_classNames, classes["spacing-xs-".concat(String(spacing))], container && spacing !== 0), defineProperty(_classNames, classes["direction-xs-".concat(String(direction))], direction !== Grid.defaultProps.direction), defineProperty(_classNames, classes["wrap-xs-".concat(String(wrap))], wrap !== Grid.defaultProps.wrap), defineProperty(_classNames, classes["align-items-xs-".concat(String(alignItems))], alignItems !== Grid.defaultProps.alignItems), defineProperty(_classNames, classes["align-content-xs-".concat(String(alignContent))], alignContent !== Grid.defaultProps.alignContent), defineProperty(_classNames, classes["justify-xs-".concat(String(justify))], justify !== Grid.defaultProps.justify), defineProperty(_classNames, classes['grid-xs'], xs === true), defineProperty(_classNames, classes["grid-xs-".concat(String(xs))], xs && xs !== true), defineProperty(_classNames, classes['grid-sm'], sm === true), defineProperty(_classNames, classes["grid-sm-".concat(String(sm))], sm && sm !== true), defineProperty(_classNames, classes['grid-md'], md === true), defineProperty(_classNames, classes["grid-md-".concat(String(md))], md && md !== true), defineProperty(_classNames, classes['grid-lg'], lg === true), defineProperty(_classNames, classes["grid-lg-".concat(String(lg))], lg && lg !== true), defineProperty(_classNames, classes['grid-xl'], xl === true), defineProperty(_classNames, classes["grid-xl-".concat(String(xl))], xl && xl !== true), _classNames), classNameProp);
+    var className = classnames((_classNames = {}, defineProperty(_classNames, classes.container, container), defineProperty(_classNames, classes.item, item), defineProperty(_classNames, classes.zeroMinWidth, zeroMinWidth), defineProperty(_classNames, classes["spacing-xs-".concat(String(spacing))], container && spacing !== 0), defineProperty(_classNames, classes["direction-xs-".concat(String(direction))], direction !== Grid.defaultProps.direction), defineProperty(_classNames, classes["wrap-xs-".concat(String(wrap))], wrap !== Grid.defaultProps.wrap), defineProperty(_classNames, classes["align-items-xs-".concat(String(alignItems))], alignItems !== Grid.defaultProps.alignItems), defineProperty(_classNames, classes["align-content-xs-".concat(String(alignContent))], alignContent !== Grid.defaultProps.alignContent), defineProperty(_classNames, classes["justify-xs-".concat(String(justify))], justify !== Grid.defaultProps.justify), defineProperty(_classNames, classes["grid-xs-".concat(String(xs))], xs !== false), defineProperty(_classNames, classes["grid-sm-".concat(String(sm))], sm !== false), defineProperty(_classNames, classes["grid-md-".concat(String(md))], md !== false), defineProperty(_classNames, classes["grid-lg-".concat(String(lg))], lg !== false), defineProperty(_classNames, classes["grid-xl-".concat(String(xl))], xl !== false), _classNames), classNameProp);
     return React__default.createElement(Component, _extends_1({
       className: className
     }, other));
@@ -18936,7 +18970,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the component will have the flex *container* behavior.
@@ -18966,19 +19000,19 @@
      * Defines the number of grids the component is going to use.
      * It's applied for the `lg` breakpoint and wider screens if not overridden.
      */
-    lg: propTypes.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    lg: propTypes.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
     /**
      * Defines the number of grids the component is going to use.
      * It's applied for the `md` breakpoint and wider screens if not overridden.
      */
-    md: propTypes.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    md: propTypes.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
     /**
      * Defines the number of grids the component is going to use.
      * It's applied for the `sm` breakpoint and wider screens if not overridden.
      */
-    sm: propTypes.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    sm: propTypes.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
     /**
      * Defines the space between the type `item` component.
@@ -18996,13 +19030,13 @@
      * Defines the number of grids the component is going to use.
      * It's applied for the `xl` breakpoint and wider screens.
      */
-    xl: propTypes.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    xl: propTypes.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
     /**
      * Defines the number of grids the component is going to use.
      * It's applied for all the screen sizes with the lowest priority.
      */
-    xs: propTypes.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+    xs: propTypes.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
     /**
      * If `true`, it sets `min-width: 0` on the item.
@@ -19026,25 +19060,14 @@
     xl: false,
     xs: false,
     zeroMinWidth: false
-  }; // Add a wrapper component to generate some helper messages in the development
-  // environment.
-
-  /* eslint-disable react/no-multi-comp */
-  // eslint-disable-next-line import/no-mutable-exports
-
-  var GridWrapper = withStyles(styles$I, {
+  };
+  var StyledGrid = withStyles(styles$I, {
     name: 'MuiGrid'
   })(Grid);
 
   {
-    var GridStyled = GridWrapper;
-
-    GridWrapper = function GridWrapper(props) {
-      return React__default.createElement(GridStyled, props);
-    };
-
     var requireProp = requirePropFactory('Grid');
-    GridWrapper.propTypes = {
+    StyledGrid.propTypes = objectSpread({}, StyledGrid.propTypes, {
       alignContent: requireProp('container'),
       alignItems: requireProp('container'),
       direction: requireProp('container'),
@@ -19056,12 +19079,8 @@
       wrap: requireProp('container'),
       xs: requireProp('item'),
       zeroMinWidth: requireProp('zeroMinWidth')
-    };
-    GridWrapper.Naked = GridStyled;
-    GridWrapper.options = GridStyled.options;
+    });
   }
-
-  var GridWrapper$1 = GridWrapper;
 
   var styles$J = {
     root: {
@@ -19140,7 +19159,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Number of px for the spacing between tiles.
@@ -19209,11 +19228,7 @@
       }, 166), _this.fit = function () {
         var imgElement = _this.imgElement;
 
-        if (!imgElement) {
-          return;
-        }
-
-        if (!imgElement.complete) {
+        if (!imgElement || !imgElement.complete) {
           return;
         }
 
@@ -19287,7 +19302,6 @@
         }, React__default.Children.map(children, function (child) {
           if (child && child.type === 'img') {
             return React__default.cloneElement(child, {
-              key: 'img',
               ref: function ref(node) {
                 _this2.imgElement = node;
               }
@@ -19330,7 +19344,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Height of the tile in number of grid cells.
@@ -19409,7 +19423,7 @@
         classes = props.classes,
         classNameProp = props.className,
         subtitle = props.subtitle,
-        title = props.title,
+        title$$1 = props.title,
         titlePosition = props.titlePosition,
         other = objectWithoutProperties(props, ["actionIcon", "actionPosition", "classes", "className", "subtitle", "title", "titlePosition"]);
 
@@ -19423,7 +19437,7 @@
       className: titleWrapClassName
     }, React__default.createElement("div", {
       className: classes.title
-    }, title), subtitle ? React__default.createElement("div", {
+    }, title$$1), subtitle ? React__default.createElement("div", {
       className: classes.subtitle
     }, subtitle) : null), actionIcon ? React__default.createElement("div", {
       className: classnames(classes.actionIcon, defineProperty({}, classes.actionIconActionPosLeft, actionPos === 'left'))
@@ -19787,7 +19801,10 @@
                 other = objectWithoutProperties(_props, ["initialWidth", "theme", "width"]);
 
             var props = objectSpread({
-              width: width || this.state.width || initialWidth || initialWidthOption
+              width: width || this.state.width || initialWidth || initialWidthOption || getThemeProps({
+                theme: theme,
+                name: 'MuiWithWidth'
+              }).initialWidth
             }, other);
 
             var more = {};
@@ -19843,7 +19860,7 @@
         WithWidth.displayName = wrapDisplayName(Component, 'WithWidth');
       }
 
-      hoistNonReactStatics(WithWidth, Component);
+      hoistNonReactStatics_cjs(WithWidth, Component);
       return withTheme()(WithWidth);
     };
   };
@@ -19986,7 +20003,7 @@
      */
     xsUp: propTypes.bool
   };
-  HiddenJs.propTypes = exactProp(HiddenJs.propTypes, 'HiddenJs');
+  HiddenJs.propTypes = exactProp(HiddenJs.propTypes);
   var HiddenJs$1 = withWidth()(HiddenJs);
 
   var styles$N = function styles(theme) {
@@ -20377,7 +20394,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If children is a string then disable wrapping in a Typography component.
@@ -20843,7 +20860,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, compact vertical padding designed for keyboard and mouse input will be used for
@@ -21043,12 +21060,12 @@
      * Either a string to use a DOM element or a component.
      * By default, it's a `li` when `button` is `false` and a `div` when `button` is `true`.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * The container component used when a `ListItemSecondaryAction` is rendered.
      */
-    ContainerComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    ContainerComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Properties applied to the container element when the component
@@ -21289,28 +21306,30 @@
         disableTypography = props.disableTypography,
         inset = props.inset,
         primaryProp = props.primary,
+        primaryTypographyProps = props.primaryTypographyProps,
         secondaryProp = props.secondary,
-        other = objectWithoutProperties(props, ["children", "classes", "className", "disableTypography", "inset", "primary", "secondary"]);
+        secondaryTypographyProps = props.secondaryTypographyProps,
+        other = objectWithoutProperties(props, ["children", "classes", "className", "disableTypography", "inset", "primary", "primaryTypographyProps", "secondary", "secondaryTypographyProps"]);
 
     var dense = context.dense;
     var primary = primaryProp != null ? primaryProp : children;
 
-    if (primary != null && !disableTypography) {
-      primary = React__default.createElement(Typography$1, {
+    if (primary != null && primary.type !== Typography$1 && !disableTypography) {
+      primary = React__default.createElement(Typography$1, _extends_1({
         variant: "subheading",
         className: classnames(classes.primary, defineProperty({}, classes.textDense, dense)),
         component: "span"
-      }, primary);
+      }, primaryTypographyProps), primary);
     }
 
     var secondary = secondaryProp;
 
-    if (secondary != null && !disableTypography) {
-      secondary = React__default.createElement(Typography$1, {
+    if (secondary != null && secondary.type !== Typography$1 && !disableTypography) {
+      secondary = React__default.createElement(Typography$1, _extends_1({
         variant: "body1",
         className: classnames(classes.secondary, defineProperty({}, classes.textDense, dense)),
         color: "textSecondary"
-      }, secondary);
+      }, secondaryTypographyProps), secondary);
     }
 
     return React__default.createElement("div", _extends_1({
@@ -21355,9 +21374,21 @@
     primary: propTypes.node,
 
     /**
+     * These props will be forwarded to the primary typography component
+     * (as long as disableTypography is not `true`).
+     */
+    primaryTypographyProps: propTypes.object,
+
+    /**
      * The secondary content element.
      */
-    secondary: propTypes.node
+    secondary: propTypes.node,
+
+    /**
+     * These props will be forwarded to the secondary typography component
+     * (as long as disableTypography is not `true`).
+     */
+    secondaryTypographyProps: propTypes.object
   };
   ListItemText.defaultProps = {
     disableTypography: false,
@@ -21441,7 +21472,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the List Subheader will not stick to the top during scroll.
@@ -21943,7 +21974,7 @@
     /**
      * Transition component.
      */
-    TransitionComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    TransitionComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Set to 'auto' to automatically calculate transition time based on height.
@@ -22450,7 +22481,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * @ignore
@@ -22656,12 +22687,12 @@
     /**
      * The icon that displays the arrow.
      */
-    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Use that property to pass a ref callback to the native select element.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * Name attribute of the `select` or hidden `input` element.
@@ -22800,7 +22831,7 @@
     /**
      * The icon that displays the arrow.
      */
-    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * An `Input` element; does not have to be a material-ui specific `Input`.
@@ -22963,7 +22994,7 @@
     /**
      * Use that property to pass a ref callback to the native input component.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * Callback fired when the state is changed.
@@ -23066,7 +23097,7 @@
               }
             },
             checked: value === child.props.value,
-            onChange: _this2.handleRadioChange
+            onChange: createChainedFunction(child.props.onChange, _this2.handleRadioChange)
           });
         }));
       }
@@ -23132,13 +23163,9 @@
       }
 
       return possibleConstructorReturn(_this, (_temp = _this = possibleConstructorReturn(this, (_ref = SelectInput.__proto__ || Object.getPrototypeOf(SelectInput)).call.apply(_ref, [this].concat(args))), _this.state = {
+        menuMinWidth: null,
         open: false
-      }, _this.ignoreNextBlur = false, _this.displayNode = null, _this.displayWidth = null, _this.isOpenControlled = _this.props.open !== undefined, _this.updateDisplayWidth = function () {
-        // Perfom the layout computation outside of the render method.
-        if (_this.displayNode) {
-          _this.displayWidth = _this.displayNode.clientWidth;
-        }
-      }, _this.update = _this.isOpenControlled ? function (_ref2) {
+      }, _this.ignoreNextBlur = false, _this.displayNode = null, _this.isOpenControlled = _this.props.open !== undefined, _this.update = _this.isOpenControlled ? function (_ref2) {
         var event = _ref2.event,
             open = _ref2.open;
 
@@ -23149,7 +23176,10 @@
         }
       } : function (_ref3) {
         var open = _ref3.open;
-        return _this.setState({
+
+        _this.setState({
+          // Perfom the layout computation outside of the render method.
+          menuMinWidth: _this.props.autoWidth ? null : _this.displayNode.clientWidth,
           open: open
         });
       }, _this.handleClick = function (event) {
@@ -23236,16 +23266,24 @@
       }, _this.handleDisplayRef = function (node) {
         _this.displayNode = node;
         if (!_this.props.staticWidth) _this.updateDisplayWidth();
-      }, _this.handleSelectRef = function (node) {
-        if (!_this.props.inputRef) {
+      }, _this.handleInputRef = function (node) {
+        var inputRef = _this.props.inputRef;
+
+        if (!inputRef) {
           return;
         }
 
-        _this.props.inputRef({
+        var nodeProxy = {
           node: node,
           // By pass the native input as we expose a rich object (array).
           value: _this.props.value
-        });
+        };
+
+        if (typeof inputRef === 'function') {
+          inputRef(nodeProxy);
+        } else {
+          inputRef.current = nodeProxy;
+        }
       }, _temp));
     }
 
@@ -23357,9 +23395,15 @@
 
         if (computeDisplay) {
           display = multiple ? displayMultiple.join(', ') : displaySingle;
+        } // Avoid performing a layout computation in the render method.
+
+
+        var menuMinWidth = this.state.menuMinWidth;
+
+        if (!autoWidth && this.isOpenControlled && this.displayNode) {
+          menuMinWidth = this.displayNode.clientWidth;
         }
 
-        var MenuMinWidth = this.displayNode && !autoWidth ? this.displayWidth : undefined;
         var tabIndex;
 
         if (typeof tabIndexProp !== 'undefined') {
@@ -23390,7 +23434,7 @@
           value: Array.isArray(value) ? value.join(',') : value,
           name: name,
           readOnly: readOnly,
-          ref: this.handleSelectRef,
+          ref: this.handleInputRef,
           type: type
         }, other)), React__default.createElement(IconComponent, {
           className: classes.icon
@@ -23405,7 +23449,7 @@
           }, MenuProps.MenuListProps),
           PaperProps: objectSpread({}, MenuProps.PaperProps, {
             style: objectSpread({
-              minWidth: MenuMinWidth
+              minWidth: menuMinWidth
             }, MenuProps.PaperProps != null ? MenuProps.PaperProps.style : null)
           })
         }), items));
@@ -23457,12 +23501,12 @@
     /**
      * The icon that displays the arrow.
      */
-    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Use that property to pass a ref callback to the native select element.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * Properties applied to the `Menu` element.
@@ -23577,21 +23621,16 @@
         other = objectWithoutProperties(props, ["autoWidth", "children", "classes", "displayEmpty", "IconComponent", "input", "inputProps", "MenuProps", "multiple", "native", "onClose", "onOpen", "open", "renderValue", "SelectDisplayProps"]);
 
     var inputComponent = native ? NativeSelectInput : SelectInput;
-    var inputNativeProps = {
-      children: children,
-      classes: classes,
-      IconComponent: IconComponent,
-      type: undefined // We render a select. We can ignore the type provided by the `Input`.
-
-    };
     return React__default.cloneElement(input, objectSpread({
       // Most of the logic is implemented in `SelectInput`.
       // The `Select` component is a simple API wrapper to expose something better to play with.
       inputComponent: inputComponent,
-      inputProps: objectSpread({}, inputNativeProps, native ? {} : {
-        autoWidth: autoWidth,
+      inputProps: objectSpread({
         children: children,
-        classes: classes,
+        IconComponent: IconComponent,
+        type: undefined
+      }, native ? {} : {
+        autoWidth: autoWidth,
         displayEmpty: displayEmpty,
         MenuProps: MenuProps,
         multiple: multiple,
@@ -23600,7 +23639,13 @@
         open: open,
         renderValue: renderValue,
         SelectDisplayProps: SelectDisplayProps
-      }, inputProps, input ? input.props.inputProps : {})
+      }, inputProps, {
+        classes: inputProps ? mergeClasses({
+          baseClasses: classes,
+          newClasses: inputProps.classes,
+          Component: Select
+        }) : classes
+      }, input ? input.props.inputProps : {})
     }, other));
   }
 
@@ -23632,7 +23677,7 @@
     /**
      * The icon that displays the arrow.
      */
-    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    IconComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * An `Input` element; does not have to be a material-ui specific `Input`.
@@ -23865,6 +23910,11 @@
       }, bottomSpace, leftSpace)))
     };
   };
+  /* istanbul ignore if */
+
+  if (!React__default.createContext) {
+    throw new Error('Material-UI: react@16.3.0 or greater is required.');
+  }
 
   var Snackbar =
   /*#__PURE__*/
@@ -24175,7 +24225,7 @@
     /**
      * Transition component.
      */
-    TransitionComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    TransitionComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * The duration for the transition, in milliseconds.
@@ -24683,7 +24733,7 @@
         boxSizing: 'content-box'
       },
       vertical: {
-        justifyContent: 'left'
+        justifyContent: 'flex-start'
       },
       touchRipple: {
         color: 'rgba(0, 0, 0, 0.3)'
@@ -25192,6 +25242,11 @@
   // That's why we use a singleton here.
 
   var nodeThatClaimedTheSwipe = null; // Exported for test purposes.
+  /* istanbul ignore if */
+
+  if (!React__default.createContext) {
+    throw new Error('Material-UI: react@16.3.0 or greater is required.');
+  }
 
   var SwipeableDrawer =
   /*#__PURE__*/
@@ -25476,7 +25531,8 @@
             ModalPropsProp = objectWithoutProperties(_props$ModalProps, ["BackdropProps"]),
             onOpen = _props.onOpen,
             open = _props.open,
-            PaperProps = _props.PaperProps,
+            _props$PaperProps = _props.PaperProps,
+            PaperProps = _props$PaperProps === void 0 ? {} : _props$PaperProps,
             swipeAreaWidth = _props.swipeAreaWidth,
             variant = _props.variant,
             other = objectWithoutProperties(_props, ["disableBackdropTransition", "disableDiscovery", "disableSwipeToOpen", "ModalProps", "onOpen", "open", "PaperProps", "swipeAreaWidth", "variant"]);
@@ -25491,9 +25547,9 @@
             })
           }, ModalPropsProp),
           PaperProps: objectSpread({}, PaperProps, {
-            style: {
+            style: objectSpread({
               pointerEvents: variant === 'temporary' && !open ? 'none' : ''
-            },
+            }, PaperProps.style),
             ref: this.handlePaperRef
           })
         }, other)), !disableDiscovery && !disableSwipeToOpen && variant === 'temporary' && React__default.createElement(SwipeArea$1, {
@@ -25787,7 +25843,7 @@
     /**
      * Use that property to pass a ref callback to the native input component.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * Callback fired when the state is changed.
@@ -25885,7 +25941,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func])
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object])
   };
   Table.defaultProps = {
     component: 'table'
@@ -25963,7 +26019,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func])
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object])
   };
   TableBody.defaultProps = {
     component: 'tbody'
@@ -26091,7 +26147,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, content will align to the right.
@@ -26196,7 +26252,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func])
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object])
   };
   TableFooter.defaultProps = {
     component: 'tfoot'
@@ -26274,7 +26330,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func])
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object])
   };
   TableHead.defaultProps = {
     component: 'thead'
@@ -26631,7 +26687,7 @@
      * The component used for displaying the actions.
      * Either a string to use a DOM element or a component.
      */
-    ActionsComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    ActionsComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Properties applied to the back arrow `IconButton` component.
@@ -26653,7 +26709,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * The total number of rows.
@@ -26799,7 +26855,7 @@
      * The component used for the root node.
      * Either a string to use a DOM element or a component.
      */
-    component: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * If `true`, the table row will shade on hover.
@@ -27031,8 +27087,8 @@
 
   if (typeof window !== "undefined") {
       win = window;
-  } else if (typeof commonjsGlobal !== "undefined") {
-      win = commonjsGlobal;
+  } else if (typeof global$1 !== "undefined") {
+      win = global$1;
   } else if (typeof self !== "undefined"){
       win = self;
   } else {
@@ -27092,7 +27148,7 @@
       opts = opts || {};
 
       if (typeof opts == 'function') cb = opts, opts = {};
-      if (typeof cb != 'function') cb = noop;
+      if (typeof cb != 'function') cb = noop$1;
 
       var start = +new Date;
       var from = el[prop];
@@ -27128,7 +27184,7 @@
     return 0.5 * (1 - Math.cos(Math.PI * n))
   }
 
-  function noop () {}
+  function noop$1 () {}
 
   var styles$1p = {
     width: '100px',
@@ -27477,7 +27533,8 @@
           var children = tabs.children[0].children;
 
           if (children.length > 0) {
-            var tab = children[_this.valueToIndex[value]];
+            var tab = children[_this.valueToIndex.get(value)];
+
             warning_1(tab, "Material-UI: the value provided `".concat(value, "` is invalid"));
 
             if (tab) {
@@ -27515,7 +27572,7 @@
         }
 
         return undefined;
-      }, _this.tabs = undefined, _this.valueToIndex = {}, _this.handleResize = debounce(function () {
+      }, _this.tabs = undefined, _this.valueToIndex = new Map(), _this.handleResize = debounce(function () {
         _this.updateIndicatorState(_this.props);
 
         _this.updateScrollButtonState();
@@ -27644,7 +27701,7 @@
           width: tabMeta ? tabMeta.width : 0
         };
 
-        if ((indicatorStyle.left !== this.state.indicatorStyle.left || indicatorStyle.width !== this.state.indicatorStyle.width) && !Number.isNaN(indicatorStyle.left) && !Number.isNaN(indicatorStyle.width)) {
+        if ((indicatorStyle.left !== this.state.indicatorStyle.left || indicatorStyle.width !== this.state.indicatorStyle.width) && !isNaN(indicatorStyle.left) && !isNaN(indicatorStyle.width)) {
           this.setState({
             indicatorStyle: indicatorStyle
           });
@@ -27662,6 +27719,7 @@
             childrenProp = _props.children,
             classes = _props.classes,
             classNameProp = _props.className,
+            Component = _props.component,
             fullWidth = _props.fullWidth,
             indicatorColor = _props.indicatorColor,
             onChange = _props.onChange,
@@ -27674,7 +27732,7 @@
             textColor = _props.textColor,
             theme = _props.theme,
             value = _props.value,
-            other = objectWithoutProperties(_props, ["action", "centered", "children", "classes", "className", "fullWidth", "indicatorColor", "onChange", "scrollable", "ScrollButtonComponent", "scrollButtons", "staticLabel", "TabIndicatorProps", "textColor", "theme", "value"]);
+            other = objectWithoutProperties(_props, ["action", "centered", "children", "classes", "className", "component", "fullWidth", "indicatorColor", "onChange", "scrollable", "ScrollButtonComponent", "scrollButtons", "staticLabel", "TabIndicatorProps", "textColor", "theme", "value"]);
 
         warning_1(!centered || !scrollable, 'Material-UI: you can not use the `centered={true}` and `scrollable={true}` properties ' + 'at the same time on a `Tabs` component.');
         var className = classnames(classes.root, classNameProp);
@@ -27686,7 +27744,7 @@
         }, TabIndicatorProps, {
           style: objectSpread({}, this.state.indicatorStyle, TabIndicatorProps.style)
         }));
-        this.valueToIndex = {};
+        this.valueToIndex = new Map();
         var childIndex = 0;
         var children = React__default.Children.map(childrenProp, function (child) {
           if (!React__default.isValidElement(child)) {
@@ -27694,7 +27752,9 @@
           }
 
           var childValue = child.props.value === undefined ? childIndex : child.props.value;
-          _this2.valueToIndex[childValue] = childIndex;
+
+          _this2.valueToIndex.set(childValue, childIndex);
+
           var selected = childValue === value;
           childIndex += 1;
           return React__default.cloneElement(child, {
@@ -27708,7 +27768,7 @@
           });
         });
         var conditionalElements = this.getConditionalElements();
-        return React__default.createElement("div", _extends_1({
+        return React__default.createElement(Component, _extends_1({
           className: className
         }, other), React__default.createElement(EventListener, {
           target: "window",
@@ -27766,6 +27826,12 @@
     className: propTypes.string,
 
     /**
+     * The component used for the root node.
+     * Either a string to use a DOM element or a component.
+     */
+    component: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
+
+    /**
      * If `true`, the tabs will grow to use all the available space.
      * This property is intended for small views, like on mobile.
      */
@@ -27793,7 +27859,7 @@
     /**
      * The component used to render the scroll buttons.
      */
-    ScrollButtonComponent: propTypes.oneOfType([propTypes.string, propTypes.func]),
+    ScrollButtonComponent: propTypes.oneOfType([propTypes.string, propTypes.func, propTypes.object]),
 
     /**
      * Determine behavior of scroll buttons when tabs are set to scroll
@@ -27833,6 +27899,7 @@
   };
   Tabs.defaultProps = {
     centered: false,
+    component: 'div',
     fullWidth: false,
     indicatorColor: 'secondary',
     scrollable: false,
@@ -28039,6 +28106,12 @@
   }(React__default.Component);
 
   Tab.propTypes = {
+    /**
+     * This property isn't supported.
+     * Use the `component` property if you need to change the children structure.
+     */
+    children: unsupportedProp,
+
     /**
      * Override or extend the styles applied to the component.
      * See [CSS API](#css-api) below for more details.
@@ -28293,7 +28366,7 @@
     /**
      * Use that property to pass a ref callback to the native input component.
      */
-    inputRef: propTypes.func,
+    inputRef: propTypes.oneOfType([propTypes.func, propTypes.object]),
 
     /**
      * The label content.
@@ -28877,7 +28950,7 @@
 
 
 
-  var defineProperty$2 = function (obj, key, value) {
+  var defineProperty$3 = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -29896,7 +29969,7 @@
     sideValue = Math.max(Math.min(popper[len] - arrowElementSize, sideValue), 0);
 
     data.arrowElement = arrowElement;
-    data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty$2(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty$2(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
+    data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty$3(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty$3(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
 
     return data;
   }
@@ -30319,7 +30392,7 @@
         if (popper[placement] < boundaries[placement] && !options.escapeWithReference) {
           value = Math.max(popper[placement], boundaries[placement]);
         }
-        return defineProperty$2({}, placement, value);
+        return defineProperty$3({}, placement, value);
       },
       secondary: function secondary(placement) {
         var mainSide = placement === 'right' ? 'left' : 'top';
@@ -30327,7 +30400,7 @@
         if (popper[placement] > boundaries[placement] && !options.escapeWithReference) {
           value = Math.min(popper[mainSide], boundaries[placement] - (placement === 'right' ? popper.width : popper.height));
         }
-        return defineProperty$2({}, mainSide, value);
+        return defineProperty$3({}, mainSide, value);
       }
     };
 
@@ -30364,8 +30437,8 @@
       var measurement = isVertical ? 'width' : 'height';
 
       var shiftOffsets = {
-        start: defineProperty$2({}, side, reference[side]),
-        end: defineProperty$2({}, side, reference[side] + reference[measurement] - popper[measurement])
+        start: defineProperty$3({}, side, reference[side]),
+        end: defineProperty$3({}, side, reference[side] + reference[measurement] - popper[measurement])
       };
 
       data.offsets.popper = _extends$1({}, popper, shiftOffsets[shiftvariation]);
@@ -31010,7 +31083,7 @@
    */
 
 
-  Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
+  Popper.Utils = (typeof window !== 'undefined' ? window : global$1).PopperUtils;
   Popper.placements = placements;
   Popper.Defaults = Defaults;
 
@@ -31597,7 +31670,7 @@
         var PopperClassName = _props$PopperProps.className,
             PopperProps = objectWithoutProperties(_props$PopperProps, ["className"]),
             theme = _props.theme,
-            title = _props.title,
+            title$$1 = _props.title,
             other = objectWithoutProperties(_props, ["children", "classes", "className", "disableFocusListener", "disableHoverListener", "disableTouchListener", "enterDelay", "enterTouchDelay", "id", "leaveDelay", "leaveTouchDelay", "onClose", "onOpen", "open", "placement", "PopperProps", "theme", "title"]);
 
         var placement = theme.direction === 'rtl' ? flipPlacement(placementProp) : placementProp;
@@ -31606,7 +31679,7 @@
           'aria-describedby': id
         }; // There is no point at displaying an empty tooltip.
 
-        if (title === '') {
+        if (title$$1 === '') {
           open = false;
         }
 
@@ -31660,7 +31733,7 @@
             role: "tooltip",
             "aria-hidden": !open,
             className: classnames(classes.tooltip, defineProperty({}, classes.open, open), defineProperty({}, classes.touch, _this2.ignoreNonTouchEvents), classes["tooltipPlacement".concat(capitalize(actualPlacement))])
-          }, title));
+          }, title$$1));
         })));
       }
     }]);
@@ -31987,7 +32060,7 @@
   exports.FormGroup = FormGroup$1;
   exports.FormHelperText = FormHelperText$1;
   exports.FormLabel = FormLabel$1;
-  exports.Grid = GridWrapper$1;
+  exports.Grid = StyledGrid;
   exports.GridList = GridList$1;
   exports.GridListTile = GridListTile$1;
   exports.GridListTileBar = GridListTileBar$1;
@@ -32018,6 +32091,7 @@
   exports.Portal = Portal;
   exports.Radio = Radio$1;
   exports.RadioGroup = RadioGroup;
+  exports.RootRef = RootRef;
   exports.Select = Select$1;
   exports.Slide = Slide$1;
   exports.Snackbar = Snackbar$1;

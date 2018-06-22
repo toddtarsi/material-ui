@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import withStyles from '../styles/withStyles';
 import ButtonBase from '../ButtonBase';
+import unsupportedProp from '../utils/unsupportedProp';
 export const styles = theme => ({
   root: {
     transition: theme.transitions.create(['color', 'padding-top'], {
@@ -110,6 +111,12 @@ class BottomNavigationAction extends React.Component {
 }
 
 BottomNavigationAction.propTypes = process.env.NODE_ENV !== "production" ? {
+  /**
+   * This property isn't supported.
+   * Use the `component` property if you need to change the children structure.
+   */
+  children: unsupportedProp,
+
   /**
    * Override or extend the styles applied to the component.
    * See [CSS API](#css-api) below for more details.

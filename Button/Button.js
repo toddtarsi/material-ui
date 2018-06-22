@@ -36,9 +36,9 @@ var styles = function styles(theme) {
       lineHeight: '1.4em',
       // Improve readability for multiline button.
       boxSizing: 'border-box',
-      minWidth: theme.spacing.unit * 11,
+      minWidth: 88,
       minHeight: 36,
-      padding: "".concat(theme.spacing.unit, "px ").concat(theme.spacing.unit * 2, "px"),
+      padding: '8px 16px',
       borderRadius: 4,
       color: theme.palette.text.primary,
       transition: theme.transitions.create(['background-color', 'box-shadow'], {
@@ -60,11 +60,11 @@ var styles = function styles(theme) {
       }
     }),
     label: {
-      width: '100%',
       display: 'inherit',
       alignItems: 'inherit',
       justifyContent: 'inherit'
     },
+    text: {},
     textPrimary: {
       color: theme.palette.primary.main,
       '&:hover': {
@@ -86,13 +86,13 @@ var styles = function styles(theme) {
       }
     },
     flat: {},
+    // legacy
     flatPrimary: {},
+    // legacy
     flatSecondary: {},
+    // legacy
     outlined: {
       border: "1px solid ".concat(theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)')
-    },
-    colorInherit: {
-      color: 'inherit'
     },
     contained: {
       color: theme.palette.getContrastText(theme.palette.grey[300]),
@@ -143,35 +143,47 @@ var styles = function styles(theme) {
       }
     },
     raised: {},
+    // legacy
     raisedPrimary: {},
+    // legacy
     raisedSecondary: {},
-    focusVisible: {},
-    disabled: {},
+    // legacy
     fab: {
       borderRadius: '50%',
       padding: 0,
       minWidth: 0,
       width: 56,
-      fontSize: 24,
       height: 56,
       boxShadow: theme.shadows[6],
       '&:active': {
         boxShadow: theme.shadows[12]
       }
     },
+    extendedFab: {
+      borderRadius: 24,
+      padding: '0 16px',
+      width: 'initial',
+      minWidth: 48,
+      height: 48
+    },
+    focusVisible: {},
+    disabled: {},
+    colorInherit: {
+      color: 'inherit'
+    },
     mini: {
       width: 40,
       height: 40
     },
     sizeSmall: {
-      padding: "".concat(theme.spacing.unit - 1, "px ").concat(theme.spacing.unit, "px"),
-      minWidth: theme.spacing.unit * 8,
+      padding: '7px 8px',
+      minWidth: 64,
       minHeight: 32,
       fontSize: theme.typography.pxToRem(13)
     },
     sizeLarge: {
-      padding: "".concat(theme.spacing.unit, "px ").concat(theme.spacing.unit * 3, "px"),
-      minWidth: theme.spacing.unit * 14,
+      padding: '8px 24px',
+      minWidth: 112,
       minHeight: 40,
       fontSize: theme.typography.pxToRem(15)
     },
@@ -198,10 +210,10 @@ function Button(props) {
       size = props.size,
       variant = props.variant,
       other = (0, _objectWithoutProperties2.default)(props, ["children", "classes", "className", "color", "disabled", "disableFocusRipple", "fullWidth", "focusVisibleClassName", "mini", "size", "variant"]);
-  var fab = variant === 'fab';
+  var fab = variant === 'fab' || variant === 'extendedFab';
   var contained = variant === 'contained' || variant === 'raised';
-  var text = !contained && !fab;
-  var className = (0, _classnames.default)(classes.root, (_classNames = {}, (0, _defineProperty2.default)(_classNames, classes.contained, contained || fab), (0, _defineProperty2.default)(_classNames, classes.fab, fab), (0, _defineProperty2.default)(_classNames, classes.mini, fab && mini), (0, _defineProperty2.default)(_classNames, classes.colorInherit, color === 'inherit'), (0, _defineProperty2.default)(_classNames, classes.textPrimary, text && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.textSecondary, text && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.flat, text), (0, _defineProperty2.default)(_classNames, classes.flatPrimary, text && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.flatSecondary, text && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.containedPrimary, !text && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.containedSecondary, !text && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.raised, contained || fab), (0, _defineProperty2.default)(_classNames, classes.raisedPrimary, (contained || fab) && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.raisedSecondary, (contained || fab) && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.text, variant === 'text'), (0, _defineProperty2.default)(_classNames, classes.outlined, variant === 'outlined'), (0, _defineProperty2.default)(_classNames, classes["size".concat((0, _helpers.capitalize)(size))], size !== 'medium'), (0, _defineProperty2.default)(_classNames, classes.disabled, disabled), (0, _defineProperty2.default)(_classNames, classes.fullWidth, fullWidth), _classNames), classNameProp);
+  var text = variant === 'text' || variant === 'flat' || variant === 'outlined';
+  var className = (0, _classnames.default)(classes.root, (_classNames = {}, (0, _defineProperty2.default)(_classNames, classes.fab, fab), (0, _defineProperty2.default)(_classNames, classes.mini, fab && mini), (0, _defineProperty2.default)(_classNames, classes.extendedFab, variant === 'extendedFab'), (0, _defineProperty2.default)(_classNames, classes.text, text), (0, _defineProperty2.default)(_classNames, classes.textPrimary, text && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.textSecondary, text && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.flat, variant === 'text' || variant === 'flat'), (0, _defineProperty2.default)(_classNames, classes.flatPrimary, (variant === 'text' || variant === 'flat') && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.flatSecondary, (variant === 'text' || variant === 'flat') && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.contained, contained || fab), (0, _defineProperty2.default)(_classNames, classes.containedPrimary, (contained || fab) && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.containedSecondary, (contained || fab) && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.raised, contained || fab), (0, _defineProperty2.default)(_classNames, classes.raisedPrimary, (contained || fab) && color === 'primary'), (0, _defineProperty2.default)(_classNames, classes.raisedSecondary, (contained || fab) && color === 'secondary'), (0, _defineProperty2.default)(_classNames, classes.outlined, variant === 'outlined'), (0, _defineProperty2.default)(_classNames, classes["size".concat((0, _helpers.capitalize)(size))], size !== 'medium'), (0, _defineProperty2.default)(_classNames, classes.disabled, disabled), (0, _defineProperty2.default)(_classNames, classes.fullWidth, fullWidth), (0, _defineProperty2.default)(_classNames, classes.colorInherit, color === 'inherit'), _classNames), classNameProp);
   return _react.default.createElement(_ButtonBase.default, (0, _extends2.default)({
     className: className,
     disabled: disabled,
@@ -238,7 +250,7 @@ Button.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * If `true`, the button will be disabled.
@@ -291,7 +303,7 @@ Button.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * The type of button.
    */
-  variant: _propTypes.default.oneOf(['text', 'flat', 'outlined', 'contained', 'raised', 'fab'])
+  variant: _propTypes.default.oneOf(['text', 'flat', 'outlined', 'contained', 'raised', 'fab', 'extendedFab'])
 } : {};
 Button.defaultProps = {
   color: 'default',

@@ -279,7 +279,7 @@ function (_React$Component) {
     _this.input = null;
 
     _this.handleFocus = function (event) {
-      // Fix an bug with IE11 where the focus/blur events are triggered
+      // Fix a bug with IE11 where the focus/blur events are triggered
       // while the input is disabled.
       if (formControlState(_this.props, _this.context).disabled) {
         event.stopPropagation();
@@ -293,6 +293,12 @@ function (_React$Component) {
       if (_this.props.onFocus) {
         _this.props.onFocus(event);
       }
+
+      var muiFormControl = _this.context.muiFormControl;
+
+      if (muiFormControl && muiFormControl.onFocus) {
+        muiFormControl.onFocus(event);
+      }
     };
 
     _this.handleBlur = function (event) {
@@ -302,6 +308,12 @@ function (_React$Component) {
 
       if (_this.props.onBlur) {
         _this.props.onBlur(event);
+      }
+
+      var muiFormControl = _this.context.muiFormControl;
+
+      if (muiFormControl && muiFormControl.onBlur) {
+        muiFormControl.onBlur(event);
       }
     };
 
@@ -318,11 +330,20 @@ function (_React$Component) {
 
     _this.handleRefInput = function (node) {
       _this.input = node;
+      var ref;
 
       if (_this.props.inputRef) {
-        _this.props.inputRef(node);
+        ref = _this.props.inputRef;
       } else if (_this.props.inputProps && _this.props.inputProps.ref) {
-        _this.props.inputProps.ref(node);
+        ref = _this.props.inputProps.ref;
+      }
+
+      if (ref) {
+        if (typeof ref === 'function') {
+          ref(node);
+        } else {
+          ref.current = node;
+        }
       }
     };
 
@@ -587,7 +608,7 @@ Input.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the native input.
    * Either a string to use a DOM element or a component.
    */
-  inputComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  inputComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Attributes applied to the `input` element.
@@ -597,7 +618,7 @@ Input.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native input component.
    */
-  inputRef: _propTypes.default.func,
+  inputRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object]),
 
   /**
    * If `dense`, will adjust vertical spacing. This is normally obtained via context from

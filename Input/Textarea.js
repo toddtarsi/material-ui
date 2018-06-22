@@ -94,9 +94,14 @@ function (_React$Component) {
 
     _this.handleRefInput = function (node) {
       _this.input = node;
+      var textareaRef = _this.props.textareaRef;
 
-      if (_this.props.textareaRef) {
-        _this.props.textareaRef(node);
+      if (textareaRef) {
+        if (typeof textareaRef === 'function') {
+          textareaRef(node);
+        } else {
+          textareaRef.current = node;
+        }
       }
     };
 
@@ -272,7 +277,7 @@ Textarea.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native textarea element.
    */
-  textareaRef: _propTypes.default.func,
+  textareaRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object]),
 
   /**
    * @ignore

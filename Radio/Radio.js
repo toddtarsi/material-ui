@@ -125,7 +125,7 @@ Radio.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native input component.
    */
-  inputRef: _propTypes.default.func,
+  inputRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Callback fired when the state is changed.

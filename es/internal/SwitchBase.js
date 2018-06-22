@@ -38,6 +38,34 @@ class SwitchBase extends React.Component {
     this.input = null;
     this.isControlled = null;
 
+    this.handleFocus = event => {
+      if (this.props.onFocus) {
+        this.props.onFocus(event);
+      }
+
+      const {
+        muiFormControl
+      } = this.context;
+
+      if (muiFormControl && muiFormControl.onFocus) {
+        muiFormControl.onFocus(event);
+      }
+    };
+
+    this.handleBlur = event => {
+      if (this.props.onBlur) {
+        this.props.onBlur(event);
+      }
+
+      const {
+        muiFormControl
+      } = this.context;
+
+      if (muiFormControl && muiFormControl.onBlur) {
+        muiFormControl.onBlur(event);
+      }
+    };
+
     this.handleInputChange = event => {
       const checked = event.target.checked;
 
@@ -73,12 +101,14 @@ class SwitchBase extends React.Component {
       inputProps,
       inputRef,
       name,
+      onBlur,
       onChange,
+      onFocus,
       tabIndex,
       type,
       value
     } = _props,
-          other = _objectWithoutProperties(_props, ["checked", "checkedIcon", "classes", "className", "disabled", "icon", "id", "inputProps", "inputRef", "name", "onChange", "tabIndex", "type", "value"]);
+          other = _objectWithoutProperties(_props, ["checked", "checkedIcon", "classes", "className", "disabled", "icon", "id", "inputProps", "inputRef", "name", "onBlur", "onChange", "onFocus", "tabIndex", "type", "value"]);
 
     const {
       muiFormControl
@@ -101,7 +131,9 @@ class SwitchBase extends React.Component {
       }, classNameProp),
       disabled: disabled,
       tabIndex: null,
-      role: undefined
+      role: undefined,
+      onFocus: this.handleFocus,
+      onBlur: this.handleBlur
     }, other), checked ? checkedIcon : icon, React.createElement("input", _extends({
       id: hasLabelFor && id,
       type: type,
@@ -185,12 +217,17 @@ SwitchBase.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native input component.
    */
-  inputRef: PropTypes.func,
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 
   /*
    * @ignore
    */
   name: PropTypes.string,
+
+  /**
+   * @ignore
+   */
+  onBlur: PropTypes.func,
 
   /**
    * Callback fired when the state is changed.
@@ -200,6 +237,11 @@ SwitchBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * @param {boolean} checked The `checked` value of the switch
    */
   onChange: PropTypes.func,
+
+  /**
+   * @ignore
+   */
+  onFocus: PropTypes.func,
 
   /**
    * @ignore

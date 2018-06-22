@@ -35,6 +35,8 @@ var _ButtonBase = _interopRequireDefault(require("../ButtonBase"));
 
 var _helpers = require("../utils/helpers");
 
+var _unsupportedProp = _interopRequireDefault(require("../utils/unsupportedProp"));
+
 // @inheritedComponent ButtonBase
 var styles = function styles(theme) {
   return {
@@ -230,6 +232,12 @@ function (_React$Component) {
 }(_react.default.Component);
 
 Tab.propTypes = process.env.NODE_ENV !== "production" ? {
+  /**
+   * This property isn't supported.
+   * Use the `component` property if you need to change the children structure.
+   */
+  children: _unsupportedProp.default,
+
   /**
    * Override or extend the styles applied to the component.
    * See [CSS API](#css-api) below for more details.

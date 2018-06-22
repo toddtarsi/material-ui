@@ -41,6 +41,11 @@ export const styles = theme => ({
     visibility: 'hidden'
   }
 });
+/* istanbul ignore if */
+
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 class Modal extends React.Component {
   constructor(props) {
@@ -69,7 +74,7 @@ class Modal extends React.Component {
       this.props.manager.remove(this);
       const doc = ownerDocument(this.mountNode);
       doc.removeEventListener('keydown', this.handleDocumentKeyDown);
-      doc.removeEventListener('focus', this.enforceFocus);
+      doc.removeEventListener('focus', this.enforceFocus, true);
       this.restoreLastFocus();
     };
 
@@ -289,7 +294,7 @@ Modal.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * A backdrop component. This property enables custom backdrop rendering.
    */
-  BackdropComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  BackdropComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Properties applied to the `Backdrop` element.

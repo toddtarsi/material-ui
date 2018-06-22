@@ -51,11 +51,17 @@ export const styles = {
   disabled: {},
   focusVisible: {}
 };
+/* istanbul ignore if */
+
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 /**
  * `ButtonBase` contains as few styles as possible.
  * It aims to be a simple building block for creating a button.
  * It contains a load of style reset and some focus/ripple logic.
  */
+
 
 class ButtonBase extends React.Component {
   constructor(...args) {
@@ -215,6 +221,7 @@ class ButtonBase extends React.Component {
       component,
       disabled,
       disableRipple,
+      disableTouchRipple,
       focusRipple,
       focusVisibleClassName,
       onBlur,
@@ -232,7 +239,7 @@ class ButtonBase extends React.Component {
       TouchRippleProps,
       type
     } = _props,
-          other = _objectWithoutProperties(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
+          other = _objectWithoutProperties(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "disableTouchRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
 
     const className = classNames(classes.root, {
       [classes.disabled]: disabled,
@@ -317,7 +324,7 @@ ButtonBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * If `true`, the base button will be disabled.
@@ -328,6 +335,11 @@ ButtonBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * If `true`, the ripple effect will be disabled.
    */
   disableRipple: PropTypes.bool,
+
+  /**
+   * If `true`, the touch ripple effect will be disabled.
+   */
+  disableTouchRipple: PropTypes.bool,
 
   /**
    * If `true`, the base button will have a keyboard focus ripple.
@@ -430,6 +442,7 @@ ButtonBase.defaultProps = {
   centerRipple: false,
   component: 'button',
   disableRipple: false,
+  disableTouchRipple: false,
   focusRipple: false,
   tabIndex: '0',
   type: 'button'

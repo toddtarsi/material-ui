@@ -46,7 +46,11 @@ export function find(arr, pred) {
  */
 
 export function createChainedFunction(...funcs) {
-  return funcs.filter(func => func != null).reduce((acc, func) => {
+  return funcs.reduce((acc, func) => {
+    if (func == null) {
+      return acc;
+    }
+
     process.env.NODE_ENV !== "production" ? warning(typeof func === 'function', 'Material-UI: invalid Argument Type, must only provide functions, undefined, or null.') : void 0;
     return function chainedFunction(...args) {
       acc.apply(this, args);

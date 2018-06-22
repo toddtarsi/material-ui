@@ -25,7 +25,7 @@ var _withStyles = _interopRequireDefault(require("../styles/withStyles"));
 
 var _helpers = require("../utils/helpers");
 
-var SIZE = 50;
+var SIZE = 44;
 
 function getRelativeValue(value, min, max) {
   var clampedValue = Math.min(Math.max(min, value), max);
@@ -46,7 +46,9 @@ function easeIn(t) {
 var styles = function styles(theme) {
   return {
     root: {
-      display: 'inline-block'
+      display: 'inline-block',
+      lineHeight: 1 // Keep the progress centered
+
     },
     static: {
       transition: theme.transitions.create('transform')
@@ -62,8 +64,9 @@ var styles = function styles(theme) {
     },
     svg: {},
     circle: {
-      stroke: 'currentColor',
-      strokeLinecap: 'round'
+      stroke: 'currentColor' // Use butt to follow the specification, by chance, it's already the default CSS value.
+      // strokeLinecap: 'butt',
+
     },
     circleStatic: {
       transition: theme.transitions.create('stroke-dashoffset')
@@ -124,7 +127,7 @@ function CircularProgress(props) {
   var rootProps = {};
 
   if (variant === 'determinate' || variant === 'static') {
-    var circumference = 2 * Math.PI * (SIZE / 2 - 5);
+    var circumference = 2 * Math.PI * ((SIZE - thickness) / 2);
     circleStyle.strokeDasharray = circumference.toFixed(3);
     rootProps['aria-valuenow'] = Math.round(value);
 
@@ -146,13 +149,13 @@ function CircularProgress(props) {
     role: "progressbar"
   }, rootProps, other), _react.default.createElement("svg", {
     className: classes.svg,
-    viewBox: "0 0 ".concat(SIZE, " ").concat(SIZE)
+    viewBox: "".concat(SIZE / 2, " ").concat(SIZE / 2, " ").concat(SIZE, " ").concat(SIZE)
   }, _react.default.createElement("circle", {
     className: (0, _classnames.default)(classes.circle, (_classNames2 = {}, (0, _defineProperty2.default)(_classNames2, classes.circleIndeterminate, variant === 'indeterminate'), (0, _defineProperty2.default)(_classNames2, classes.circleStatic, variant === 'static'), _classNames2)),
     style: circleStyle,
-    cx: SIZE / 2,
-    cy: SIZE / 2,
-    r: SIZE / 2 - 5,
+    cx: SIZE,
+    cy: SIZE,
+    r: (SIZE - thickness) / 2,
     fill: "none",
     strokeWidth: thickness
   })));

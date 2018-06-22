@@ -80,6 +80,11 @@ export const styles = theme => {
     })
   };
 };
+/* istanbul ignore if */
+
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 class Snackbar extends React.Component {
   constructor(...args) {
@@ -367,7 +372,7 @@ Snackbar.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Transition component.
    */
-  TransitionComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  TransitionComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * The duration for the transition, in milliseconds.

@@ -63,7 +63,7 @@ var styles = function styles(theme) {
 /**
  * Provides context such as filled/focused/error/required for form inputs.
  * Relying on the context provides high flexibilty and ensures that the state always stays
- * consitent across the children of the `FormControl`.
+ * consistent across the children of the `FormControl`.
  * This context is used by the following components:
  *  - FormLabel
  *  - FormHelperText
@@ -92,11 +92,7 @@ function (_React$Component) {
       focused: false
     };
 
-    _this.handleFocus = function (event) {
-      if (_this.props.onFocus) {
-        _this.props.onFocus(event);
-      }
-
+    _this.handleFocus = function () {
       _this.setState(function (state) {
         return !state.focused ? {
           focused: true
@@ -104,14 +100,7 @@ function (_React$Component) {
       });
     };
 
-    _this.handleBlur = function (event) {
-      // The event might be undefined.
-      // For instance, a child component might call this hook
-      // when an input is disabled but still having the focus.
-      if (_this.props.onBlur && event) {
-        _this.props.onBlur(event);
-      }
-
+    _this.handleBlur = function () {
       _this.setState(function (state) {
         return state.focused ? {
           focused: false
@@ -203,10 +192,7 @@ function (_React$Component) {
           other = (0, _objectWithoutProperties2.default)(_props2, ["classes", "className", "component", "disabled", "error", "fullWidth", "margin", "required"]);
       return _react.default.createElement(Component, (0, _extends2.default)({
         className: (0, _classnames.default)(classes.root, (_classNames = {}, (0, _defineProperty2.default)(_classNames, classes["margin".concat((0, _helpers.capitalize)(margin))], margin !== 'none'), (0, _defineProperty2.default)(_classNames, classes.fullWidth, fullWidth), _classNames), className)
-      }, other, {
-        onFocus: this.handleFocus,
-        onBlur: this.handleBlur
-      }));
+      }, other));
     }
   }]);
   return FormControl;
@@ -233,7 +219,7 @@ FormControl.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * If `true`, the label, input and helper text should be displayed in a disabled state.
@@ -254,16 +240,6 @@ FormControl.propTypes = process.env.NODE_ENV !== "production" ? {
    * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
    */
   margin: _propTypes.default.oneOf(['none', 'dense', 'normal']),
-
-  /**
-   * @ignore
-   */
-  onBlur: _propTypes.default.func,
-
-  /**
-   * @ignore
-   */
-  onFocus: _propTypes.default.func,
 
   /**
    * If `true`, the label will indicate that the input is required.

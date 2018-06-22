@@ -43,35 +43,37 @@ function ListItemText(props, context) {
     disableTypography,
     inset,
     primary: primaryProp,
-    secondary: secondaryProp
+    primaryTypographyProps,
+    secondary: secondaryProp,
+    secondaryTypographyProps
   } = props,
-        other = _objectWithoutProperties(props, ["children", "classes", "className", "disableTypography", "inset", "primary", "secondary"]);
+        other = _objectWithoutProperties(props, ["children", "classes", "className", "disableTypography", "inset", "primary", "primaryTypographyProps", "secondary", "secondaryTypographyProps"]);
 
   const {
     dense
   } = context;
   let primary = primaryProp != null ? primaryProp : children;
 
-  if (primary != null && !disableTypography) {
-    primary = React.createElement(Typography, {
+  if (primary != null && primary.type !== Typography && !disableTypography) {
+    primary = React.createElement(Typography, _extends({
       variant: "subheading",
       className: classNames(classes.primary, {
         [classes.textDense]: dense
       }),
       component: "span"
-    }, primary);
+    }, primaryTypographyProps), primary);
   }
 
   let secondary = secondaryProp;
 
-  if (secondary != null && !disableTypography) {
-    secondary = React.createElement(Typography, {
+  if (secondary != null && secondary.type !== Typography && !disableTypography) {
+    secondary = React.createElement(Typography, _extends({
       variant: "body1",
       className: classNames(classes.secondary, {
         [classes.textDense]: dense
       }),
       color: "textSecondary"
-    }, secondary);
+    }, secondaryTypographyProps), secondary);
   }
 
   return React.createElement("div", _extends({
@@ -119,9 +121,21 @@ ListItemText.propTypes = process.env.NODE_ENV !== "production" ? {
   primary: PropTypes.node,
 
   /**
+   * These props will be forwarded to the primary typography component
+   * (as long as disableTypography is not `true`).
+   */
+  primaryTypographyProps: PropTypes.object,
+
+  /**
    * The secondary content element.
    */
-  secondary: PropTypes.node
+  secondary: PropTypes.node,
+
+  /**
+   * These props will be forwarded to the secondary typography component
+   * (as long as disableTypography is not `true`).
+   */
+  secondaryTypographyProps: PropTypes.object
 } : {};
 ListItemText.defaultProps = {
   disableTypography: false,

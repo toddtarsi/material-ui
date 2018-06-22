@@ -85,7 +85,7 @@ CssBaseline.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   classes: _propTypes.default.object.isRequired
 } : {};
-CssBaseline.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(CssBaseline.propTypes, 'CssBaseline') : {};
+CssBaseline.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(CssBaseline.propTypes) : {};
 CssBaseline.defaultProps = {
   children: null
 };

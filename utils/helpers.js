@@ -70,9 +70,11 @@ function createChainedFunction() {
     funcs[_key] = arguments[_key];
   }
 
-  return funcs.filter(function (func) {
-    return func != null;
-  }).reduce(function (acc, func) {
+  return funcs.reduce(function (acc, func) {
+    if (func == null) {
+      return acc;
+    }
+
     process.env.NODE_ENV !== "production" ? (0, _warning.default)(typeof func === 'function', 'Material-UI: invalid Argument Type, must only provide functions, undefined, or null.') : void 0;
     return function chainedFunction() {
       for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {

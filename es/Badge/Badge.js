@@ -100,7 +100,7 @@ Badge.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object])
 } : {};
 Badge.defaultProps = {
   color: 'default',

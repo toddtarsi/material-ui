@@ -41,11 +41,7 @@ class GridListTile extends React.Component {
     }, 166), this.fit = () => {
       const imgElement = this.imgElement;
 
-      if (!imgElement) {
-        return;
-      }
-
-      if (!imgElement.complete) {
+      if (!imgElement || !imgElement.complete) {
         return;
       }
 
@@ -107,7 +103,6 @@ class GridListTile extends React.Component {
     }, React.Children.map(children, child => {
       if (child && child.type === 'img') {
         return React.cloneElement(child, {
-          key: 'img',
           ref: node => {
             this.imgElement = node;
           }
@@ -148,7 +143,7 @@ GridListTile.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Height of the tile in number of grid cells.

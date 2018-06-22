@@ -153,7 +153,7 @@ TablePagination.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for displaying the actions.
    * Either a string to use a DOM element or a component.
    */
-  ActionsComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  ActionsComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Properties applied to the back arrow `IconButton` component.
@@ -175,7 +175,7 @@ TablePagination.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * The total number of rows.

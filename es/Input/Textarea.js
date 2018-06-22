@@ -60,9 +60,16 @@ class Textarea extends React.Component {
 
     this.handleRefInput = node => {
       this.input = node;
+      const {
+        textareaRef
+      } = this.props;
 
-      if (this.props.textareaRef) {
-        this.props.textareaRef(node);
+      if (textareaRef) {
+        if (typeof textareaRef === 'function') {
+          textareaRef(node);
+        } else {
+          textareaRef.current = node;
+        }
       }
     };
 
@@ -232,7 +239,7 @@ Textarea.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native textarea element.
    */
-  textareaRef: PropTypes.func,
+  textareaRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 
   /**
    * @ignore

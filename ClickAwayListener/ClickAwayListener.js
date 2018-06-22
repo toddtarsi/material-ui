@@ -32,15 +32,16 @@ var _reactEventListener = _interopRequireDefault(require("react-event-listener")
 var _ownerDocument = _interopRequireDefault(require("dom-helpers/ownerDocument"));
 
 // @inheritedComponent EventListener
-var isDescendant = function isDescendant(el, target) {
+function isDescendant(el, target) {
   if (target !== null && target.parentNode) {
     return el === target || isDescendant(el, target.parentNode);
   }
 
   return false;
-};
+}
 /**
- * Listen for click events that are triggered outside of the component children.
+ * Listen for click events that occur somewhere in the document, outside of the element itself.
+ * For instance, if you need to hide a menu when people click anywhere else on your page.
  */
 
 

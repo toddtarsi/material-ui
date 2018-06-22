@@ -73,12 +73,12 @@ NativeSelectInput.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * The icon that displays the arrow.
    */
-  IconComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  IconComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Use that property to pass a ref callback to the native select element.
    */
-  inputRef: _propTypes.default.func,
+  inputRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Name attribute of the `select` or hidden `input` element.

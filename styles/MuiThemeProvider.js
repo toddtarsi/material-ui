@@ -168,7 +168,7 @@ MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   theme: _propTypes.default.oneOfType([_propTypes.default.object, _propTypes.default.func]).isRequired
 } : {};
-MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(MuiThemeProvider.propTypes, 'MuiThemeProvider') : {};
+MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(MuiThemeProvider.propTypes) : {};
 MuiThemeProvider.childContextTypes = (0, _objectSpread2.default)({}, _themeListener.default.contextTypes, {
   muiThemeProviderOptions: _propTypes.default.object
 });

@@ -33,7 +33,7 @@ export const styles = theme => ({
 /**
  * Provides context such as filled/focused/error/required for form inputs.
  * Relying on the context provides high flexibilty and ensures that the state always stays
- * consitent across the children of the `FormControl`.
+ * consistent across the children of the `FormControl`.
  * This context is used by the following components:
  *  - FormLabel
  *  - FormHelperText
@@ -52,24 +52,13 @@ class FormControl extends React.Component {
       focused: false
     };
 
-    this.handleFocus = event => {
-      if (this.props.onFocus) {
-        this.props.onFocus(event);
-      }
-
+    this.handleFocus = () => {
       this.setState(state => !state.focused ? {
         focused: true
       } : null);
     };
 
-    this.handleBlur = event => {
-      // The event might be undefined.
-      // For instance, a child component might call this hook
-      // when an input is disabled but still having the focus.
-      if (this.props.onBlur && event) {
-        this.props.onBlur(event);
-      }
-
+    this.handleBlur = () => {
       this.setState(state => state.focused ? {
         focused: false
       } : null);
@@ -162,10 +151,7 @@ class FormControl extends React.Component {
         [classes[`margin${capitalize(margin)}`]]: margin !== 'none',
         [classes.fullWidth]: fullWidth
       }, className)
-    }, other, {
-      onFocus: this.handleFocus,
-      onBlur: this.handleBlur
-    }));
+    }, other));
   }
 
 }
@@ -191,7 +177,7 @@ FormControl.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * If `true`, the label, input and helper text should be displayed in a disabled state.
@@ -212,16 +198,6 @@ FormControl.propTypes = process.env.NODE_ENV !== "production" ? {
    * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
    */
   margin: PropTypes.oneOf(['none', 'dense', 'normal']),
-
-  /**
-   * @ignore
-   */
-  onBlur: PropTypes.func,
-
-  /**
-   * @ignore
-   */
-  onFocus: PropTypes.func,
 
   /**
    * If `true`, the label will indicate that the input is required.

@@ -37,6 +37,8 @@ var _withTheme = _interopRequireDefault(require("../styles/withTheme"));
 
 var _createBreakpoints = require("../styles/createBreakpoints");
 
+var _getThemeProps = _interopRequireDefault(require("../styles/getThemeProps"));
+
 /* eslint-disable react/no-did-mount-set-state */
 // By default, returns true if screen width is the same or greater than the given breakpoint.
 var isWidthUp = function isWidthUp(breakpoint, width) {
@@ -160,7 +162,10 @@ var withWidth = function withWidth() {
               width = _props.width,
               other = (0, _objectWithoutProperties2.default)(_props, ["initialWidth", "theme", "width"]);
           var props = (0, _objectSpread2.default)({
-            width: width || this.state.width || initialWidth || initialWidthOption
+            width: width || this.state.width || initialWidth || initialWidthOption || (0, _getThemeProps.default)({
+              theme: theme,
+              name: 'MuiWithWidth'
+            }).initialWidth
           }, other);
           var more = {};
 

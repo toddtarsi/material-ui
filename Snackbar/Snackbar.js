@@ -100,8 +100,14 @@ var styles = function styles(theme) {
     }, bottomSpace, leftSpace)))
   };
 };
+/* istanbul ignore if */
+
 
 exports.styles = styles;
+
+if (process.env.NODE_ENV !== 'production' && !_react.default.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 var Snackbar =
 /*#__PURE__*/
@@ -410,7 +416,7 @@ Snackbar.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Transition component.
    */
-  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * The duration for the transition, in milliseconds.

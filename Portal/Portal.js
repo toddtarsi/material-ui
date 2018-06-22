@@ -119,6 +119,6 @@ Portal.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   onRendered: _propTypes.default.func
 } : {};
-Portal.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(Portal.propTypes, 'Portal') : {};
+Portal.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(Portal.propTypes) : {};
 var _default = Portal;
 exports.default = _default;

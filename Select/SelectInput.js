@@ -57,13 +57,9 @@ function (_React$Component) {
     }
 
     return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = SelectInput.__proto__ || Object.getPrototypeOf(SelectInput)).call.apply(_ref, [this].concat(args))), _this.state = {
+      menuMinWidth: null,
       open: false
-    }, _this.ignoreNextBlur = false, _this.displayNode = null, _this.displayWidth = null, _this.isOpenControlled = _this.props.open !== undefined, _this.updateDisplayWidth = function () {
-      // Perfom the layout computation outside of the render method.
-      if (_this.displayNode) {
-        _this.displayWidth = _this.displayNode.clientWidth;
-      }
-    }, _this.update = _this.isOpenControlled ? function (_ref2) {
+    }, _this.ignoreNextBlur = false, _this.displayNode = null, _this.isOpenControlled = _this.props.open !== undefined, _this.update = _this.isOpenControlled ? function (_ref2) {
       var event = _ref2.event,
           open = _ref2.open;
 
@@ -74,7 +70,10 @@ function (_React$Component) {
       }
     } : function (_ref3) {
       var open = _ref3.open;
-      return _this.setState({
+
+      _this.setState({
+        // Perfom the layout computation outside of the render method.
+        menuMinWidth: _this.props.autoWidth ? null : _this.displayNode.clientWidth,
         open: open
       });
     }, _this.handleClick = function (event) {
@@ -161,16 +160,24 @@ function (_React$Component) {
     }, _this.handleDisplayRef = function (node) {
       _this.displayNode = node;
       if (!_this.props.staticWidth) _this.updateDisplayWidth();
-    }, _this.handleSelectRef = function (node) {
-      if (!_this.props.inputRef) {
+    }, _this.handleInputRef = function (node) {
+      var inputRef = _this.props.inputRef;
+
+      if (!inputRef) {
         return;
       }
 
-      _this.props.inputRef({
+      var nodeProxy = {
         node: node,
         // By pass the native input as we expose a rich object (array).
         value: _this.props.value
-      });
+      };
+
+      if (typeof inputRef === 'function') {
+        inputRef(nodeProxy);
+      } else {
+        inputRef.current = nodeProxy;
+      }
     }, _temp));
   }
 
@@ -281,9 +288,15 @@ function (_React$Component) {
 
       if (computeDisplay) {
         display = multiple ? displayMultiple.join(', ') : displaySingle;
+      } // Avoid performing a layout computation in the render method.
+
+
+      var menuMinWidth = this.state.menuMinWidth;
+
+      if (!autoWidth && this.isOpenControlled && this.displayNode) {
+        menuMinWidth = this.displayNode.clientWidth;
       }
 
-      var MenuMinWidth = this.displayNode && !autoWidth ? this.displayWidth : undefined;
       var tabIndex;
 
       if (typeof tabIndexProp !== 'undefined') {
@@ -314,7 +327,7 @@ function (_React$Component) {
         value: Array.isArray(value) ? value.join(',') : value,
         name: name,
         readOnly: readOnly,
-        ref: this.handleSelectRef,
+        ref: this.handleInputRef,
         type: type
       }, other)), _react.default.createElement(IconComponent, {
         className: classes.icon
@@ -329,7 +342,7 @@ function (_React$Component) {
         }, MenuProps.MenuListProps),
         PaperProps: (0, _objectSpread2.default)({}, MenuProps.PaperProps, {
           style: (0, _objectSpread2.default)({
-            minWidth: MenuMinWidth
+            minWidth: menuMinWidth
           }, MenuProps.PaperProps != null ? MenuProps.PaperProps.style : null)
         })
       }), items));
@@ -380,12 +393,12 @@ SelectInput.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * The icon that displays the arrow.
    */
-  IconComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  IconComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Use that property to pass a ref callback to the native select element.
    */
-  inputRef: _propTypes.default.func,
+  inputRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Properties applied to the `Menu` element.

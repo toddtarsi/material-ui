@@ -215,9 +215,11 @@ function (_React$PureComponent) {
 
 
         _this.startTimer = setTimeout(function () {
-          _this.startTimerCommit();
+          if (_this.startTimerCommit) {
+            _this.startTimerCommit();
 
-          _this.startTimerCommit = null;
+            _this.startTimerCommit = null;
+          }
         }, DELAY_RIPPLE); // We have to make a tradeoff with this value.
       } else {
         _this.startCommit({

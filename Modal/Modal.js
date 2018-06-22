@@ -81,8 +81,14 @@ var styles = function styles(theme) {
     }
   };
 };
+/* istanbul ignore if */
+
 
 exports.styles = styles;
+
+if (process.env.NODE_ENV !== 'production' && !_react.default.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 var Modal =
 /*#__PURE__*/
@@ -121,7 +127,7 @@ function (_React$Component) {
 
       var doc = (0, _ownerDocument.default)(_this.mountNode);
       doc.removeEventListener('keydown', _this.handleDocumentKeyDown);
-      doc.removeEventListener('focus', _this.enforceFocus);
+      doc.removeEventListener('focus', _this.enforceFocus, true);
 
       _this.restoreLastFocus();
     };
@@ -349,7 +355,7 @@ Modal.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * A backdrop component. This property enables custom backdrop rendering.
    */
-  BackdropComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  BackdropComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Properties applied to the `Backdrop` element.

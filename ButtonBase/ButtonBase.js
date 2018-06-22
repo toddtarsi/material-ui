@@ -84,13 +84,19 @@ var styles = {
   disabled: {},
   focusVisible: {}
 };
+/* istanbul ignore if */
+
+exports.styles = styles;
+
+if (process.env.NODE_ENV !== 'production' && !_react.default.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 /**
  * `ButtonBase` contains as few styles as possible.
  * It aims to be a simple building block for creating a button.
  * It contains a load of style reset and some focus/ripple logic.
  */
 
-exports.styles = styles;
 
 var ButtonBase =
 /*#__PURE__*/
@@ -251,6 +257,7 @@ function (_React$Component) {
           component = _props.component,
           disabled = _props.disabled,
           disableRipple = _props.disableRipple,
+          disableTouchRipple = _props.disableTouchRipple,
           focusRipple = _props.focusRipple,
           focusVisibleClassName = _props.focusVisibleClassName,
           onBlur = _props.onBlur,
@@ -267,7 +274,7 @@ function (_React$Component) {
           tabIndex = _props.tabIndex,
           TouchRippleProps = _props.TouchRippleProps,
           type = _props.type,
-          other = (0, _objectWithoutProperties2.default)(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
+          other = (0, _objectWithoutProperties2.default)(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "disableTouchRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
       var className = (0, _classnames.default)(classes.root, (_classNames = {}, (0, _defineProperty2.default)(_classNames, classes.disabled, disabled), (0, _defineProperty2.default)(_classNames, classes.focusVisible, this.state.focusVisible), (0, _defineProperty2.default)(_classNames, focusVisibleClassName, this.state.focusVisible), _classNames), classNameProp);
       var buttonProps = {};
       var ComponentProp = component;
@@ -371,7 +378,7 @@ ButtonBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * If `true`, the base button will be disabled.
@@ -382,6 +389,11 @@ ButtonBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * If `true`, the ripple effect will be disabled.
    */
   disableRipple: _propTypes.default.bool,
+
+  /**
+   * If `true`, the touch ripple effect will be disabled.
+   */
+  disableTouchRipple: _propTypes.default.bool,
 
   /**
    * If `true`, the base button will have a keyboard focus ripple.
@@ -484,6 +496,7 @@ ButtonBase.defaultProps = {
   centerRipple: false,
   component: 'button',
   disableRipple: false,
+  disableTouchRipple: false,
   focusRipple: false,
   tabIndex: '0',
   type: 'button'

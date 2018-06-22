@@ -164,8 +164,10 @@ class TouchRipple extends React.PureComponent {
 
 
         this.startTimer = setTimeout(() => {
-          this.startTimerCommit();
-          this.startTimerCommit = null;
+          if (this.startTimerCommit) {
+            this.startTimerCommit();
+            this.startTimerCommit = null;
+          }
         }, DELAY_RIPPLE); // We have to make a tradeoff with this value.
       } else {
         this.startCommit({

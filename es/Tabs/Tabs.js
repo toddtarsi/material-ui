@@ -1,6 +1,8 @@
 import _extends from "@babel/runtime/helpers/builtin/extends";
 import _objectSpread from "@babel/runtime/helpers/builtin/objectSpread";
 import _objectWithoutProperties from "@babel/runtime/helpers/builtin/objectWithoutProperties";
+
+/* eslint-disable no-restricted-globals */
 import React from 'react';
 import PropTypes from 'prop-types';
 import warning from 'warning';
@@ -135,7 +137,7 @@ class Tabs extends React.Component {
         const children = tabs.children[0].children;
 
         if (children.length > 0) {
-          const tab = children[this.valueToIndex[value]];
+          const tab = children[this.valueToIndex.get(value)];
           process.env.NODE_ENV !== "production" ? warning(tab, `Material-UI: the value provided \`${value}\` is invalid`) : void 0;
 
           if (tab) {
@@ -174,7 +176,7 @@ class Tabs extends React.Component {
       }
 
       return undefined;
-    }, this.tabs = undefined, this.valueToIndex = {}, this.handleResize = debounce(() => {
+    }, this.tabs = undefined, this.valueToIndex = new Map(), this.handleResize = debounce(() => {
       this.updateIndicatorState(this.props);
       this.updateScrollButtonState();
     }, 166), this.handleLeftScrollClick = () => {
@@ -300,7 +302,7 @@ class Tabs extends React.Component {
       width: tabMeta ? tabMeta.width : 0
     };
 
-    if ((indicatorStyle.left !== this.state.indicatorStyle.left || indicatorStyle.width !== this.state.indicatorStyle.width) && !Number.isNaN(indicatorStyle.left) && !Number.isNaN(indicatorStyle.width)) {
+    if ((indicatorStyle.left !== this.state.indicatorStyle.left || indicatorStyle.width !== this.state.indicatorStyle.width) && !isNaN(indicatorStyle.left) && !isNaN(indicatorStyle.width)) {
       this.setState({
         indicatorStyle
       });
@@ -315,6 +317,7 @@ class Tabs extends React.Component {
       children: childrenProp,
       classes,
       className: classNameProp,
+      component: Component,
       fullWidth,
       indicatorColor,
       onChange,
@@ -327,7 +330,7 @@ class Tabs extends React.Component {
       theme,
       value
     } = _props,
-          other = _objectWithoutProperties(_props, ["action", "centered", "children", "classes", "className", "fullWidth", "indicatorColor", "onChange", "scrollable", "ScrollButtonComponent", "scrollButtons", "staticLabel", "TabIndicatorProps", "textColor", "theme", "value"]);
+          other = _objectWithoutProperties(_props, ["action", "centered", "children", "classes", "className", "component", "fullWidth", "indicatorColor", "onChange", "scrollable", "ScrollButtonComponent", "scrollButtons", "staticLabel", "TabIndicatorProps", "textColor", "theme", "value"]);
 
     process.env.NODE_ENV !== "production" ? warning(!centered || !scrollable, 'Material-UI: you can not use the `centered={true}` and `scrollable={true}` properties ' + 'at the same time on a `Tabs` component.') : void 0;
     const className = classNames(classes.root, classNameProp);
@@ -344,7 +347,7 @@ class Tabs extends React.Component {
     }, TabIndicatorProps, {
       style: _objectSpread({}, this.state.indicatorStyle, TabIndicatorProps.style)
     }));
-    this.valueToIndex = {};
+    this.valueToIndex = new Map();
     let childIndex = 0;
     const children = React.Children.map(childrenProp, child => {
       if (!React.isValidElement(child)) {
@@ -352,7 +355,7 @@ class Tabs extends React.Component {
       }
 
       const childValue = child.props.value === undefined ? childIndex : child.props.value;
-      this.valueToIndex[childValue] = childIndex;
+      this.valueToIndex.set(childValue, childIndex);
       const selected = childValue === value;
       childIndex += 1;
       return React.cloneElement(child, {
@@ -366,7 +369,7 @@ class Tabs extends React.Component {
       });
     });
     const conditionalElements = this.getConditionalElements();
-    return React.createElement("div", _extends({
+    return React.createElement(Component, _extends({
       className: className
     }, other), React.createElement(EventListener, {
       target: "window",
@@ -422,6 +425,12 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
   className: PropTypes.string,
 
   /**
+   * The component used for the root node.
+   * Either a string to use a DOM element or a component.
+   */
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
+
+  /**
    * If `true`, the tabs will grow to use all the available space.
    * This property is intended for small views, like on mobile.
    */
@@ -449,7 +458,7 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * The component used to render the scroll buttons.
    */
-  ScrollButtonComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  ScrollButtonComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Determine behavior of scroll buttons when tabs are set to scroll
@@ -489,6 +498,7 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
 } : {};
 Tabs.defaultProps = {
   centered: false,
+  component: 'div',
   fullWidth: false,
   indicatorColor: 'secondary',
   scrollable: false,

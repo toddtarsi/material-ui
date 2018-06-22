@@ -1,4 +1,4 @@
-/** @license Material-UI v1.2.0
+/** @license Material-UI v1.2.3
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -456,6 +456,12 @@ Object.defineProperty(exports, "RadioGroup", {
     return _RadioGroup.default;
   }
 });
+Object.defineProperty(exports, "RootRef", {
+  enumerable: true,
+  get: function get() {
+    return _RootRef.default;
+  }
+});
 Object.defineProperty(exports, "Select", {
   enumerable: true,
   get: function get() {
@@ -781,6 +787,8 @@ var _Portal = _interopRequireDefault(require("./Portal"));
 var _Radio = _interopRequireDefault(require("./Radio"));
 
 var _RadioGroup = _interopRequireDefault(require("./RadioGroup"));
+
+var _RootRef = _interopRequireDefault(require("./RootRef"));
 
 var _Select = _interopRequireDefault(require("./Select"));
 

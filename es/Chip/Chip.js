@@ -7,6 +7,7 @@ import keycode from 'keycode';
 import CancelIcon from '../internal/svg-icons/Cancel';
 import withStyles from '../styles/withStyles';
 import { emphasize, fade } from '../styles/colorManipulator';
+import unsupportedProp from '../utils/unsupportedProp';
 import '../Avatar/Avatar'; // So we don't have any override priority issue.
 
 export const styles = theme => {
@@ -209,6 +210,12 @@ Chip.propTypes = process.env.NODE_ENV !== "production" ? {
   avatar: PropTypes.element,
 
   /**
+   * This property isn't supported.
+   * Use the `component` property if you need to change the children structure.
+   */
+  children: unsupportedProp,
+
+  /**
    * Override or extend the styles applied to the component.
    * See [CSS API](#css-api) below for more details.
    */
@@ -230,7 +237,7 @@ Chip.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Override the default delete icon element. Shown only if `onDelete` is set.

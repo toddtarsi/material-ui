@@ -24,6 +24,11 @@ let nodeThatClaimedTheSwipe = null; // Exported for test purposes.
 export function reset() {
   nodeThatClaimedTheSwipe = null;
 }
+/* istanbul ignore if */
+
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 class SwipeableDrawer extends React.Component {
   constructor(...args) {
@@ -297,7 +302,7 @@ class SwipeableDrawer extends React.Component {
       } = {},
       onOpen,
       open,
-      PaperProps,
+      PaperProps = {},
       swipeAreaWidth,
       variant
     } = _props,
@@ -316,9 +321,9 @@ class SwipeableDrawer extends React.Component {
         })
       }, ModalPropsProp),
       PaperProps: _objectSpread({}, PaperProps, {
-        style: {
+        style: _objectSpread({
           pointerEvents: variant === 'temporary' && !open ? 'none' : ''
-        },
+        }, PaperProps.style),
         ref: this.handlePaperRef
       })
     }, other)), !disableDiscovery && !disableSwipeToOpen && variant === 'temporary' && React.createElement(SwipeArea, {

@@ -524,7 +524,7 @@ Popover.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Transition component.
    */
-  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Set to 'auto' to automatically calculate transition time based on height.

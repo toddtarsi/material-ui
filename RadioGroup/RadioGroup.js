@@ -102,7 +102,7 @@ function (_React$Component) {
             }
           },
           checked: value === child.props.value,
-          onChange: _this2.handleRadioChange
+          onChange: (0, _helpers.createChainedFunction)(child.props.onChange, _this2.handleRadioChange)
         });
       }));
     }

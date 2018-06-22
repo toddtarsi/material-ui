@@ -124,7 +124,7 @@ MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   theme: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired
 } : {};
-MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? exactProp(MuiThemeProvider.propTypes, 'MuiThemeProvider') : {};
+MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? exactProp(MuiThemeProvider.propTypes) : {};
 MuiThemeProvider.childContextTypes = _objectSpread({}, themeListener.contextTypes, {
   muiThemeProviderOptions: PropTypes.object
 });
