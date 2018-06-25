@@ -22,7 +22,7 @@ function Card(props) {
 
   return React.createElement(Paper, _extends({
     className: classNames(classes.root, className),
-    elevation: raised ? 8 : 2
+    elevation: raised ? 8 : 1
   }, other));
 }
 

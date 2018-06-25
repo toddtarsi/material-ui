@@ -69,7 +69,7 @@ export const styles = theme => ({
     }
   },
   bar: {
-    borderRadius: 7,
+    borderRadius: 14 / 2,
     display: 'block',
     position: 'absolute',
     width: 34,
@@ -173,7 +173,7 @@ Switch.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native input component.
    */
-  inputRef: PropTypes.func,
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 
   /**
    * Callback fired when the state is changed.

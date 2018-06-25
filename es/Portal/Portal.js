@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import ownerDocument from 'dom-helpers/ownerDocument';
+import ownerDocument from '../utils/ownerDocument';
 import exactProp from '../utils/exactProp';
 
 function getContainer(container, defaultContainer) {
@@ -81,5 +81,5 @@ Portal.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   onRendered: PropTypes.func
 } : {};
-Portal.propTypes = process.env.NODE_ENV !== "production" ? exactProp(Portal.propTypes, 'Portal') : {};
+Portal.propTypes = process.env.NODE_ENV !== "production" ? exactProp(Portal.propTypes) : {};
 export default Portal;

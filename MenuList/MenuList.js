@@ -27,11 +27,7 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 
 var _keycode = _interopRequireDefault(require("keycode"));
 
-var _contains = _interopRequireDefault(require("dom-helpers/query/contains"));
-
-var _activeElement = _interopRequireDefault(require("dom-helpers/activeElement"));
-
-var _ownerDocument = _interopRequireDefault(require("dom-helpers/ownerDocument"));
+var _ownerDocument = _interopRequireDefault(require("../utils/ownerDocument"));
 
 var _List = _interopRequireDefault(require("../List"));
 
@@ -52,16 +48,16 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = MenuList.__proto__ || Object.getPrototypeOf(MenuList)).call.apply(_ref, [this].concat(args))), _this.state = {
-      currentTabIndex: undefined
-    }, _this.list = undefined, _this.selectedItem = undefined, _this.blurTimer = undefined, _this.handleBlur = function (event) {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = MenuList.__proto__ || Object.getPrototypeOf(MenuList)).call.apply(_ref, [this].concat(args))), _this.list = null, _this.selectedItem = null, _this.blurTimer = null, _this.state = {
+      currentTabIndex: null
+    }, _this.handleBlur = function (event) {
       _this.blurTimer = setTimeout(function () {
         if (_this.list) {
           var list = _reactDom.default.findDOMNode(_this.list);
 
-          var currentFocus = (0, _activeElement.default)((0, _ownerDocument.default)(list));
+          var currentFocus = (0, _ownerDocument.default)(list).activeElement;
 
-          if (!(0, _contains.default)(list, currentFocus)) {
+          if (!list.contains(currentFocus)) {
             _this.resetTabIndex();
           }
         }
@@ -74,9 +70,9 @@ function (_React$Component) {
       var list = _reactDom.default.findDOMNode(_this.list);
 
       var key = (0, _keycode.default)(event);
-      var currentFocus = (0, _activeElement.default)((0, _ownerDocument.default)(list));
+      var currentFocus = (0, _ownerDocument.default)(list).activeElement;
 
-      if ((key === 'up' || key === 'down') && (!currentFocus || currentFocus && !(0, _contains.default)(list, currentFocus))) {
+      if ((key === 'up' || key === 'down') && (!currentFocus || currentFocus && !list.contains(currentFocus))) {
         if (_this.selectedItem) {
           _reactDom.default.findDOMNode(_this.selectedItem).focus();
         } else {
@@ -153,7 +149,7 @@ function (_React$Component) {
     value: function resetTabIndex() {
       var list = _reactDom.default.findDOMNode(this.list);
 
-      var currentFocus = (0, _activeElement.default)((0, _ownerDocument.default)(list));
+      var currentFocus = (0, _ownerDocument.default)(list).activeElement;
       var items = [];
 
       for (var i = 0; i < list.children.length; i += 1) {

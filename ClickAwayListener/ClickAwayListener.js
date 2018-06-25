@@ -19,31 +19,22 @@ var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/builtin/inherits"));
 
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/builtin/assertThisInitialized"));
-
 var _react = _interopRequireDefault(require("react"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _reactDom = _interopRequireDefault(require("react-dom"));
 
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
 var _reactEventListener = _interopRequireDefault(require("react-event-listener"));
 
-var _ownerDocument = _interopRequireDefault(require("dom-helpers/ownerDocument"));
+var _ownerDocument = _interopRequireDefault(require("../utils/ownerDocument"));
 
 // @inheritedComponent EventListener
-var isDescendant = function isDescendant(el, target) {
-  if (target !== null && target.parentNode) {
-    return el === target || isDescendant(el, target.parentNode);
-  }
 
-  return false;
-};
 /**
- * Listen for click events that are triggered outside of the component children.
+ * Listen for click events that occur somewhere in the document, outside of the element itself.
+ * For instance, if you need to hide a menu when people click anywhere else on your page.
  */
-
-
 var ClickAwayListener =
 /*#__PURE__*/
 function (_React$Component) {
@@ -60,7 +51,7 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = ClickAwayListener.__proto__ || Object.getPrototypeOf(ClickAwayListener)).call.apply(_ref, [this].concat(args))), _this.mounted = false, _this.handleClickAway = function (event) {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = ClickAwayListener.__proto__ || Object.getPrototypeOf(ClickAwayListener)).call.apply(_ref, [this].concat(args))), _this.node = null, _this.mounted = null, _this.handleClickAway = function (event) {
       // Ignore events that have been `event.preventDefault()` marked.
       if (event.defaultPrevented) {
         return;
@@ -69,13 +60,16 @@ function (_React$Component) {
 
       if (!_this.mounted) {
         return;
+      } // The child might render null.
+
+
+      if (!_this.node) {
+        return;
       }
 
-      var el = _reactDom.default.findDOMNode((0, _assertThisInitialized2.default)(_this));
+      var doc = (0, _ownerDocument.default)(_this.node);
 
-      var doc = (0, _ownerDocument.default)(el);
-
-      if (doc.documentElement && doc.documentElement.contains(event.target) && !isDescendant(el, event.target)) {
+      if (doc.documentElement && doc.documentElement.contains(event.target) && !_this.node.contains(event.target)) {
         _this.props.onClickAway(event);
       }
     }, _temp));
@@ -84,6 +78,7 @@ function (_React$Component) {
   (0, _createClass2.default)(ClickAwayListener, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      this.node = _reactDom.default.findDOMNode(this);
       this.mounted = true;
     }
   }, {

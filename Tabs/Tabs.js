@@ -49,6 +49,8 @@ var _TabIndicator = _interopRequireDefault(require("./TabIndicator"));
 
 var _TabScrollButton = _interopRequireDefault(require("./TabScrollButton"));
 
+/* eslint-disable no-restricted-globals */
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 var styles = function styles(theme) {
   return {
     root: {
@@ -102,7 +104,13 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Tabs.__proto__ || Object.getPrototypeOf(Tabs)).call.apply(_ref, [this].concat(args))), _this.state = {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Tabs.__proto__ || Object.getPrototypeOf(Tabs)).call.apply(_ref, [this].concat(args))), _this.tabs = null, _this.valueToIndex = new Map(), _this.handleResize = (0, _debounce.default)(function () {
+      _this.updateIndicatorState(_this.props);
+
+      _this.updateScrollButtonState();
+    }, 166), _this.handleTabsScroll = (0, _debounce.default)(function () {
+      _this.updateScrollButtonState();
+    }, 166), _this.state = {
       indicatorStyle: {},
       scrollerStyle: {
         marginBottom: 0
@@ -178,7 +186,8 @@ function (_React$Component) {
         var children = tabs.children[0].children;
 
         if (children.length > 0) {
-          var tab = children[_this.valueToIndex[value]];
+          var tab = children[_this.valueToIndex.get(value)];
+
           process.env.NODE_ENV !== "production" ? (0, _warning.default)(tab, "Material-UI: the value provided `".concat(value, "` is invalid")) : void 0;
 
           if (tab) {
@@ -216,11 +225,7 @@ function (_React$Component) {
       }
 
       return undefined;
-    }, _this.tabs = undefined, _this.valueToIndex = {}, _this.handleResize = (0, _debounce.default)(function () {
-      _this.updateIndicatorState(_this.props);
-
-      _this.updateScrollButtonState();
-    }, 166), _this.handleLeftScrollClick = function () {
+    }, _this.handleLeftScrollClick = function () {
       if (_this.tabs) {
         _this.moveTabsScroll(-_this.tabs.clientWidth);
       }
@@ -236,9 +241,7 @@ function (_React$Component) {
           marginBottom: -scrollbarHeight
         }
       });
-    }, _this.handleTabsScroll = (0, _debounce.default)(function () {
-      _this.updateScrollButtonState();
-    }, 166), _this.moveTabsScroll = function (delta) {
+    }, _this.moveTabsScroll = function (delta) {
       var theme = _this.props.theme;
 
       if (_this.tabs) {
@@ -347,7 +350,7 @@ function (_React$Component) {
         width: tabMeta ? tabMeta.width : 0
       };
 
-      if ((indicatorStyle.left !== this.state.indicatorStyle.left || indicatorStyle.width !== this.state.indicatorStyle.width) && !Number.isNaN(indicatorStyle.left) && !Number.isNaN(indicatorStyle.width)) {
+      if ((indicatorStyle.left !== this.state.indicatorStyle.left || indicatorStyle.width !== this.state.indicatorStyle.width) && !isNaN(indicatorStyle.left) && !isNaN(indicatorStyle.width)) {
         this.setState({
           indicatorStyle: indicatorStyle
         });
@@ -365,6 +368,7 @@ function (_React$Component) {
           childrenProp = _props.children,
           classes = _props.classes,
           classNameProp = _props.className,
+          Component = _props.component,
           fullWidth = _props.fullWidth,
           indicatorColor = _props.indicatorColor,
           onChange = _props.onChange,
@@ -377,7 +381,7 @@ function (_React$Component) {
           textColor = _props.textColor,
           theme = _props.theme,
           value = _props.value,
-          other = (0, _objectWithoutProperties2.default)(_props, ["action", "centered", "children", "classes", "className", "fullWidth", "indicatorColor", "onChange", "scrollable", "ScrollButtonComponent", "scrollButtons", "staticLabel", "TabIndicatorProps", "textColor", "theme", "value"]);
+          other = (0, _objectWithoutProperties2.default)(_props, ["action", "centered", "children", "classes", "className", "component", "fullWidth", "indicatorColor", "onChange", "scrollable", "ScrollButtonComponent", "scrollButtons", "staticLabel", "TabIndicatorProps", "textColor", "theme", "value"]);
       process.env.NODE_ENV !== "production" ? (0, _warning.default)(!centered || !scrollable, 'Material-UI: you can not use the `centered={true}` and `scrollable={true}` properties ' + 'at the same time on a `Tabs` component.') : void 0;
       var className = (0, _classnames.default)(classes.root, classNameProp);
       var scrollerClassName = (0, _classnames.default)(classes.scroller, (_classNames3 = {}, (0, _defineProperty2.default)(_classNames3, classes.fixed, !scrollable), (0, _defineProperty2.default)(_classNames3, classes.scrollable, scrollable), _classNames3));
@@ -390,7 +394,7 @@ function (_React$Component) {
         style: (0, _objectSpread2.default)({}, this.state.indicatorStyle, TabIndicatorProps.style)
       }));
 
-      this.valueToIndex = {};
+      this.valueToIndex = new Map();
       var childIndex = 0;
 
       var children = _react.default.Children.map(childrenProp, function (child) {
@@ -399,7 +403,9 @@ function (_React$Component) {
         }
 
         var childValue = child.props.value === undefined ? childIndex : child.props.value;
-        _this2.valueToIndex[childValue] = childIndex;
+
+        _this2.valueToIndex.set(childValue, childIndex);
+
         var selected = childValue === value;
         childIndex += 1;
         return _react.default.cloneElement(child, {
@@ -414,7 +420,7 @@ function (_React$Component) {
       });
 
       var conditionalElements = this.getConditionalElements();
-      return _react.default.createElement("div", (0, _extends2.default)({
+      return _react.default.createElement(Component, (0, _extends2.default)({
         className: className
       }, other), _react.default.createElement(_reactEventListener.default, {
         target: "window",
@@ -471,6 +477,12 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
   className: _propTypes.default.string,
 
   /**
+   * The component used for the root node.
+   * Either a string to use a DOM element or a component.
+   */
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
+
+  /**
    * If `true`, the tabs will grow to use all the available space.
    * This property is intended for small views, like on mobile.
    */
@@ -498,7 +510,7 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * The component used to render the scroll buttons.
    */
-  ScrollButtonComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  ScrollButtonComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Determine behavior of scroll buttons when tabs are set to scroll
@@ -538,6 +550,7 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
 } : {};
 Tabs.defaultProps = {
   centered: false,
+  component: 'div',
   fullWidth: false,
   indicatorColor: 'secondary',
   scrollable: false,

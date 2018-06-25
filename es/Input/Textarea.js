@@ -3,7 +3,8 @@ import _objectWithoutProperties from "@babel/runtime/helpers/builtin/objectWitho
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import debounce from 'debounce';
+import debounce from 'debounce'; // < 1kb payload overhead when lodash/debounce is > 3kb.
+
 import EventListener from 'react-event-listener';
 import withStyles from '../styles/withStyles';
 const ROWS_HEIGHT = 19;
@@ -43,13 +44,11 @@ export const styles = {
  */
 
 class Textarea extends React.Component {
+  // Corresponds to 10 frames at 60 Hz.
   constructor(props) {
     super(props); // <Input> expects the components it renders to respond to 'value'
     // so that it can check whether they are filled.
 
-    this.state = {
-      height: null
-    };
     this.shadow = null;
     this.singlelineShadow = null;
     this.input = null;
@@ -57,12 +56,22 @@ class Textarea extends React.Component {
     this.handleResize = debounce(() => {
       this.syncHeightWithShadow();
     }, 166);
+    this.state = {
+      height: null
+    };
 
     this.handleRefInput = node => {
       this.input = node;
+      const {
+        textareaRef
+      } = this.props;
 
-      if (this.props.textareaRef) {
-        this.props.textareaRef(node);
+      if (textareaRef) {
+        if (typeof textareaRef === 'function') {
+          textareaRef(node);
+        } else {
+          textareaRef.current = node;
+        }
       }
     };
 
@@ -106,7 +115,6 @@ class Textarea extends React.Component {
     this.handleResize.clear();
   }
 
-  // Corresponds to 10 frames at 60 Hz.
   syncHeightWithShadow() {
     const props = this.props;
 
@@ -232,7 +240,7 @@ Textarea.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native textarea element.
    */
-  textareaRef: PropTypes.func,
+  textareaRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 
   /**
    * @ignore

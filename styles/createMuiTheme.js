@@ -15,35 +15,37 @@ var _deepmerge = _interopRequireDefault(require("deepmerge"));
 
 var _warning = _interopRequireDefault(require("warning"));
 
-var _createTypography = _interopRequireDefault(require("./createTypography"));
-
 var _createBreakpoints = _interopRequireDefault(require("./createBreakpoints"));
-
-var _createPalette = _interopRequireDefault(require("./createPalette"));
 
 var _createMixins = _interopRequireDefault(require("./createMixins"));
 
+var _createPalette = _interopRequireDefault(require("./createPalette"));
+
+var _createTypography = _interopRequireDefault(require("./createTypography"));
+
 var _shadows = _interopRequireDefault(require("./shadows"));
+
+var _shape = _interopRequireDefault(require("./shape"));
+
+var _spacing = _interopRequireDefault(require("./spacing"));
 
 var _transitions = _interopRequireDefault(require("./transitions"));
 
 var _zIndex = _interopRequireDefault(require("./zIndex"));
 
-var _spacing = _interopRequireDefault(require("./spacing"));
-
 // < 1kb payload overhead when lodash/merge is > 3kb.
 function createMuiTheme() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var _options$palette = options.palette,
-      paletteInput = _options$palette === void 0 ? {} : _options$palette,
-      _options$breakpoints = options.breakpoints,
+  var _options$breakpoints = options.breakpoints,
       breakpointsInput = _options$breakpoints === void 0 ? {} : _options$breakpoints,
       _options$mixins = options.mixins,
       mixinsInput = _options$mixins === void 0 ? {} : _options$mixins,
+      _options$palette = options.palette,
+      paletteInput = _options$palette === void 0 ? {} : _options$palette,
+      shadowsInput = options.shadows,
       _options$typography = options.typography,
       typographyInput = _options$typography === void 0 ? {} : _options$typography,
-      shadowsInput = options.shadows,
-      other = (0, _objectWithoutProperties2.default)(options, ["palette", "breakpoints", "mixins", "typography", "shadows"]);
+      other = (0, _objectWithoutProperties2.default)(options, ["breakpoints", "mixins", "palette", "shadows", "typography"]);
   var palette = (0, _createPalette.default)(paletteInput);
   var breakpoints = (0, _createBreakpoints.default)(breakpointsInput);
   var muiTheme = (0, _objectSpread2.default)({
@@ -56,6 +58,7 @@ function createMuiTheme() {
     props: {},
     // Inject custom properties
     shadows: shadowsInput || _shadows.default,
+    shape: _shape.default,
     typography: (0, _createTypography.default)(palette, typographyInput)
   }, (0, _deepmerge.default)({
     transitions: _transitions.default,

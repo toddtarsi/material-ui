@@ -80,12 +80,17 @@ export const styles = theme => {
     })
   };
 };
+/* istanbul ignore if */
+
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 class Snackbar extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {}, this.timerAutoHide = null, this.handleMouseEnter = event => {
+    return _temp = super(...args), this.timerAutoHide = null, this.state = {}, this.handleMouseEnter = event => {
       if (this.props.onMouseEnter) {
         this.props.onMouseEnter(event);
       }
@@ -119,22 +124,6 @@ class Snackbar extends React.Component {
     }, _temp;
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (typeof prevState.exited === 'undefined') {
-      return {
-        exited: !nextProps.open
-      };
-    }
-
-    if (nextProps.open) {
-      return {
-        exited: false
-      };
-    }
-
-    return null;
-  }
-
   componentDidMount() {
     if (this.props.open) {
       this.setAutoHideTimer();
@@ -153,6 +142,22 @@ class Snackbar extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.timerAutoHide);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (typeof prevState.exited === 'undefined') {
+      return {
+        exited: !nextProps.open
+      };
+    }
+
+    if (nextProps.open) {
+      return {
+        exited: false
+      };
+    }
+
+    return null;
   } // Timer that controls delay before snackbar auto hides
 
 
@@ -367,7 +372,7 @@ Snackbar.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Transition component.
    */
-  TransitionComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  TransitionComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * The duration for the transition, in milliseconds.

@@ -24,12 +24,17 @@ let nodeThatClaimedTheSwipe = null; // Exported for test purposes.
 export function reset() {
   nodeThatClaimedTheSwipe = null;
 }
+/* istanbul ignore if */
+
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 class SwipeableDrawer extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {}, this.handleBodyTouchStart = event => {
+    return _temp = super(...args), this.backdrop = null, this.paper = null, this.isSwiping = null, this.startX = null, this.startY = null, this.state = {}, this.handleBodyTouchStart = event => {
       // We are not supposed to hanlde this touch move.
       if (nodeThatClaimedTheSwipe !== null && nodeThatClaimedTheSwipe !== this) {
         return;
@@ -169,31 +174,11 @@ class SwipeableDrawer extends React.Component {
       }
 
       this.isSwiping = null;
-    }, this.backdrop = null, this.paper = null, this.isSwiping = null, this.startX = null, this.startY = null, this.handleBackdropRef = node => {
+    }, this.handleBackdropRef = node => {
       this.backdrop = node ? ReactDOM.findDOMNode(node) : null;
     }, this.handlePaperRef = node => {
       this.paper = node ? ReactDOM.findDOMNode(node) : null;
     }, _temp;
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (typeof prevState.maybeSwiping === 'undefined') {
-      return {
-        maybeSwiping: false,
-        open: nextProps.open
-      };
-    }
-
-    if (!nextProps.open && prevState.open) {
-      return {
-        maybeSwiping: false,
-        open: nextProps.open
-      };
-    }
-
-    return {
-      open: nextProps.open
-    };
   }
 
   componentDidMount() {
@@ -222,6 +207,26 @@ class SwipeableDrawer extends React.Component {
     if (nodeThatClaimedTheSwipe === this) {
       nodeThatClaimedTheSwipe = null;
     }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (typeof prevState.maybeSwiping === 'undefined') {
+      return {
+        maybeSwiping: false,
+        open: nextProps.open
+      };
+    }
+
+    if (!nextProps.open && prevState.open) {
+      return {
+        maybeSwiping: false,
+        open: nextProps.open
+      };
+    }
+
+    return {
+      open: nextProps.open
+    };
   }
 
   getMaxTranslate() {
@@ -297,7 +302,7 @@ class SwipeableDrawer extends React.Component {
       } = {},
       onOpen,
       open,
-      PaperProps,
+      PaperProps = {},
       swipeAreaWidth,
       variant
     } = _props,
@@ -316,9 +321,9 @@ class SwipeableDrawer extends React.Component {
         })
       }, ModalPropsProp),
       PaperProps: _objectSpread({}, PaperProps, {
-        style: {
+        style: _objectSpread({
           pointerEvents: variant === 'temporary' && !open ? 'none' : ''
-        },
+        }, PaperProps.style),
         ref: this.handlePaperRef
       })
     }, other)), !disableDiscovery && !disableSwipeToOpen && variant === 'temporary' && React.createElement(SwipeArea, {

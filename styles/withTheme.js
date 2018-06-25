@@ -51,8 +51,8 @@ var withTheme = function withTheme() {
 
         (0, _classCallCheck2.default)(this, WithTheme);
         _this = (0, _possibleConstructorReturn2.default)(this, (WithTheme.__proto__ || Object.getPrototypeOf(WithTheme)).call(this, props, context));
-        _this.state = {};
         _this.unsubscribeId = null;
+        _this.state = {};
         _this.state = {
           // We use || as the function call is lazy evaluated.
           theme: _themeListener.default.initial(context) || getDefaultTheme()

@@ -48,6 +48,7 @@ var _common = _interopRequireDefault(require("../colors/common"));
 var _withStyles = _interopRequireDefault(require("../styles/withStyles"));
 
 /* eslint-disable react/no-multi-comp, no-underscore-dangle */
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 var styles = function styles(theme) {
   return {
     popper: {
@@ -60,7 +61,7 @@ var styles = function styles(theme) {
     open: {},
     tooltip: {
       backgroundColor: theme.palette.grey[700],
-      borderRadius: 2,
+      borderRadius: theme.shape.borderRadius,
       color: _common.default.white,
       fontFamily: theme.typography.fontFamily,
       opacity: 0,
@@ -140,12 +141,12 @@ var Tooltip =
 function (_React$Component) {
   (0, _inherits2.default)(Tooltip, _React$Component);
 
+  // Corresponds to 10 frames at 60 Hz.
   function Tooltip(props) {
     var _this;
 
     (0, _classCallCheck2.default)(this, Tooltip);
     _this = (0, _possibleConstructorReturn2.default)(this, (Tooltip.__proto__ || Object.getPrototypeOf(Tooltip)).call(this, props));
-    _this.state = {};
     _this.enterTimer = null;
     _this.leaveTimer = null;
     _this.touchTimer = null;
@@ -159,6 +160,7 @@ function (_React$Component) {
         _this.popper._popper.scheduleUpdate();
       }
     }, 166);
+    _this.state = {};
 
     _this.handleEnter = function (event) {
       var _this$props = _this.props,

@@ -56,6 +56,12 @@ var nodeThatClaimedTheSwipe = null; // Exported for test purposes.
 function reset() {
   nodeThatClaimedTheSwipe = null;
 }
+/* istanbul ignore if */
+
+
+if (process.env.NODE_ENV !== 'production' && !_react.default.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 var SwipeableDrawer =
 /*#__PURE__*/
@@ -73,7 +79,7 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = SwipeableDrawer.__proto__ || Object.getPrototypeOf(SwipeableDrawer)).call.apply(_ref, [this].concat(args))), _this.state = {}, _this.handleBodyTouchStart = function (event) {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = SwipeableDrawer.__proto__ || Object.getPrototypeOf(SwipeableDrawer)).call.apply(_ref, [this].concat(args))), _this.backdrop = null, _this.paper = null, _this.isSwiping = null, _this.startX = null, _this.startY = null, _this.state = {}, _this.handleBodyTouchStart = function (event) {
       // We are not supposed to hanlde this touch move.
       if (nodeThatClaimedTheSwipe !== null && nodeThatClaimedTheSwipe !== (0, _assertThisInitialized2.default)(_this)) {
         return;
@@ -219,7 +225,7 @@ function (_React$Component) {
       }
 
       _this.isSwiping = null;
-    }, _this.backdrop = null, _this.paper = null, _this.isSwiping = null, _this.startX = null, _this.startY = null, _this.handleBackdropRef = function (node) {
+    }, _this.handleBackdropRef = function (node) {
       _this.backdrop = node ? _reactDom.default.findDOMNode(node) : null;
     }, _this.handlePaperRef = function (node) {
       _this.paper = node ? _reactDom.default.findDOMNode(node) : null;
@@ -339,7 +345,8 @@ function (_React$Component) {
           ModalPropsProp = (0, _objectWithoutProperties2.default)(_props$ModalProps, ["BackdropProps"]),
           onOpen = _props.onOpen,
           open = _props.open,
-          PaperProps = _props.PaperProps,
+          _props$PaperProps = _props.PaperProps,
+          PaperProps = _props$PaperProps === void 0 ? {} : _props$PaperProps,
           swipeAreaWidth = _props.swipeAreaWidth,
           variant = _props.variant,
           other = (0, _objectWithoutProperties2.default)(_props, ["disableBackdropTransition", "disableDiscovery", "disableSwipeToOpen", "ModalProps", "onOpen", "open", "PaperProps", "swipeAreaWidth", "variant"]);
@@ -353,9 +360,9 @@ function (_React$Component) {
           })
         }, ModalPropsProp),
         PaperProps: (0, _objectSpread2.default)({}, PaperProps, {
-          style: {
+          style: (0, _objectSpread2.default)({
             pointerEvents: variant === 'temporary' && !open ? 'none' : ''
-          },
+          }, PaperProps.style),
           ref: this.handlePaperRef
         })
       }, other)), !disableDiscovery && !disableSwipeToOpen && variant === 'temporary' && _react.default.createElement(_SwipeArea.default, {

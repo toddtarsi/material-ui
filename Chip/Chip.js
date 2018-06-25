@@ -35,6 +35,8 @@ var _withStyles = _interopRequireDefault(require("../styles/withStyles"));
 
 var _colorManipulator = require("../styles/colorManipulator");
 
+var _unsupportedProp = _interopRequireDefault(require("../utils/unsupportedProp"));
+
 require("../Avatar/Avatar");
 
 // So we don't have any override priority issue.
@@ -248,6 +250,12 @@ Chip.propTypes = process.env.NODE_ENV !== "production" ? {
   avatar: _propTypes.default.element,
 
   /**
+   * This property isn't supported.
+   * Use the `component` property if you need to change the children structure.
+   */
+  children: _unsupportedProp.default,
+
+  /**
    * Override or extend the styles applied to the component.
    * See [CSS API](#css-api) below for more details.
    */
@@ -269,7 +277,7 @@ Chip.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Override the default delete icon element. Shown only if `onDelete` is set.

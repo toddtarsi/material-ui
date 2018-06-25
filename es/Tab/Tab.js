@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import withStyles from '../styles/withStyles';
 import ButtonBase from '../ButtonBase';
 import { capitalize } from '../utils/helpers';
+import unsupportedProp from '../utils/unsupportedProp';
 export const styles = theme => ({
   root: _objectSpread({}, theme.typography.button, {
     maxWidth: 264,
@@ -93,7 +94,7 @@ class Tab extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {
+    return _temp = super(...args), this.label = null, this.state = {
       labelWrapped: false
     }, this.handleChange = event => {
       const {
@@ -109,7 +110,7 @@ class Tab extends React.Component {
       if (onClick) {
         onClick(event);
       }
-    }, this.label = undefined, this.checkTextWrap = () => {
+    }, this.checkTextWrap = () => {
       if (this.label) {
         const labelWrapped = this.label.getClientRects().length > 1;
 
@@ -194,6 +195,12 @@ class Tab extends React.Component {
 }
 
 Tab.propTypes = process.env.NODE_ENV !== "production" ? {
+  /**
+   * This property isn't supported.
+   * Use the `component` property if you need to change the children structure.
+   */
+  children: unsupportedProp,
+
   /**
    * Override or extend the styles applied to the component.
    * See [CSS API](#css-api) below for more details.

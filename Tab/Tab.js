@@ -35,6 +35,8 @@ var _ButtonBase = _interopRequireDefault(require("../ButtonBase"));
 
 var _helpers = require("../utils/helpers");
 
+var _unsupportedProp = _interopRequireDefault(require("../utils/unsupportedProp"));
+
 // @inheritedComponent ButtonBase
 var styles = function styles(theme) {
   return {
@@ -132,7 +134,7 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Tab.__proto__ || Object.getPrototypeOf(Tab)).call.apply(_ref, [this].concat(args))), _this.state = {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Tab.__proto__ || Object.getPrototypeOf(Tab)).call.apply(_ref, [this].concat(args))), _this.label = null, _this.state = {
       labelWrapped: false
     }, _this.handleChange = function (event) {
       var _this$props = _this.props,
@@ -147,7 +149,7 @@ function (_React$Component) {
       if (onClick) {
         onClick(event);
       }
-    }, _this.label = undefined, _this.checkTextWrap = function () {
+    }, _this.checkTextWrap = function () {
       if (_this.label) {
         var labelWrapped = _this.label.getClientRects().length > 1;
 
@@ -230,6 +232,12 @@ function (_React$Component) {
 }(_react.default.Component);
 
 Tab.propTypes = process.env.NODE_ENV !== "production" ? {
+  /**
+   * This property isn't supported.
+   * Use the `component` property if you need to change the children structure.
+   */
+  children: _unsupportedProp.default,
+
   /**
    * Override or extend the styles applied to the component.
    * See [CSS API](#css-api) below for more details.

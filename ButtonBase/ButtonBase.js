@@ -84,13 +84,19 @@ var styles = {
   disabled: {},
   focusVisible: {}
 };
+/* istanbul ignore if */
+
+exports.styles = styles;
+
+if (process.env.NODE_ENV !== 'production' && !_react.default.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 /**
  * `ButtonBase` contains as few styles as possible.
  * It aims to be a simple building block for creating a button.
  * It contains a load of style reset and some focus/ripple logic.
  */
 
-exports.styles = styles;
 
 var ButtonBase =
 /*#__PURE__*/
@@ -108,7 +114,29 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = ButtonBase.__proto__ || Object.getPrototypeOf(ButtonBase)).call.apply(_ref, [this].concat(args))), _this.state = {}, _this.onFocusVisibleHandler = function (event) {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = ButtonBase.__proto__ || Object.getPrototypeOf(ButtonBase)).call.apply(_ref, [this].concat(args))), _this.ripple = null, _this.keyDown = false, _this.button = null, _this.focusVisibleTimeout = null, _this.focusVisibleCheckTime = 50, _this.focusVisibleMaxCheckTimes = 5, _this.handleMouseDown = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'MouseDown', 'start', function () {
+      clearTimeout(_this.focusVisibleTimeout);
+
+      if (_this.state.focusVisible) {
+        _this.setState({
+          focusVisible: false
+        });
+      }
+    }), _this.handleMouseUp = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'MouseUp', 'stop'), _this.handleMouseLeave = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'MouseLeave', 'stop', function (event) {
+      if (_this.state.focusVisible) {
+        event.preventDefault();
+      }
+    }), _this.handleTouchStart = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'TouchStart', 'start'), _this.handleTouchEnd = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'TouchEnd', 'stop'), _this.handleTouchMove = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'TouchMove', 'stop'), _this.handleBlur = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'Blur', 'stop', function () {
+      clearTimeout(_this.focusVisibleTimeout);
+
+      if (_this.state.focusVisible) {
+        _this.setState({
+          focusVisible: false
+        });
+      }
+    }), _this.state = {}, _this.onRippleRef = function (node) {
+      _this.ripple = node;
+    }, _this.onFocusVisibleHandler = function (event) {
       _this.keyDown = false;
 
       _this.setState({
@@ -118,9 +146,7 @@ function (_React$Component) {
       if (_this.props.onFocusVisible) {
         _this.props.onFocusVisible(event);
       }
-    }, _this.onRippleRef = function (node) {
-      _this.ripple = node;
-    }, _this.ripple = null, _this.keyDown = false, _this.button = null, _this.focusVisibleTimeout = null, _this.focusVisibleCheckTime = 50, _this.focusVisibleMaxCheckTimes = 5, _this.handleKeyDown = function (event) {
+    }, _this.handleKeyDown = function (event) {
       var _this$props = _this.props,
           component = _this$props.component,
           focusRipple = _this$props.focusRipple,
@@ -162,27 +188,7 @@ function (_React$Component) {
       if (_this.props.onKeyUp) {
         _this.props.onKeyUp(event);
       }
-    }, _this.handleMouseDown = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'MouseDown', 'start', function () {
-      clearTimeout(_this.focusVisibleTimeout);
-
-      if (_this.state.focusVisible) {
-        _this.setState({
-          focusVisible: false
-        });
-      }
-    }), _this.handleMouseUp = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'MouseUp', 'stop'), _this.handleMouseLeave = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'MouseLeave', 'stop', function (event) {
-      if (_this.state.focusVisible) {
-        event.preventDefault();
-      }
-    }), _this.handleTouchStart = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'TouchStart', 'start'), _this.handleTouchEnd = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'TouchEnd', 'stop'), _this.handleTouchMove = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'TouchMove', 'stop'), _this.handleBlur = (0, _createRippleHandler.default)((0, _assertThisInitialized2.default)(_this), 'Blur', 'stop', function () {
-      clearTimeout(_this.focusVisibleTimeout);
-
-      if (_this.state.focusVisible) {
-        _this.setState({
-          focusVisible: false
-        });
-      }
-    }), _this.handleFocus = function (event) {
+    }, _this.handleFocus = function (event) {
       if (_this.props.disabled) {
         return;
       } // Fix for https://github.com/facebook/react/issues/7769
@@ -251,6 +257,7 @@ function (_React$Component) {
           component = _props.component,
           disabled = _props.disabled,
           disableRipple = _props.disableRipple,
+          disableTouchRipple = _props.disableTouchRipple,
           focusRipple = _props.focusRipple,
           focusVisibleClassName = _props.focusVisibleClassName,
           onBlur = _props.onBlur,
@@ -267,7 +274,7 @@ function (_React$Component) {
           tabIndex = _props.tabIndex,
           TouchRippleProps = _props.TouchRippleProps,
           type = _props.type,
-          other = (0, _objectWithoutProperties2.default)(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
+          other = (0, _objectWithoutProperties2.default)(_props, ["action", "buttonRef", "centerRipple", "children", "classes", "className", "component", "disabled", "disableRipple", "disableTouchRipple", "focusRipple", "focusVisibleClassName", "onBlur", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "type"]);
       var className = (0, _classnames.default)(classes.root, (_classNames = {}, (0, _defineProperty2.default)(_classNames, classes.disabled, disabled), (0, _defineProperty2.default)(_classNames, classes.focusVisible, this.state.focusVisible), (0, _defineProperty2.default)(_classNames, focusVisibleClassName, this.state.focusVisible), _classNames), classNameProp);
       var buttonProps = {};
       var ComponentProp = component;
@@ -371,7 +378,7 @@ ButtonBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * If `true`, the base button will be disabled.
@@ -382,6 +389,11 @@ ButtonBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * If `true`, the ripple effect will be disabled.
    */
   disableRipple: _propTypes.default.bool,
+
+  /**
+   * If `true`, the touch ripple effect will be disabled.
+   */
+  disableTouchRipple: _propTypes.default.bool,
 
   /**
    * If `true`, the base button will have a keyboard focus ripple.
@@ -484,6 +496,7 @@ ButtonBase.defaultProps = {
   centerRipple: false,
   component: 'button',
   disableRipple: false,
+  disableTouchRipple: false,
   focusRipple: false,
   tabIndex: '0',
   type: 'button'

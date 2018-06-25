@@ -21,7 +21,7 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _ownerDocument = _interopRequireDefault(require("dom-helpers/ownerDocument"));
+var _ownerDocument = _interopRequireDefault(require("../utils/ownerDocument"));
 
 var _exactProp = _interopRequireDefault(require("../utils/exactProp"));
 
@@ -119,6 +119,6 @@ Portal.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   onRendered: _propTypes.default.func
 } : {};
-Portal.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(Portal.propTypes, 'Portal') : {};
+Portal.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(Portal.propTypes) : {};
 var _default = Portal;
 exports.default = _default;

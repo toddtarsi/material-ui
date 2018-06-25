@@ -36,7 +36,7 @@ class Collapse extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.wrapper = null, this.autoTransitionDuration = undefined, this.timer = null, this.handleEnter = node => {
+    return _temp = super(...args), this.wrapper = null, this.autoTransitionDuration = null, this.timer = null, this.handleEnter = node => {
       node.style.height = this.props.collapsedHeight;
 
       if (this.props.onEnter) {
@@ -190,7 +190,7 @@ Collapse.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * If `true`, the component will transition in.

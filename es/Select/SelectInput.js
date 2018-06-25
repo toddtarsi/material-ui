@@ -15,27 +15,29 @@ class SelectInput extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {
+    return _temp = super(...args), this.ignoreNextBlur = false, this.displayNode = null, this.isOpenControlled = this.props.open !== undefined, this.state = {
+      menuMinWidth: null,
       open: false
-    }, this.ignoreNextBlur = false, this.displayNode = null, this.displayWidth = null, this.isOpenControlled = this.props.open !== undefined, this.updateDisplayWidth = () => {
-      // Perfom the layout computation outside of the render method.
-      if (this.displayNode) {
-        this.displayWidth = this.displayNode.clientWidth;
-      }
-    }, this.update = this.isOpenControlled ? ({
+    }, this.update = ({
       event,
       open
     }) => {
-      if (open) {
-        this.props.onOpen(event);
-      } else {
-        this.props.onClose(event);
+      if (this.isOpenControlled) {
+        if (open) {
+          this.props.onOpen(event);
+        } else {
+          this.props.onClose(event);
+        }
+
+        return;
       }
-    } : ({
-      open
-    }) => this.setState({
-      open
-    }), this.handleClick = event => {
+
+      this.setState({
+        // Perfom the layout computation outside of the render method.
+        menuMinWidth: this.props.autoWidth ? null : this.displayNode.clientWidth,
+        open
+      });
+    }, this.handleClick = event => {
       // Opening the menu is going to blur the. It will be focused back when closed.
       this.ignoreNextBlur = true;
       this.update({
@@ -115,17 +117,26 @@ class SelectInput extends React.Component {
       }
     }, this.handleDisplayRef = node => {
       this.displayNode = node;
-      this.updateDisplayWidth();
-    }, this.handleSelectRef = node => {
-      if (!this.props.inputRef) {
+    }, this.handleInputRef = node => {
+      const {
+        inputRef
+      } = this.props;
+
+      if (!inputRef) {
         return;
       }
 
-      this.props.inputRef({
+      const nodeProxy = {
         node,
         // By pass the native input as we expose a rich object (array).
         value: this.props.value
-      });
+      };
+
+      if (typeof inputRef === 'function') {
+        inputRef(nodeProxy);
+      } else {
+        inputRef.current = nodeProxy;
+      }
     }, _temp;
   }
 
@@ -141,11 +152,6 @@ class SelectInput extends React.Component {
     if (this.props.autoFocus) {
       this.displayNode.focus();
     }
-  }
-
-  shouldComponentUpdate() {
-    this.updateDisplayWidth();
-    return true;
   }
 
   render() {
@@ -229,9 +235,15 @@ class SelectInput extends React.Component {
 
     if (computeDisplay) {
       display = multiple ? displayMultiple.join(', ') : displaySingle;
+    } // Avoid performing a layout computation in the render method.
+
+
+    let menuMinWidth = this.state.menuMinWidth;
+
+    if (!autoWidth && this.isOpenControlled && this.displayNode) {
+      menuMinWidth = this.displayNode.clientWidth;
     }
 
-    const MenuMinWidth = this.displayNode && !autoWidth ? this.displayWidth : undefined;
     let tabIndex;
 
     if (typeof tabIndexProp !== 'undefined') {
@@ -264,7 +276,7 @@ class SelectInput extends React.Component {
       value: Array.isArray(value) ? value.join(',') : value,
       name: name,
       readOnly: readOnly,
-      ref: this.handleSelectRef,
+      ref: this.handleInputRef,
       type: type
     }, other)), React.createElement(IconComponent, {
       className: classes.icon
@@ -279,7 +291,7 @@ class SelectInput extends React.Component {
       }, MenuProps.MenuListProps),
       PaperProps: _objectSpread({}, MenuProps.PaperProps, {
         style: _objectSpread({
-          minWidth: MenuMinWidth
+          minWidth: menuMinWidth
         }, MenuProps.PaperProps != null ? MenuProps.PaperProps.style : null)
       })
     }), items));
@@ -329,12 +341,12 @@ SelectInput.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * The icon that displays the arrow.
    */
-  IconComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  IconComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Use that property to pass a ref callback to the native select element.
    */
-  inputRef: PropTypes.func,
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 
   /**
    * Properties applied to the `Menu` element.

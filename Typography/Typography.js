@@ -136,7 +136,7 @@ Typography.propTypes = process.env.NODE_ENV !== "production" ? {
    * Either a string to use a DOM element or a component.
    * By default, it maps the variant to a good default headline component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * If `true`, the text will have a bottom margin.

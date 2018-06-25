@@ -27,13 +27,11 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 
 var _warning = _interopRequireDefault(require("warning"));
 
-var _contains = _interopRequireDefault(require("dom-helpers/query/contains"));
-
-var _ownerDocument = _interopRequireDefault(require("dom-helpers/ownerDocument"));
-
 var _debounce = _interopRequireDefault(require("debounce"));
 
 var _reactEventListener = _interopRequireDefault(require("react-event-listener"));
+
+var _ownerDocument = _interopRequireDefault(require("../utils/ownerDocument"));
 
 var _ownerWindow = _interopRequireDefault(require("../utils/ownerWindow"));
 
@@ -46,6 +44,7 @@ var _Grow = _interopRequireDefault(require("../Grow"));
 var _Paper = _interopRequireDefault(require("../Paper"));
 
 // @inheritedComponent Modal
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 function getOffsetTop(rect, vertical) {
   var offset = 0;
 
@@ -130,7 +129,11 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Popover.__proto__ || Object.getPrototypeOf(Popover)).call.apply(_ref, [this].concat(args))), _this.componentWillUnmount = function () {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Popover.__proto__ || Object.getPrototypeOf(Popover)).call.apply(_ref, [this].concat(args))), _this.transitionEl = null, _this.handleGetOffsetTop = getOffsetTop, _this.handleGetOffsetLeft = getOffsetLeft, _this.handleResize = (0, _debounce.default)(function () {
+      var element = _reactDom.default.findDOMNode(_this.transitionEl);
+
+      _this.setPositioningStyles(element);
+    }, 166), _this.componentWillUnmount = function () {
       _this.handleResize.clear();
     }, _this.setPositioningStyles = function (element) {
       if (element && element.style) {
@@ -213,21 +216,18 @@ function (_React$Component) {
         left: "".concat(left, "px"),
         transformOrigin: getTransformOriginValue(transformOrigin)
       };
-    }, _this.transitionEl = undefined, _this.handleGetOffsetTop = getOffsetTop, _this.handleGetOffsetLeft = getOffsetLeft, _this.handleEnter = function (element) {
+    }, _this.handleEnter = function (element) {
       if (_this.props.onEnter) {
         _this.props.onEnter(element);
       }
 
       _this.setPositioningStyles(element);
-    }, _this.handleResize = (0, _debounce.default)(function () {
-      var element = _reactDom.default.findDOMNode(_this.transitionEl);
-
-      _this.setPositioningStyles(element);
-    }, 166), _temp));
+    }, _temp));
   }
 
   (0, _createClass2.default)(Popover, [{
     key: "componentDidMount",
+    // Corresponds to 10 frames at 60 Hz.
     value: function componentDidMount() {
       if (this.props.action) {
         this.props.action({
@@ -272,7 +272,7 @@ function (_React$Component) {
       if (getContentAnchorEl && anchorReference === 'anchorEl') {
         var contentAnchorEl = getContentAnchorEl(element);
 
-        if (contentAnchorEl && (0, _contains.default)(element, contentAnchorEl)) {
+        if (contentAnchorEl && element.contains(contentAnchorEl)) {
           var scrollTop = getScrollParent(element, contentAnchorEl);
           contentAnchorOffset = contentAnchorEl.offsetTop + contentAnchorEl.clientHeight / 2 - scrollTop || 0;
         } // != the default value
@@ -297,7 +297,6 @@ function (_React$Component) {
     }
   }, {
     key: "render",
-    // Corresponds to 10 frames at 60 Hz.
     value: function render() {
       var _this2 = this;
 
@@ -407,8 +406,8 @@ Popover.propTypes = process.env.NODE_ENV !== "production" ? {
    * the application's client area.
    */
   anchorPosition: _propTypes.default.shape({
-    top: _propTypes.default.number,
-    left: _propTypes.default.number
+    left: _propTypes.default.number,
+    top: _propTypes.default.number
   }),
 
   /*
@@ -524,7 +523,7 @@ Popover.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Transition component.
    */
-  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Set to 'auto' to automatically calculate transition time based on height.

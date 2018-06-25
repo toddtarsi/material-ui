@@ -31,6 +31,7 @@ var _reactEventListener = _interopRequireDefault(require("react-event-listener")
 
 var _withStyles = _interopRequireDefault(require("../styles/withStyles"));
 
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 var ROWS_HEIGHT = 19;
 var styles = {
   root: {
@@ -74,6 +75,7 @@ var Textarea =
 function (_React$Component) {
   (0, _inherits2.default)(Textarea, _React$Component);
 
+  // Corresponds to 10 frames at 60 Hz.
   function Textarea(props) {
     var _this;
 
@@ -81,9 +83,6 @@ function (_React$Component) {
     _this = (0, _possibleConstructorReturn2.default)(this, (Textarea.__proto__ || Object.getPrototypeOf(Textarea)).call(this, props)); // <Input> expects the components it renders to respond to 'value'
     // so that it can check whether they are filled.
 
-    _this.state = {
-      height: null
-    };
     _this.shadow = null;
     _this.singlelineShadow = null;
     _this.input = null;
@@ -91,12 +90,20 @@ function (_React$Component) {
     _this.handleResize = (0, _debounce.default)(function () {
       _this.syncHeightWithShadow();
     }, 166);
+    _this.state = {
+      height: null
+    };
 
     _this.handleRefInput = function (node) {
       _this.input = node;
+      var textareaRef = _this.props.textareaRef;
 
-      if (_this.props.textareaRef) {
-        _this.props.textareaRef(node);
+      if (textareaRef) {
+        if (typeof textareaRef === 'function') {
+          textareaRef(node);
+        } else {
+          textareaRef.current = node;
+        }
       }
     };
 
@@ -147,7 +154,6 @@ function (_React$Component) {
     }
   }, {
     key: "syncHeightWithShadow",
-    // Corresponds to 10 frames at 60 Hz.
     value: function syncHeightWithShadow() {
       var props = this.props;
 
@@ -272,7 +278,7 @@ Textarea.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native textarea element.
    */
-  textareaRef: _propTypes.default.func,
+  textareaRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object]),
 
   /**
    * @ignore

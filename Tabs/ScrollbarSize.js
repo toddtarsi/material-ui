@@ -23,6 +23,7 @@ var _reactEventListener = _interopRequireDefault(require("react-event-listener")
 
 var _debounce = _interopRequireDefault(require("debounce"));
 
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 var styles = {
   width: '100px',
   height: '100px',
@@ -53,14 +54,7 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = ScrollbarSize.__proto__ || Object.getPrototypeOf(ScrollbarSize)).call.apply(_ref, [this].concat(args))), _this.setMeasurements = function () {
-      if (!_this.node) {
-        return;
-      }
-
-      _this.scrollbarHeight = _this.node.offsetHeight - _this.node.clientHeight;
-      _this.scrollbarWidth = _this.node.offsetWidth - _this.node.clientWidth;
-    }, _this.handleResize = (0, _debounce.default)(function () {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = ScrollbarSize.__proto__ || Object.getPrototypeOf(ScrollbarSize)).call.apply(_ref, [this].concat(args))), _this.handleResize = (0, _debounce.default)(function () {
       var onChange = _this.props.onChange;
       var prevHeight = _this.scrollbarHeight;
       var prevWidth = _this.scrollbarWidth;
@@ -73,11 +67,19 @@ function (_React$Component) {
           scrollbarWidth: _this.scrollbarWidth
         });
       }
-    }, 166), _temp));
+    }, 166), _this.setMeasurements = function () {
+      if (!_this.node) {
+        return;
+      }
+
+      _this.scrollbarHeight = _this.node.offsetHeight - _this.node.clientHeight;
+      _this.scrollbarWidth = _this.node.offsetWidth - _this.node.clientWidth;
+    }, _temp));
   }
 
   (0, _createClass2.default)(ScrollbarSize, [{
     key: "componentDidMount",
+    // Corresponds to 10 frames at 60 Hz.
     value: function componentDidMount() {
       this.setMeasurements();
       this.props.onLoad({
@@ -92,7 +94,6 @@ function (_React$Component) {
     }
   }, {
     key: "render",
-    // Corresponds to 10 frames at 60 Hz.
     value: function render() {
       var _this2 = this;
 

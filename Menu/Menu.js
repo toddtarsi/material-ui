@@ -72,13 +72,13 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Menu.__proto__ || Object.getPrototypeOf(Menu)).call.apply(_ref, [this].concat(args))), _this.getContentAnchorEl = function () {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Menu.__proto__ || Object.getPrototypeOf(Menu)).call.apply(_ref, [this].concat(args))), _this.menuList = null, _this.getContentAnchorEl = function () {
       if (!_this.menuList || !_this.menuList.selectedItem) {
         return _reactDom.default.findDOMNode(_this.menuList).firstChild;
       }
 
       return _reactDom.default.findDOMNode(_this.menuList.selectedItem);
-    }, _this.menuList = undefined, _this.focus = function () {
+    }, _this.focus = function () {
       if (_this.menuList && _this.menuList.selectedItem) {
         _reactDom.default.findDOMNode(_this.menuList.selectedItem).focus();
 

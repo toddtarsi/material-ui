@@ -91,10 +91,11 @@ class TouchRipple extends React.PureComponent {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {
+    return _temp = super(...args), this.ignoringMouseDown = false, this.startTimer = null, this.startTimerCommit = null, this.state = {
+      // eslint-disable-next-line react/no-unused-state
       nextKey: 0,
       ripples: []
-    }, this.ignoringMouseDown = false, this.startTimer = null, this.startTimerCommit = null, this.pulsate = () => {
+    }, this.pulsate = () => {
       this.start({}, {
         pulsate: true
       });
@@ -138,7 +139,7 @@ class TouchRipple extends React.PureComponent {
       }
 
       if (center) {
-        rippleSize = Math.sqrt((2 * Math.pow(rect.width, 2) + Math.pow(rect.height, 2)) / 3); // For some reason the animation is broken on Mobile Chrome if the size if even.
+        rippleSize = Math.sqrt((2 * rect.width ** 2 + rect.height ** 2) / 3); // For some reason the animation is broken on Mobile Chrome if the size if even.
 
         if (rippleSize % 2 === 0) {
           rippleSize += 1;
@@ -146,7 +147,7 @@ class TouchRipple extends React.PureComponent {
       } else {
         const sizeX = Math.max(Math.abs((element ? element.clientWidth : 0) - rippleX), rippleX) * 2 + 2;
         const sizeY = Math.max(Math.abs((element ? element.clientHeight : 0) - rippleY), rippleY) * 2 + 2;
-        rippleSize = Math.sqrt(Math.pow(sizeX, 2) + Math.pow(sizeY, 2));
+        rippleSize = Math.sqrt(sizeX ** 2 + sizeY ** 2);
       } // Touche devices
 
 
@@ -164,8 +165,10 @@ class TouchRipple extends React.PureComponent {
 
 
         this.startTimer = setTimeout(() => {
-          this.startTimerCommit();
-          this.startTimerCommit = null;
+          if (this.startTimerCommit) {
+            this.startTimerCommit();
+            this.startTimerCommit = null;
+          }
         }, DELAY_RIPPLE); // We have to make a tradeoff with this value.
       } else {
         this.startCommit({
@@ -184,23 +187,22 @@ class TouchRipple extends React.PureComponent {
         rippleSize,
         cb
       } = params;
-      let ripples = this.state.ripples; // Add a ripple to the ripples array.
-
-      ripples = [...ripples, React.createElement(Ripple, {
-        key: this.state.nextKey,
-        classes: this.props.classes,
-        timeout: {
-          exit: DURATION,
-          enter: DURATION
-        },
-        pulsate: pulsate,
-        rippleX: rippleX,
-        rippleY: rippleY,
-        rippleSize: rippleSize
-      })];
-      this.setState({
-        nextKey: this.state.nextKey + 1,
-        ripples
+      this.setState(state => {
+        return {
+          nextKey: state.nextKey + 1,
+          ripples: [...state.ripples, React.createElement(Ripple, {
+            key: state.nextKey,
+            classes: this.props.classes,
+            timeout: {
+              exit: DURATION,
+              enter: DURATION
+            },
+            pulsate: pulsate,
+            rippleX: rippleX,
+            rippleY: rippleY,
+            rippleSize: rippleSize
+          })]
+        };
       }, cb);
     }, this.stop = (event, cb) => {
       clearTimeout(this.startTimer);
@@ -231,8 +233,7 @@ class TouchRipple extends React.PureComponent {
 
   componentWillUnmount() {
     clearTimeout(this.startTimer);
-  } // Used to filter out mouse emulated events on mobile.
-
+  }
 
   render() {
     const _props = this.props,

@@ -5,24 +5,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import keycode from 'keycode';
-import contains from 'dom-helpers/query/contains';
-import activeElement from 'dom-helpers/activeElement';
-import ownerDocument from 'dom-helpers/ownerDocument';
+import ownerDocument from '../utils/ownerDocument';
 import List from '../List';
 
 class MenuList extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {
-      currentTabIndex: undefined
-    }, this.list = undefined, this.selectedItem = undefined, this.blurTimer = undefined, this.handleBlur = event => {
+    return _temp = super(...args), this.list = null, this.selectedItem = null, this.blurTimer = null, this.state = {
+      currentTabIndex: null
+    }, this.handleBlur = event => {
       this.blurTimer = setTimeout(() => {
         if (this.list) {
           const list = ReactDOM.findDOMNode(this.list);
-          const currentFocus = activeElement(ownerDocument(list));
+          const currentFocus = ownerDocument(list).activeElement;
 
-          if (!contains(list, currentFocus)) {
+          if (!list.contains(currentFocus)) {
             this.resetTabIndex();
           }
         }
@@ -34,9 +32,9 @@ class MenuList extends React.Component {
     }, this.handleKeyDown = event => {
       const list = ReactDOM.findDOMNode(this.list);
       const key = keycode(event);
-      const currentFocus = activeElement(ownerDocument(list));
+      const currentFocus = ownerDocument(list).activeElement;
 
-      if ((key === 'up' || key === 'down') && (!currentFocus || currentFocus && !contains(list, currentFocus))) {
+      if ((key === 'up' || key === 'down') && (!currentFocus || currentFocus && !list.contains(currentFocus))) {
         if (this.selectedItem) {
           ReactDOM.findDOMNode(this.selectedItem).focus();
         } else {
@@ -106,7 +104,7 @@ class MenuList extends React.Component {
 
   resetTabIndex() {
     const list = ReactDOM.findDOMNode(this.list);
-    const currentFocus = activeElement(ownerDocument(list));
+    const currentFocus = ownerDocument(list).activeElement;
     const items = [];
 
     for (let i = 0; i < list.children.length; i += 1) {

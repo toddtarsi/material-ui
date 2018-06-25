@@ -7,13 +7,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.styles = void 0;
 
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/builtin/defineProperty"));
+
 var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/builtin/objectWithoutProperties"));
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/builtin/objectSpread"));
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/builtin/extends"));
-
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/builtin/defineProperty"));
 
 var _react = _interopRequireDefault(require("react"));
 
@@ -38,31 +38,39 @@ var _requirePropFactory = _interopRequireDefault(require("../utils/requirePropFa
 // Follow this flexbox Guide to better understand the underlying model:
 // - https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 var GUTTERS = [0, 8, 16, 24, 32, 40];
-var GRID_SIZES = [true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+var GRID_SIZES = ['auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 function generateGrid(globalStyles, theme, breakpoint) {
-  // For the auto layouting
-  var styles = (0, _defineProperty2.default)({}, "grid-".concat(breakpoint), {
-    flexBasis: 0,
-    flexGrow: 1,
-    maxWidth: '100%'
-  });
+  var styles = {};
   GRID_SIZES.forEach(function (size) {
-    if (typeof size === 'boolean') {
-      // Skip the first one as handle above.
+    var key = "grid-".concat(breakpoint, "-").concat(size);
+
+    if (size === true) {
+      // For the auto layouting
+      styles[key] = {
+        flexBasis: 0,
+        flexGrow: 1,
+        maxWidth: '100%'
+      };
+      return;
+    }
+
+    if (size === 'auto') {
+      styles[key] = {
+        flexBasis: 'auto',
+        flexGrow: 0,
+        maxWidth: 'none'
+      };
       return;
     } // Only keep 6 significant numbers.
 
 
-    var width = "".concat(Math.round(size / 12 * 10e6) / 10e4, "%");
-    /* eslint-disable max-len */
-    // Close to the bootstrap implementation:
+    var width = "".concat(Math.round(size / 12 * 10e6) / 10e4, "%"); // Close to the bootstrap implementation:
     // https://github.com/twbs/bootstrap/blob/8fccaa2439e97ec72a4b7dc42ccc1f649790adb0/scss/mixins/_grid.scss#L41
 
-    /* eslint-enable max-len */
-
-    styles["grid-".concat(breakpoint, "-").concat(size)] = {
+    styles[key] = {
       flexBasis: width,
+      flexGrow: 0,
       maxWidth: width
     };
   }); // No need for a media query for the first size.
@@ -199,7 +207,7 @@ function Grid(props) {
       xs = props.xs,
       zeroMinWidth = props.zeroMinWidth,
       other = (0, _objectWithoutProperties2.default)(props, ["alignContent", "alignItems", "classes", "className", "component", "container", "direction", "item", "justify", "lg", "md", "sm", "spacing", "wrap", "xl", "xs", "zeroMinWidth"]);
-  var className = (0, _classnames.default)((_classNames = {}, (0, _defineProperty2.default)(_classNames, classes.container, container), (0, _defineProperty2.default)(_classNames, classes.item, item), (0, _defineProperty2.default)(_classNames, classes.zeroMinWidth, zeroMinWidth), (0, _defineProperty2.default)(_classNames, classes["spacing-xs-".concat(String(spacing))], container && spacing !== 0), (0, _defineProperty2.default)(_classNames, classes["direction-xs-".concat(String(direction))], direction !== Grid.defaultProps.direction), (0, _defineProperty2.default)(_classNames, classes["wrap-xs-".concat(String(wrap))], wrap !== Grid.defaultProps.wrap), (0, _defineProperty2.default)(_classNames, classes["align-items-xs-".concat(String(alignItems))], alignItems !== Grid.defaultProps.alignItems), (0, _defineProperty2.default)(_classNames, classes["align-content-xs-".concat(String(alignContent))], alignContent !== Grid.defaultProps.alignContent), (0, _defineProperty2.default)(_classNames, classes["justify-xs-".concat(String(justify))], justify !== Grid.defaultProps.justify), (0, _defineProperty2.default)(_classNames, classes['grid-xs'], xs === true), (0, _defineProperty2.default)(_classNames, classes["grid-xs-".concat(String(xs))], xs && xs !== true), (0, _defineProperty2.default)(_classNames, classes['grid-sm'], sm === true), (0, _defineProperty2.default)(_classNames, classes["grid-sm-".concat(String(sm))], sm && sm !== true), (0, _defineProperty2.default)(_classNames, classes['grid-md'], md === true), (0, _defineProperty2.default)(_classNames, classes["grid-md-".concat(String(md))], md && md !== true), (0, _defineProperty2.default)(_classNames, classes['grid-lg'], lg === true), (0, _defineProperty2.default)(_classNames, classes["grid-lg-".concat(String(lg))], lg && lg !== true), (0, _defineProperty2.default)(_classNames, classes['grid-xl'], xl === true), (0, _defineProperty2.default)(_classNames, classes["grid-xl-".concat(String(xl))], xl && xl !== true), _classNames), classNameProp);
+  var className = (0, _classnames.default)((_classNames = {}, (0, _defineProperty2.default)(_classNames, classes.container, container), (0, _defineProperty2.default)(_classNames, classes.item, item), (0, _defineProperty2.default)(_classNames, classes.zeroMinWidth, zeroMinWidth), (0, _defineProperty2.default)(_classNames, classes["spacing-xs-".concat(String(spacing))], container && spacing !== 0), (0, _defineProperty2.default)(_classNames, classes["direction-xs-".concat(String(direction))], direction !== Grid.defaultProps.direction), (0, _defineProperty2.default)(_classNames, classes["wrap-xs-".concat(String(wrap))], wrap !== Grid.defaultProps.wrap), (0, _defineProperty2.default)(_classNames, classes["align-items-xs-".concat(String(alignItems))], alignItems !== Grid.defaultProps.alignItems), (0, _defineProperty2.default)(_classNames, classes["align-content-xs-".concat(String(alignContent))], alignContent !== Grid.defaultProps.alignContent), (0, _defineProperty2.default)(_classNames, classes["justify-xs-".concat(String(justify))], justify !== Grid.defaultProps.justify), (0, _defineProperty2.default)(_classNames, classes["grid-xs-".concat(String(xs))], xs !== false), (0, _defineProperty2.default)(_classNames, classes["grid-sm-".concat(String(sm))], sm !== false), (0, _defineProperty2.default)(_classNames, classes["grid-md-".concat(String(md))], md !== false), (0, _defineProperty2.default)(_classNames, classes["grid-lg-".concat(String(lg))], lg !== false), (0, _defineProperty2.default)(_classNames, classes["grid-xl-".concat(String(xl))], xl !== false), _classNames), classNameProp);
   return _react.default.createElement(Component, (0, _extends2.default)({
     className: className
   }, other));
@@ -238,7 +246,7 @@ Grid.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * If `true`, the component will have the flex *container* behavior.
@@ -268,19 +276,19 @@ Grid.propTypes = process.env.NODE_ENV !== "production" ? {
    * Defines the number of grids the component is going to use.
    * It's applied for the `lg` breakpoint and wider screens if not overridden.
    */
-  lg: _propTypes.default.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+  lg: _propTypes.default.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
   /**
    * Defines the number of grids the component is going to use.
    * It's applied for the `md` breakpoint and wider screens if not overridden.
    */
-  md: _propTypes.default.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+  md: _propTypes.default.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
   /**
    * Defines the number of grids the component is going to use.
    * It's applied for the `sm` breakpoint and wider screens if not overridden.
    */
-  sm: _propTypes.default.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+  sm: _propTypes.default.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
   /**
    * Defines the space between the type `item` component.
@@ -298,13 +306,13 @@ Grid.propTypes = process.env.NODE_ENV !== "production" ? {
    * Defines the number of grids the component is going to use.
    * It's applied for the `xl` breakpoint and wider screens.
    */
-  xl: _propTypes.default.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+  xl: _propTypes.default.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
   /**
    * Defines the number of grids the component is going to use.
    * It's applied for all the screen sizes with the lowest priority.
    */
-  xs: _propTypes.default.oneOf([false, true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+  xs: _propTypes.default.oneOf([false, 'auto', true, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
 
   /**
    * If `true`, it sets `min-width: 0` on the item.
@@ -328,25 +336,14 @@ Grid.defaultProps = {
   xl: false,
   xs: false,
   zeroMinWidth: false
-}; // Add a wrapper component to generate some helper messages in the development
-// environment.
-
-/* eslint-disable react/no-multi-comp */
-// eslint-disable-next-line import/no-mutable-exports
-
-var GridWrapper = (0, _withStyles.default)(styles, {
+};
+var StyledGrid = (0, _withStyles.default)(styles, {
   name: 'MuiGrid'
 })(Grid);
 
 if (process.env.NODE_ENV !== 'production') {
-  var GridStyled = GridWrapper;
-
-  GridWrapper = function GridWrapper(props) {
-    return _react.default.createElement(GridStyled, props);
-  };
-
   var requireProp = (0, _requirePropFactory.default)('Grid');
-  GridWrapper.propTypes = {
+  StyledGrid.propTypes = (0, _objectSpread2.default)({}, StyledGrid.propTypes, {
     alignContent: requireProp('container'),
     alignItems: requireProp('container'),
     direction: requireProp('container'),
@@ -358,10 +355,8 @@ if (process.env.NODE_ENV !== 'production') {
     wrap: requireProp('container'),
     xs: requireProp('item'),
     zeroMinWidth: requireProp('zeroMinWidth')
-  };
-  GridWrapper.Naked = GridStyled;
-  GridWrapper.options = GridStyled.options;
+  });
 }
 
-var _default = GridWrapper;
+var _default = StyledGrid;
 exports.default = _default;

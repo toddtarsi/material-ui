@@ -139,10 +139,11 @@ function (_React$PureComponent) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = TouchRipple.__proto__ || Object.getPrototypeOf(TouchRipple)).call.apply(_ref, [this].concat(args))), _this.state = {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = TouchRipple.__proto__ || Object.getPrototypeOf(TouchRipple)).call.apply(_ref, [this].concat(args))), _this.ignoringMouseDown = false, _this.startTimer = null, _this.startTimerCommit = null, _this.state = {
+      // eslint-disable-next-line react/no-unused-state
       nextKey: 0,
       ripples: []
-    }, _this.ignoringMouseDown = false, _this.startTimer = null, _this.startTimerCommit = null, _this.pulsate = function () {
+    }, _this.pulsate = function () {
       _this.start({}, {
         pulsate: true
       });
@@ -215,9 +216,11 @@ function (_React$PureComponent) {
 
 
         _this.startTimer = setTimeout(function () {
-          _this.startTimerCommit();
+          if (_this.startTimerCommit) {
+            _this.startTimerCommit();
 
-          _this.startTimerCommit = null;
+            _this.startTimerCommit = null;
+          }
         }, DELAY_RIPPLE); // We have to make a tradeoff with this value.
       } else {
         _this.startCommit({
@@ -234,24 +237,23 @@ function (_React$PureComponent) {
           rippleY = params.rippleY,
           rippleSize = params.rippleSize,
           cb = params.cb;
-      var ripples = _this.state.ripples; // Add a ripple to the ripples array.
 
-      ripples = (0, _toConsumableArray2.default)(ripples).concat([_react.default.createElement(_Ripple.default, {
-        key: _this.state.nextKey,
-        classes: _this.props.classes,
-        timeout: {
-          exit: DURATION,
-          enter: DURATION
-        },
-        pulsate: pulsate,
-        rippleX: rippleX,
-        rippleY: rippleY,
-        rippleSize: rippleSize
-      })]);
-
-      _this.setState({
-        nextKey: _this.state.nextKey + 1,
-        ripples: ripples
+      _this.setState(function (state) {
+        return {
+          nextKey: state.nextKey + 1,
+          ripples: (0, _toConsumableArray2.default)(state.ripples).concat([_react.default.createElement(_Ripple.default, {
+            key: state.nextKey,
+            classes: _this.props.classes,
+            timeout: {
+              exit: DURATION,
+              enter: DURATION
+            },
+            pulsate: pulsate,
+            rippleX: rippleX,
+            rippleY: rippleY,
+            rippleSize: rippleSize
+          })])
+        };
       }, cb);
     }, _this.stop = function (event, cb) {
       clearTimeout(_this.startTimer);
@@ -284,8 +286,7 @@ function (_React$PureComponent) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       clearTimeout(this.startTimer);
-    } // Used to filter out mouse emulated events on mobile.
-
+    }
   }, {
     key: "render",
     value: function render() {

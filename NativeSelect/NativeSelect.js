@@ -128,7 +128,7 @@ NativeSelect.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * The icon that displays the arrow.
    */
-  IconComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  IconComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * An `Input` element; does not have to be a material-ui specific `Input`.

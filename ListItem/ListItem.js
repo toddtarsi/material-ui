@@ -202,12 +202,12 @@ ListItem.propTypes = process.env.NODE_ENV !== "production" ? {
    * Either a string to use a DOM element or a component.
    * By default, it's a `li` when `button` is `false` and a `div` when `button` is `true`.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * The container component used when a `ListItemSecondaryAction` is rendered.
    */
-  ContainerComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  ContainerComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Properties applied to the container element when the component

@@ -35,13 +35,7 @@ var _warning = _interopRequireDefault(require("warning"));
 
 var _keycode = _interopRequireDefault(require("keycode"));
 
-var _activeElement = _interopRequireDefault(require("dom-helpers/activeElement"));
-
-var _contains = _interopRequireDefault(require("dom-helpers/query/contains"));
-
-var _inDOM = _interopRequireDefault(require("dom-helpers/util/inDOM"));
-
-var _ownerDocument = _interopRequireDefault(require("dom-helpers/ownerDocument"));
+var _ownerDocument = _interopRequireDefault(require("../utils/ownerDocument"));
 
 var _RootRef = _interopRequireDefault(require("../RootRef"));
 
@@ -81,8 +75,14 @@ var styles = function styles(theme) {
     }
   };
 };
+/* istanbul ignore if */
+
 
 exports.styles = styles;
+
+if (process.env.NODE_ENV !== 'production' && !_react.default.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 var Modal =
 /*#__PURE__*/
@@ -121,7 +121,7 @@ function (_React$Component) {
 
       var doc = (0, _ownerDocument.default)(_this.mountNode);
       doc.removeEventListener('keydown', _this.handleDocumentKeyDown);
-      doc.removeEventListener('focus', _this.enforceFocus);
+      doc.removeEventListener('focus', _this.enforceFocus, true);
 
       _this.restoreLastFocus();
     };
@@ -163,9 +163,7 @@ function (_React$Component) {
     };
 
     _this.checkForFocus = function () {
-      if (_inDOM.default) {
-        _this.lastFocus = (0, _activeElement.default)();
-      }
+      _this.lastFocus = (0, _ownerDocument.default)(_this.mountNode).activeElement;
     };
 
     _this.enforceFocus = function () {
@@ -173,9 +171,9 @@ function (_React$Component) {
         return;
       }
 
-      var currentActiveElement = (0, _activeElement.default)((0, _ownerDocument.default)(_this.mountNode));
+      var currentActiveElement = (0, _ownerDocument.default)(_this.mountNode).activeElement;
 
-      if (_this.dialogElement && !(0, _contains.default)(_this.dialogElement, currentActiveElement)) {
+      if (_this.dialogElement && !_this.dialogElement.contains(currentActiveElement)) {
         _this.dialogElement.focus();
       }
     };
@@ -225,9 +223,9 @@ function (_React$Component) {
         return;
       }
 
-      var currentActiveElement = (0, _activeElement.default)((0, _ownerDocument.default)(this.mountNode));
+      var currentActiveElement = (0, _ownerDocument.default)(this.mountNode).activeElement;
 
-      if (this.dialogElement && !(0, _contains.default)(this.dialogElement, currentActiveElement)) {
+      if (this.dialogElement && !this.dialogElement.contains(currentActiveElement)) {
         this.lastFocus = currentActiveElement;
 
         if (!this.dialogElement.hasAttribute('tabIndex')) {
@@ -332,7 +330,9 @@ function (_React$Component) {
         return {
           exited: false
         };
-      } else if (!getHasTransition(nextProps)) {
+      }
+
+      if (!getHasTransition(nextProps)) {
         // Otherwise let handleExited take care of marking exited.
         return {
           exited: true
@@ -349,7 +349,7 @@ Modal.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * A backdrop component. This property enables custom backdrop rendering.
    */
-  BackdropComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  BackdropComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Properties applied to the `Backdrop` element.

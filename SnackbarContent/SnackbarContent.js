@@ -45,7 +45,7 @@ var styles = function styles(theme) {
     }, (0, _defineProperty2.default)(_root, theme.breakpoints.up('md'), {
       minWidth: 288,
       maxWidth: 568,
-      borderRadius: 2
+      borderRadius: theme.shape.borderRadius
     }), (0, _defineProperty2.default)(_root, theme.breakpoints.down('sm'), {
       flexGrow: 1
     }), _root),

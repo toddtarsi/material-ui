@@ -73,5 +73,5 @@ RootRef.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   rootRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired
 } : {};
-RootRef.propTypes = process.env.NODE_ENV !== "production" ? exactProp(RootRef.propTypes, 'RootRef') : {};
+RootRef.propTypes = process.env.NODE_ENV !== "production" ? exactProp(RootRef.propTypes) : {};
 export default RootRef;

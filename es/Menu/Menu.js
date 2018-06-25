@@ -32,13 +32,13 @@ class Menu extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.getContentAnchorEl = () => {
+    return _temp = super(...args), this.menuList = null, this.getContentAnchorEl = () => {
       if (!this.menuList || !this.menuList.selectedItem) {
         return ReactDOM.findDOMNode(this.menuList).firstChild;
       }
 
       return ReactDOM.findDOMNode(this.menuList.selectedItem);
-    }, this.menuList = undefined, this.focus = () => {
+    }, this.focus = () => {
       if (this.menuList && this.menuList.selectedItem) {
         ReactDOM.findDOMNode(this.menuList.selectedItem).focus();
         return;

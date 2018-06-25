@@ -43,6 +43,7 @@ var MuiThemeProvider =
 function (_React$Component) {
   (0, _inherits2.default)(MuiThemeProvider, _React$Component);
 
+  // We are not using the React state in order to avoid unnecessary rerender.
   function MuiThemeProvider(props, context) {
     var _this;
 
@@ -105,10 +106,10 @@ function (_React$Component) {
       if (this.unsubscribeId !== null) {
         _themeListener.default.unsubscribe(this.context, this.unsubscribeId);
       }
-    }
+    } // Simple merge between the outer theme and the local theme
+
   }, {
     key: "mergeOuterLocalTheme",
-    // Simple merge between the outer theme and the local theme
     value: function mergeOuterLocalTheme(localTheme) {
       // To support composition of theme.
       if (typeof localTheme === 'function') {
@@ -168,7 +169,7 @@ MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? {
    */
   theme: _propTypes.default.oneOfType([_propTypes.default.object, _propTypes.default.func]).isRequired
 } : {};
-MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(MuiThemeProvider.propTypes, 'MuiThemeProvider') : {};
+MuiThemeProvider.propTypes = process.env.NODE_ENV !== "production" ? (0, _exactProp.default)(MuiThemeProvider.propTypes) : {};
 MuiThemeProvider.childContextTypes = (0, _objectSpread2.default)({}, _themeListener.default.contextTypes, {
   muiThemeProviderOptions: _propTypes.default.object
 });

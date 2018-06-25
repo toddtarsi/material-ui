@@ -37,7 +37,10 @@ var _withTheme = _interopRequireDefault(require("../styles/withTheme"));
 
 var _createBreakpoints = require("../styles/createBreakpoints");
 
+var _getThemeProps = _interopRequireDefault(require("../styles/getThemeProps"));
+
 /* eslint-disable react/no-did-mount-set-state */
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 // By default, returns true if screen width is the same or greater than the given breakpoint.
 var isWidthUp = function isWidthUp(breakpoint, width) {
   var inclusive = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -85,9 +88,6 @@ var withWidth = function withWidth() {
 
         (0, _classCallCheck2.default)(this, WithWidth);
         _this = (0, _possibleConstructorReturn2.default)(this, (WithWidth.__proto__ || Object.getPrototypeOf(WithWidth)).call(this, props));
-        _this.state = {
-          width: undefined
-        };
         _this.handleResize = (0, _debounce.default)(function () {
           var width = _this.getWidth();
 
@@ -97,6 +97,9 @@ var withWidth = function withWidth() {
             });
           }
         }, resizeInterval);
+        _this.state = {
+          width: undefined
+        };
 
         if (noSSR) {
           _this.state.width = _this.getWidth();
@@ -160,7 +163,10 @@ var withWidth = function withWidth() {
               width = _props.width,
               other = (0, _objectWithoutProperties2.default)(_props, ["initialWidth", "theme", "width"]);
           var props = (0, _objectSpread2.default)({
-            width: width || this.state.width || initialWidth || initialWidthOption
+            width: width || this.state.width || initialWidth || initialWidthOption || (0, _getThemeProps.default)({
+              theme: theme,
+              name: 'MuiWithWidth'
+            }).initialWidth
           }, other);
           var more = {};
 

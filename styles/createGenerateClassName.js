@@ -12,12 +12,21 @@ var _warning = _interopRequireDefault(require("warning"));
 /* eslint-disable no-underscore-dangle */
 // People might bundle this classname generator twice.
 // We need to use a global.
-global.__MUI_GENERATOR_COUNTER__ = 0; // Returns a function which generates unique class names based on counters.
+global.__MUI_GENERATOR_COUNTER__ = 0;
+var escapeRegex = /([[\].#*$><+~=|^:(),"'`\s])/g;
+
+function safePrefix(classNamePrefix) {
+  var prefix = String(classNamePrefix);
+  process.env.NODE_ENV !== "production" ? (0, _warning.default)(prefix.length < 100, "Material-UI: the class name prefix is too long: ".concat(prefix, ".")) : void 0; // Sanitize the string as will be used to prefix the generated class name.
+
+  return prefix.replace(escapeRegex, '-');
+} // Returns a function which generates unique class names based on counters.
 // When new generator function is created, rule counter is reset.
 // We need to reset the rule counter for SSR for each request.
 //
 // It's inspired by
 // https://github.com/cssinjs/jss/blob/4e6a05dd3f7b6572fdd3ab216861d9e446c20331/src/utils/createGenerateClassName.js
+
 
 function createGenerateClassName() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -25,15 +34,12 @@ function createGenerateClassName() {
       dangerouslyUseGlobalCSS = _options$dangerouslyU === void 0 ? false : _options$dangerouslyU,
       _options$productionPr = options.productionPrefix,
       productionPrefix = _options$productionPr === void 0 ? 'jss' : _options$productionPr;
-  var escapeRegex = /([[\].#*$><+~=|^:(),"'`\s])/g;
   var ruleCounter = 0; // - HMR can lead to many class name generators being instantiated,
   // so the warning is only triggered in production.
   // - We expect a class name generator to be instantiated per new request on the server,
   // so the warning is only triggered client side.
-  // - You can get away with having multiple class name generators
-  // by modifying the `productionPrefix`.
 
-  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined' && productionPrefix === 'jss') {
+  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
     global.__MUI_GENERATOR_COUNTER__ += 1;
 
     if (global.__MUI_GENERATOR_COUNTER__ > 2) {
@@ -48,9 +54,7 @@ function createGenerateClassName() {
 
     if (dangerouslyUseGlobalCSS) {
       if (styleSheet && styleSheet.options.classNamePrefix) {
-        var prefix = styleSheet.options.classNamePrefix; // Sanitize the string as will be used to prefix the generated class name.
-
-        prefix = prefix.replace(escapeRegex, '-');
+        var prefix = safePrefix(styleSheet.options.classNamePrefix);
 
         if (prefix.match(/^Mui/)) {
           return "".concat(prefix, "-").concat(rule.key);
@@ -73,9 +77,8 @@ function createGenerateClassName() {
     }
 
     if (styleSheet && styleSheet.options.classNamePrefix) {
-      var _prefix = styleSheet.options.classNamePrefix; // Sanitize the string as will be used to prefix the generated class name.
+      var _prefix = safePrefix(styleSheet.options.classNamePrefix);
 
-      _prefix = _prefix.replace(escapeRegex, '-');
       return "".concat(_prefix, "-").concat(rule.key, "-").concat(ruleCounter);
     }
 

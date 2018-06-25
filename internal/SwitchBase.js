@@ -68,9 +68,33 @@ function (_React$Component) {
 
     (0, _classCallCheck2.default)(this, SwitchBase);
     _this = (0, _possibleConstructorReturn2.default)(this, (SwitchBase.__proto__ || Object.getPrototypeOf(SwitchBase)).call(this, props));
-    _this.state = {};
     _this.input = null;
     _this.isControlled = null;
+    _this.state = {};
+
+    _this.handleFocus = function (event) {
+      if (_this.props.onFocus) {
+        _this.props.onFocus(event);
+      }
+
+      var muiFormControl = _this.context.muiFormControl;
+
+      if (muiFormControl && muiFormControl.onFocus) {
+        muiFormControl.onFocus(event);
+      }
+    };
+
+    _this.handleBlur = function (event) {
+      if (_this.props.onBlur) {
+        _this.props.onBlur(event);
+      }
+
+      var muiFormControl = _this.context.muiFormControl;
+
+      if (muiFormControl && muiFormControl.onBlur) {
+        muiFormControl.onBlur(event);
+      }
+    };
 
     _this.handleInputChange = function (event) {
       var checked = event.target.checked;
@@ -112,11 +136,13 @@ function (_React$Component) {
           inputProps = _props.inputProps,
           inputRef = _props.inputRef,
           name = _props.name,
+          onBlur = _props.onBlur,
           onChange = _props.onChange,
+          onFocus = _props.onFocus,
           tabIndex = _props.tabIndex,
           type = _props.type,
           value = _props.value,
-          other = (0, _objectWithoutProperties2.default)(_props, ["checked", "checkedIcon", "classes", "className", "disabled", "icon", "id", "inputProps", "inputRef", "name", "onChange", "tabIndex", "type", "value"]);
+          other = (0, _objectWithoutProperties2.default)(_props, ["checked", "checkedIcon", "classes", "className", "disabled", "icon", "id", "inputProps", "inputRef", "name", "onBlur", "onChange", "onFocus", "tabIndex", "type", "value"]);
       var muiFormControl = this.context.muiFormControl;
       var disabled = disabledProp;
 
@@ -133,7 +159,9 @@ function (_React$Component) {
         className: (0, _classnames.default)(classes.root, (_classNames = {}, (0, _defineProperty2.default)(_classNames, classes.checked, checked), (0, _defineProperty2.default)(_classNames, classes.disabled, disabled), _classNames), classNameProp),
         disabled: disabled,
         tabIndex: null,
-        role: undefined
+        role: undefined,
+        onFocus: this.handleFocus,
+        onBlur: this.handleBlur
       }, other), checked ? checkedIcon : icon, _react.default.createElement("input", (0, _extends2.default)({
         id: hasLabelFor && id,
         type: type,
@@ -218,12 +246,17 @@ SwitchBase.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Use that property to pass a ref callback to the native input component.
    */
-  inputRef: _propTypes.default.func,
+  inputRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.object]),
 
   /*
    * @ignore
    */
   name: _propTypes.default.string,
+
+  /**
+   * @ignore
+   */
+  onBlur: _propTypes.default.func,
 
   /**
    * Callback fired when the state is changed.
@@ -233,6 +266,11 @@ SwitchBase.propTypes = process.env.NODE_ENV !== "production" ? {
    * @param {boolean} checked The `checked` value of the switch
    */
   onChange: _propTypes.default.func,
+
+  /**
+   * @ignore
+   */
+  onFocus: _propTypes.default.func,
 
   /**
    * @ignore

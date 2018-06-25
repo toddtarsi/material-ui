@@ -151,10 +151,7 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.mounted = true;
-    } // Let's assume that the Drawer will always be rendered on user space.
-    // We use that state is order to skip the appear transition during the
-    // initial mount of the component.
-
+    }
   }, {
     key: "render",
     value: function render() {

@@ -6,11 +6,13 @@ import _objectWithoutProperties from "@babel/runtime/helpers/builtin/objectWitho
 import React from 'react';
 import PropTypes from 'prop-types';
 import EventListener from 'react-event-listener';
-import debounce from 'debounce';
+import debounce from 'debounce'; // < 1kb payload overhead when lodash/debounce is > 3kb.
+
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import withTheme from '../styles/withTheme';
-import { keys as breakpointKeys } from '../styles/createBreakpoints'; // By default, returns true if screen width is the same or greater than the given breakpoint.
+import { keys as breakpointKeys } from '../styles/createBreakpoints';
+import getThemeProps from '../styles/getThemeProps'; // By default, returns true if screen width is the same or greater than the given breakpoint.
 
 export const isWidthUp = (breakpoint, width, inclusive = true) => {
   if (inclusive) {
@@ -40,9 +42,6 @@ const withWidth = (options = {}) => Component => {
   class WithWidth extends React.Component {
     constructor(props) {
       super(props);
-      this.state = {
-        width: undefined
-      };
       this.handleResize = debounce(() => {
         const width = this.getWidth();
 
@@ -52,6 +51,9 @@ const withWidth = (options = {}) => Component => {
           });
         }
       }, resizeInterval);
+      this.state = {
+        width: undefined
+      };
 
       if (noSSR) {
         this.state.width = this.getWidth();
@@ -110,7 +112,10 @@ const withWidth = (options = {}) => Component => {
             other = _objectWithoutProperties(_props, ["initialWidth", "theme", "width"]);
 
       const props = _objectSpread({
-        width: width || this.state.width || initialWidth || initialWidthOption
+        width: width || this.state.width || initialWidth || initialWidthOption || getThemeProps({
+          theme,
+          name: 'MuiWithWidth'
+        }).initialWidth
       }, other);
 
       const more = {};

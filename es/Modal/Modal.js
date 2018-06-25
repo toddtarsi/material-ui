@@ -7,10 +7,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import warning from 'warning';
 import keycode from 'keycode';
-import activeElement from 'dom-helpers/activeElement';
-import contains from 'dom-helpers/query/contains';
-import inDOM from 'dom-helpers/util/inDOM';
-import ownerDocument from 'dom-helpers/ownerDocument';
+import ownerDocument from '../utils/ownerDocument';
 import RootRef from '../RootRef';
 import Portal from '../Portal';
 import { createChainedFunction } from '../utils/helpers';
@@ -41,6 +38,11 @@ export const styles = theme => ({
     visibility: 'hidden'
   }
 });
+/* istanbul ignore if */
+
+if (process.env.NODE_ENV !== 'production' && !React.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 class Modal extends React.Component {
   constructor(props) {
@@ -69,7 +71,7 @@ class Modal extends React.Component {
       this.props.manager.remove(this);
       const doc = ownerDocument(this.mountNode);
       doc.removeEventListener('keydown', this.handleDocumentKeyDown);
-      doc.removeEventListener('focus', this.enforceFocus);
+      doc.removeEventListener('focus', this.enforceFocus, true);
       this.restoreLastFocus();
     };
 
@@ -109,9 +111,7 @@ class Modal extends React.Component {
     };
 
     this.checkForFocus = () => {
-      if (inDOM) {
-        this.lastFocus = activeElement();
-      }
+      this.lastFocus = ownerDocument(this.mountNode).activeElement;
     };
 
     this.enforceFocus = () => {
@@ -119,9 +119,9 @@ class Modal extends React.Component {
         return;
       }
 
-      const currentActiveElement = activeElement(ownerDocument(this.mountNode));
+      const currentActiveElement = ownerDocument(this.mountNode).activeElement;
 
-      if (this.dialogElement && !contains(this.dialogElement, currentActiveElement)) {
+      if (this.dialogElement && !this.dialogElement.contains(currentActiveElement)) {
         this.dialogElement.focus();
       }
     };
@@ -129,21 +129,6 @@ class Modal extends React.Component {
     this.state = {
       exited: !this.props.open
     };
-  }
-
-  static getDerivedStateFromProps(nextProps) {
-    if (nextProps.open) {
-      return {
-        exited: false
-      };
-    } else if (!getHasTransition(nextProps)) {
-      // Otherwise let handleExited take care of marking exited.
-      return {
-        exited: true
-      };
-    }
-
-    return null;
   }
 
   componentDidMount() {
@@ -175,14 +160,31 @@ class Modal extends React.Component {
     }
   }
 
+  static getDerivedStateFromProps(nextProps) {
+    if (nextProps.open) {
+      return {
+        exited: false
+      };
+    }
+
+    if (!getHasTransition(nextProps)) {
+      // Otherwise let handleExited take care of marking exited.
+      return {
+        exited: true
+      };
+    }
+
+    return null;
+  }
+
   autoFocus() {
     if (this.props.disableAutoFocus) {
       return;
     }
 
-    const currentActiveElement = activeElement(ownerDocument(this.mountNode));
+    const currentActiveElement = ownerDocument(this.mountNode).activeElement;
 
-    if (this.dialogElement && !contains(this.dialogElement, currentActiveElement)) {
+    if (this.dialogElement && !this.dialogElement.contains(currentActiveElement)) {
       this.lastFocus = currentActiveElement;
 
       if (!this.dialogElement.hasAttribute('tabIndex')) {
@@ -289,7 +291,7 @@ Modal.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * A backdrop component. This property enables custom backdrop rendering.
    */
-  BackdropComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  BackdropComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Properties applied to the `Backdrop` element.

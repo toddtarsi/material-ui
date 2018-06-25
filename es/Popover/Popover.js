@@ -5,10 +5,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import warning from 'warning';
-import contains from 'dom-helpers/query/contains';
-import ownerDocument from 'dom-helpers/ownerDocument';
-import debounce from 'debounce';
+import debounce from 'debounce'; // < 1kb payload overhead when lodash/debounce is > 3kb.
+
 import EventListener from 'react-event-listener';
+import ownerDocument from '../utils/ownerDocument';
 import ownerWindow from '../utils/ownerWindow';
 import withStyles from '../styles/withStyles';
 import Modal from '../Modal';
@@ -86,7 +86,10 @@ class Popover extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.componentWillUnmount = () => {
+    return _temp = super(...args), this.transitionEl = null, this.handleGetOffsetTop = getOffsetTop, this.handleGetOffsetLeft = getOffsetLeft, this.handleResize = debounce(() => {
+      const element = ReactDOM.findDOMNode(this.transitionEl);
+      this.setPositioningStyles(element);
+    }, 166), this.componentWillUnmount = () => {
       this.handleResize.clear();
     }, this.setPositioningStyles = element => {
       if (element && element.style) {
@@ -165,18 +168,16 @@ class Popover extends React.Component {
         left: `${left}px`,
         transformOrigin: getTransformOriginValue(transformOrigin)
       };
-    }, this.transitionEl = undefined, this.handleGetOffsetTop = getOffsetTop, this.handleGetOffsetLeft = getOffsetLeft, this.handleEnter = element => {
+    }, this.handleEnter = element => {
       if (this.props.onEnter) {
         this.props.onEnter(element);
       }
 
       this.setPositioningStyles(element);
-    }, this.handleResize = debounce(() => {
-      const element = ReactDOM.findDOMNode(this.transitionEl);
-      this.setPositioningStyles(element);
-    }, 166), _temp;
+    }, _temp;
   }
 
+  // Corresponds to 10 frames at 60 Hz.
   componentDidMount() {
     if (this.props.action) {
       this.props.action({
@@ -221,7 +222,7 @@ class Popover extends React.Component {
     if (getContentAnchorEl && anchorReference === 'anchorEl') {
       const contentAnchorEl = getContentAnchorEl(element);
 
-      if (contentAnchorEl && contains(element, contentAnchorEl)) {
+      if (contentAnchorEl && element.contains(contentAnchorEl)) {
         const scrollTop = getScrollParent(element, contentAnchorEl);
         contentAnchorOffset = contentAnchorEl.offsetTop + contentAnchorEl.clientHeight / 2 - scrollTop || 0;
       } // != the default value
@@ -245,7 +246,6 @@ class Popover extends React.Component {
     };
   }
 
-  // Corresponds to 10 frames at 60 Hz.
   render() {
     const _props = this.props,
           {
@@ -355,8 +355,8 @@ Popover.propTypes = process.env.NODE_ENV !== "production" ? {
    * the application's client area.
    */
   anchorPosition: PropTypes.shape({
-    top: PropTypes.number,
-    left: PropTypes.number
+    left: PropTypes.number,
+    top: PropTypes.number
   }),
 
   /*
@@ -472,7 +472,7 @@ Popover.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Transition component.
    */
-  TransitionComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  TransitionComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
 
   /**
    * Set to 'auto' to automatically calculate transition time based on height.

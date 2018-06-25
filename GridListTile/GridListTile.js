@@ -33,6 +33,7 @@ var _debounce = _interopRequireDefault(require("debounce"));
 
 var _withStyles = _interopRequireDefault(require("../styles/withStyles"));
 
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 var styles = {
   root: {
     boxSizing: 'border-box',
@@ -81,11 +82,7 @@ function (_React$Component) {
     }, 166), _this.fit = function () {
       var imgElement = _this.imgElement;
 
-      if (!imgElement) {
-        return;
-      }
-
-      if (!imgElement.complete) {
+      if (!imgElement || !imgElement.complete) {
         return;
       }
 
@@ -109,6 +106,7 @@ function (_React$Component) {
 
   (0, _createClass2.default)(GridListTile, [{
     key: "componentDidMount",
+    // Corresponds to 10 frames at 60 Hz.
     value: function componentDidMount() {
       this.ensureImageCover();
     }
@@ -158,7 +156,6 @@ function (_React$Component) {
       }, _react.default.Children.map(children, function (child) {
         if (child && child.type === 'img') {
           return _react.default.cloneElement(child, {
-            key: 'img',
             ref: function ref(node) {
               _this2.imgElement = node;
             }
@@ -200,7 +197,7 @@ GridListTile.propTypes = process.env.NODE_ENV !== "production" ? {
    * The component used for the root node.
    * Either a string to use a DOM element or a component.
    */
-  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  component: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * Height of the tile in number of grid cells.

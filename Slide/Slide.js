@@ -43,6 +43,7 @@ var _transitions = require("../styles/transitions");
 var _utils = require("../transitions/utils");
 
 // @inheritedComponent Transition
+// < 1kb payload overhead when lodash/debounce is > 3kb.
 var GUTTER = 24; // Translate the node so he can't be seen on the screen.
 // Later, we gonna translate back the node to his original location
 // with `translate3d(0, 0, 0)`.`
@@ -70,9 +71,13 @@ function getTranslateValue(props, node) {
 
   if (direction === 'left') {
     return "translateX(100vw) translateX(-".concat(rect.left - offsetX, "px)");
-  } else if (direction === 'right') {
+  }
+
+  if (direction === 'right') {
     return "translateX(-".concat(rect.left + rect.width + GUTTER - offsetX, "px)");
-  } else if (direction === 'up') {
+  }
+
+  if (direction === 'up') {
     return "translateY(100vh) translateY(-".concat(rect.top - offsetY, "px)");
   } // direction === 'down'
 
@@ -174,6 +179,7 @@ function (_React$Component) {
 
   (0, _createClass2.default)(Slide, [{
     key: "componentDidMount",
+    // Corresponds to 10 frames at 60 Hz.
     value: function componentDidMount() {
       // state.mounted handle SSR, once the component is mounted, we need
       // to properly hide it.

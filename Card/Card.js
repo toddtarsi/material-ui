@@ -36,7 +36,7 @@ function Card(props) {
       other = (0, _objectWithoutProperties2.default)(props, ["classes", "className", "raised"]);
   return _react.default.createElement(_Paper.default, (0, _extends2.default)({
     className: (0, _classnames.default)(classes.root, className),
-    elevation: raised ? 8 : 2
+    elevation: raised ? 8 : 1
   }, other));
 }
 

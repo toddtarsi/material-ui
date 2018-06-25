@@ -9,7 +9,7 @@ import withTheme from '../styles/withTheme';
 import { reflow, getTransitionProps } from '../transitions/utils';
 
 function getScale(value) {
-  return `scale(${value}, ${Math.pow(value, 2)})`;
+  return `scale(${value}, ${value ** 2})`;
 }
 
 const styles = {
@@ -31,7 +31,7 @@ class Grow extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.autoTimeout = undefined, this.timer = null, this.handleEnter = node => {
+    return _temp = super(...args), this.autoTimeout = null, this.timer = null, this.handleEnter = node => {
       const {
         theme,
         timeout

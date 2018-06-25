@@ -113,8 +113,8 @@ function (_React$Component) {
 
     (0, _classCallCheck2.default)(this, ExpansionPanel);
     _this = (0, _possibleConstructorReturn2.default)(this, (ExpansionPanel.__proto__ || Object.getPrototypeOf(ExpansionPanel)).call(this, props));
-    _this.state = {};
     _this.isControlled = null;
+    _this.state = {};
 
     _this.handleChange = function (event) {
       var expanded = _this.isControlled ? _this.props.expanded : _this.state.expanded;

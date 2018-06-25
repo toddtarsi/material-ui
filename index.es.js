@@ -1,4 +1,4 @@
-/** @license Material-UI v1.2.0
+/** @license Material-UI v1.2.3
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -72,6 +72,7 @@ export { default as Popover } from './Popover';
 export { default as Portal } from './Portal';
 export { default as Radio } from './Radio';
 export { default as RadioGroup } from './RadioGroup';
+export { default as RootRef } from './RootRef';
 export { default as Select } from './Select';
 export { default as Slide } from './Slide';
 export { default as Snackbar } from './Snackbar';

@@ -13,9 +13,9 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/built
 
 var _style = _interopRequireDefault(require("dom-helpers/style"));
 
-var _ownerDocument = _interopRequireDefault(require("dom-helpers/ownerDocument"));
-
 var _scrollbarSize = _interopRequireDefault(require("dom-helpers/util/scrollbarSize"));
+
+var _ownerDocument = _interopRequireDefault(require("../utils/ownerDocument"));
 
 var _isOverflowing = _interopRequireDefault(require("./isOverflowing"));
 

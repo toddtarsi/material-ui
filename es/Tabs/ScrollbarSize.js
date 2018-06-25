@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import EventListener from 'react-event-listener';
-import debounce from 'debounce';
+import debounce from 'debounce'; // < 1kb payload overhead when lodash/debounce is > 3kb.
+
 const styles = {
   width: '100px',
   height: '100px',
@@ -20,14 +21,7 @@ class ScrollbarSize extends React.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.setMeasurements = () => {
-      if (!this.node) {
-        return;
-      }
-
-      this.scrollbarHeight = this.node.offsetHeight - this.node.clientHeight;
-      this.scrollbarWidth = this.node.offsetWidth - this.node.clientWidth;
-    }, this.handleResize = debounce(() => {
+    return _temp = super(...args), this.handleResize = debounce(() => {
       const {
         onChange
       } = this.props;
@@ -41,9 +35,17 @@ class ScrollbarSize extends React.Component {
           scrollbarWidth: this.scrollbarWidth
         });
       }
-    }, 166), _temp;
+    }, 166), this.setMeasurements = () => {
+      if (!this.node) {
+        return;
+      }
+
+      this.scrollbarHeight = this.node.offsetHeight - this.node.clientHeight;
+      this.scrollbarWidth = this.node.offsetWidth - this.node.clientWidth;
+    }, _temp;
   }
 
+  // Corresponds to 10 frames at 60 Hz.
   componentDidMount() {
     this.setMeasurements();
     this.props.onLoad({
@@ -56,7 +58,6 @@ class ScrollbarSize extends React.Component {
     this.handleResize.clear();
   }
 
-  // Corresponds to 10 frames at 60 Hz.
   render() {
     const {
       onChange

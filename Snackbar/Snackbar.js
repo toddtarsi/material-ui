@@ -100,8 +100,14 @@ var styles = function styles(theme) {
     }, bottomSpace, leftSpace)))
   };
 };
+/* istanbul ignore if */
+
 
 exports.styles = styles;
+
+if (process.env.NODE_ENV !== 'production' && !_react.default.createContext) {
+  throw new Error('Material-UI: react@16.3.0 or greater is required.');
+}
 
 var Snackbar =
 /*#__PURE__*/
@@ -119,7 +125,7 @@ function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Snackbar.__proto__ || Object.getPrototypeOf(Snackbar)).call.apply(_ref, [this].concat(args))), _this.state = {}, _this.timerAutoHide = null, _this.handleMouseEnter = function (event) {
+    return (0, _possibleConstructorReturn2.default)(_this, (_temp = _this = (0, _possibleConstructorReturn2.default)(this, (_ref = Snackbar.__proto__ || Object.getPrototypeOf(Snackbar)).call.apply(_ref, [this].concat(args))), _this.timerAutoHide = null, _this.state = {}, _this.handleMouseEnter = function (event) {
       if (_this.props.onMouseEnter) {
         _this.props.onMouseEnter(event);
       }
@@ -176,10 +182,10 @@ function (_React$Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       clearTimeout(this.timerAutoHide);
-    } // Timer that controls delay before snackbar auto hides
-
+    }
   }, {
     key: "setAutoHideTimer",
+    // Timer that controls delay before snackbar auto hides
     value: function setAutoHideTimer() {
       var _this2 = this;
 
@@ -410,7 +416,7 @@ Snackbar.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * Transition component.
    */
-  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  TransitionComponent: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func, _propTypes.default.object]),
 
   /**
    * The duration for the transition, in milliseconds.

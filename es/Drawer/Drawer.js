@@ -96,10 +96,7 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-  } // Let's assume that the Drawer will always be rendered on user space.
-  // We use that state is order to skip the appear transition during the
-  // initial mount of the component.
-
+  }
 
   render() {
     const _props = this.props,
