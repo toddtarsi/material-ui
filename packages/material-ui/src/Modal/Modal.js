@@ -6,10 +6,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import warning from 'warning';
 import keycode from 'keycode';
-import activeElement from 'dom-helpers/activeElement';
-import contains from 'dom-helpers/query/contains';
-import inDOM from 'dom-helpers/util/inDOM';
-import ownerDocument from 'dom-helpers/ownerDocument';
+import ownerDocument from '../utils/ownerDocument';
 import RootRef from '../RootRef';
 import Portal from '../Portal';
 import { createChainedFunction } from '../utils/helpers';
@@ -47,27 +44,18 @@ if (process.env.NODE_ENV !== 'production' && !React.createContext) {
 }
 
 class Modal extends React.Component {
+  dialogElement = null;
+
+  mounted = false;
+
+  mountNode = null;
+
   constructor(props) {
     super(props);
 
     this.state = {
       exited: !this.props.open,
     };
-  }
-
-  static getDerivedStateFromProps(nextProps) {
-    if (nextProps.open) {
-      return {
-        exited: false,
-      };
-    } else if (!getHasTransition(nextProps)) {
-      // Otherwise let handleExited take care of marking exited.
-      return {
-        exited: true,
-      };
-    }
-
-    return null;
   }
 
   componentDidMount() {
@@ -98,9 +86,22 @@ class Modal extends React.Component {
     }
   }
 
-  dialogElement = null;
-  mounted = false;
-  mountNode = null;
+  static getDerivedStateFromProps(nextProps) {
+    if (nextProps.open) {
+      return {
+        exited: false,
+      };
+    }
+
+    if (!getHasTransition(nextProps)) {
+      // Otherwise let handleExited take care of marking exited.
+      return {
+        exited: true,
+      };
+    }
+
+    return null;
+  }
 
   handleRendered = () => {
     this.autoFocus();
@@ -161,8 +162,18 @@ class Modal extends React.Component {
   };
 
   checkForFocus = () => {
-    if (inDOM) {
-      this.lastFocus = activeElement();
+    this.lastFocus = ownerDocument(this.mountNode).activeElement;
+  };
+
+  enforceFocus = () => {
+    if (this.props.disableEnforceFocus || !this.mounted || !this.isTopModal()) {
+      return;
+    }
+
+    const currentActiveElement = ownerDocument(this.mountNode).activeElement;
+
+    if (this.dialogElement && !this.dialogElement.contains(currentActiveElement)) {
+      this.dialogElement.focus();
     }
   };
 
@@ -171,9 +182,9 @@ class Modal extends React.Component {
       return;
     }
 
-    const currentActiveElement = activeElement(ownerDocument(this.mountNode));
+    const currentActiveElement = ownerDocument(this.mountNode).activeElement;
 
-    if (this.dialogElement && !contains(this.dialogElement, currentActiveElement)) {
+    if (this.dialogElement && !this.dialogElement.contains(currentActiveElement)) {
       this.lastFocus = currentActiveElement;
 
       if (!this.dialogElement.hasAttribute('tabIndex')) {
@@ -208,18 +219,6 @@ class Modal extends React.Component {
       this.lastFocus = null;
     }
   }
-
-  enforceFocus = () => {
-    if (this.props.disableEnforceFocus || !this.mounted || !this.isTopModal()) {
-      return;
-    }
-
-    const currentActiveElement = activeElement(ownerDocument(this.mountNode));
-
-    if (this.dialogElement && !contains(this.dialogElement, currentActiveElement)) {
-      this.dialogElement.focus();
-    }
-  };
 
   isTopModal() {
     return this.props.manager.isTopModal(this);

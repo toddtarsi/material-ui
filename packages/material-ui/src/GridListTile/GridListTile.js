@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import EventListener from 'react-event-listener';
-import debounce from 'debounce';
+import debounce from 'debounce'; // < 1kb payload overhead when lodash/debounce is > 3kb.
 import withStyles from '../styles/withStyles';
 
 export const styles = {
@@ -31,6 +31,12 @@ export const styles = {
 };
 
 class GridListTile extends React.Component {
+  imgElement = null;
+
+  handleResize = debounce(() => {
+    this.fit();
+  }, 166); // Corresponds to 10 frames at 60 Hz.
+
   componentDidMount() {
     this.ensureImageCover();
   }
@@ -42,12 +48,6 @@ class GridListTile extends React.Component {
   componentWillUnmount() {
     this.handleResize.clear();
   }
-
-  imgElement = null;
-
-  handleResize = debounce(() => {
-    this.fit();
-  }, 166); // Corresponds to 10 frames at 60 Hz.
 
   fit = () => {
     const imgElement = this.imgElement;

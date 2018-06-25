@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import warning from 'warning';
 import classNames from 'classnames';
 import EventListener from 'react-event-listener';
-import debounce from 'debounce';
+import debounce from 'debounce'; // < 1kb payload overhead when lodash/debounce is > 3kb.
 import { getNormalizedScrollLeft, detectScrollType } from 'normalize-scroll-left';
 import scroll from 'scroll';
 import ScrollbarSize from './ScrollbarSize';
@@ -48,6 +48,19 @@ export const styles = theme => ({
 });
 
 class Tabs extends React.Component {
+  tabs = null;
+
+  valueToIndex = new Map();
+
+  handleResize = debounce(() => {
+    this.updateIndicatorState(this.props);
+    this.updateScrollButtonState();
+  }, 166); // Corresponds to 10 frames at 60 Hz.
+
+  handleTabsScroll = debounce(() => {
+    this.updateScrollButtonState();
+  }, 166); // Corresponds to 10 frames at 60 Hz.
+
   state = {
     indicatorStyle: {},
     scrollerStyle: {
@@ -193,14 +206,6 @@ class Tabs extends React.Component {
     return undefined;
   };
 
-  tabs = undefined;
-  valueToIndex = new Map();
-
-  handleResize = debounce(() => {
-    this.updateIndicatorState(this.props);
-    this.updateScrollButtonState();
-  }, 166); // Corresponds to 10 frames at 60 Hz.
-
   handleLeftScrollClick = () => {
     if (this.tabs) {
       this.moveTabsScroll(-this.tabs.clientWidth);
@@ -220,10 +225,6 @@ class Tabs extends React.Component {
       },
     });
   };
-
-  handleTabsScroll = debounce(() => {
-    this.updateScrollButtonState();
-  }, 166); // Corresponds to 10 frames at 60 Hz.
 
   moveTabsScroll = delta => {
     const { theme } = this.props;
